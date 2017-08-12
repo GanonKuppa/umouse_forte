@@ -1,5 +1,5 @@
 .settings
-.HardwareDebug
+HardwareDebug
 .cproject
 .Debuglinker
 .HardwareDebuglinker
