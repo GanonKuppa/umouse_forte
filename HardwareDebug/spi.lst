@@ -1,0 +1,857 @@
+   1                             		.file	"spi.cpp"
+   2                             		.section P,"ax"
+   3                             	.Ltext0:
+   4                             		.global	__Z8initTMR0v
+   6                             	__Z8initTMR0v:
+   7                             	.LFB0:
+   8                             		.file 1 "../src/peripheral/spi.cpp"
+   1:../src/peripheral/spi.cpp **** #include <stdint.h>
+   2:../src/peripheral/spi.cpp **** #include <uart.hpp>
+   3:../src/peripheral/spi.cpp **** #include "spi.h"
+   4:../src/peripheral/spi.cpp **** #include "iodefine.h"
+   5:../src/peripheral/spi.cpp **** #include "timer.h"
+   6:../src/peripheral/spi.cpp **** 
+   7:../src/peripheral/spi.cpp **** //8bitフリーランニングカウンタとして動作
+   8:../src/peripheral/spi.cpp **** //TMR0をSPI受信時の待ち時間生成に利用
+   9:../src/peripheral/spi.cpp **** void initTMR0(){
+   9                             		.loc 1 9 0
+  10:../src/peripheral/spi.cpp **** 	SYSTEM.PRCR.WORD = 0xA502;
+  10                             		.loc 1 10 0
+  11 0000 FB 4E 00 00 08          		mov.L	#0x80000, r4
+  12 0005 FA 49 FF 01 02 A5       		mov.W	#0xffffa502, 1022[r4]
+  11:../src/peripheral/spi.cpp **** 	SYSTEM.MSTPCRA.BIT.MSTPA5 = 0;//TMR0と1 ON
+  13                             		.loc 1 11 0
+  14 000b A9 43                   		mov.L	16[r4], r3
+  12:../src/peripheral/spi.cpp ****     SYSTEM.PRCR.WORD = 0xA500;
+  13:../src/peripheral/spi.cpp **** 
+  14:../src/peripheral/spi.cpp ****     TMR0.TCCR.BIT.CSS=1; //1:PCLKBをカウントソースに設定
+  15                             		.loc 1 14 0
+  16 000d FB EE 00 82 08          		mov.L	#0x88200, r14
+  11:../src/peripheral/spi.cpp **** 	SYSTEM.MSTPCRA.BIT.MSTPA5 = 0;//TMR0と1 ON
+  17                             		.loc 1 11 0
+  18 0012 7A 53                   		bclr #5, r3
+  19 0014 A1 43                   		mov.L	r3, 16[r4]
+  12:../src/peripheral/spi.cpp ****     SYSTEM.PRCR.WORD = 0xA500;
+  20                             		.loc 1 12 0
+  21 0016 FA 49 FF 01 00 A5       		mov.W	#0xffffa500, 1022[r4]
+  22                             		.loc 1 14 0
+  23 001c CD E4 0A                		mov.B	10[r14], r4
+  24 001f 75 24 E7                		and #-25, r4
+  25 0022 78 34                   		bset #3, r4
+  26 0024 C7 E4 0A                		mov.B	r4, 10[r14]
+  15:../src/peripheral/spi.cpp **** 	TMR0.TCCR.BIT.CKS=0; //0:分周比1
+  27                             		.loc 1 15 0
+  28 0027 CD E4 0A                		mov.B	10[r14], r4
+  29 002a 75 24 F8                		and #-8, r4
+  30 002d C7 E4 0A                		mov.B	r4, 10[r14]
+  16:../src/peripheral/spi.cpp **** 	TMR0.TCSTR.BIT.TCS = 1; //1:カウント開始 0:カウンタストップ
+  31                             		.loc 1 16 0
+  32 0030 F1 E0 0C                		bset #0, 12[r14].B
+  33 0033 02                      		rts
+  34                             	.LFE0:
+  36                             		.global	__Z9initRSPI0v
+  38                             	__Z9initRSPI0v:
+  39                             	.LFB1:
+  17:../src/peripheral/spi.cpp **** }
+  18:../src/peripheral/spi.cpp **** 
+  19:../src/peripheral/spi.cpp **** 
+  20:../src/peripheral/spi.cpp **** void initRSPI0(){
+  40                             		.loc 1 20 0
+  41                             	.LBB25:
+  21:../src/peripheral/spi.cpp **** 	int dummy;
+  22:../src/peripheral/spi.cpp **** 	SYSTEM.PRCR.WORD = 0xA502;
+  42                             		.loc 1 22 0
+  43 0034 FB 2E 00 00 08          		mov.L	#0x80000, r2
+  44 0039 FA 29 FF 01 02 A5       		mov.W	#0xffffa502, 1022[r2]
+  23:../src/peripheral/spi.cpp **** 		MSTP(RSPI0) = 0;        //モジュールストップを解除
+  45                             		.loc 1 23 0
+  46 003f ED 2E 05                		mov.L	20[r2], r14
+  24:../src/peripheral/spi.cpp **** 	SYSTEM.PRCR.WORD = 0xA500;
+  25:../src/peripheral/spi.cpp **** 
+  26:../src/peripheral/spi.cpp **** 	//各ピンをSPIに割り付け
+  27:../src/peripheral/spi.cpp **** 	PORTA.PMR.BIT.B4 = 0;   //ピンの設定をするときはまずピンを汎用ポートに設定
+  47                             		.loc 1 27 0
+  48 0042 FB 4E 0A C0 08          		mov.L	#0x8c00a, r4
+  23:../src/peripheral/spi.cpp **** 		MSTP(RSPI0) = 0;        //モジュールストップを解除
+  49                             		.loc 1 23 0
+  50 0047 7B 1E                   		bclr #17, r14
+  51 0049 E7 2E 05                		mov.L	r14, 20[r2]
+  24:../src/peripheral/spi.cpp **** 	SYSTEM.PRCR.WORD = 0xA500;
+  52                             		.loc 1 24 0
+  53 004c FA 29 FF 01 00 A5       		mov.W	#0xffffa500, 1022[r2]
+  54                             		.loc 1 27 0
+  55 0052 CD 4E 60                		mov.B	96[r4], r14
+  28:../src/peripheral/spi.cpp **** 	PORTA.PMR.BIT.B5 = 0;
+  29:../src/peripheral/spi.cpp **** 	PORTA.PMR.BIT.B6 = 0;
+  30:../src/peripheral/spi.cpp **** 	PORTA.PMR.BIT.B7 = 0;
+  31:../src/peripheral/spi.cpp **** 
+  32:../src/peripheral/spi.cpp **** 	MPC.PWPR.BIT.B0WI = 0;  //書き込み許可 0で許可
+  56                             		.loc 1 32 0
+  57 0055 FB 3E 00 C1 08          		mov.L	#0x8c100, r3
+  27:../src/peripheral/spi.cpp **** 	PORTA.PMR.BIT.B5 = 0;
+  58                             		.loc 1 27 0
+  59 005a 7A 4E                   		bclr #4, r14
+  60 005c C7 4E 60                		mov.B	r14, 96[r4]
+  28:../src/peripheral/spi.cpp **** 	PORTA.PMR.BIT.B5 = 0;
+  61                             		.loc 1 28 0
+  62 005f CD 41 60                		mov.B	96[r4], r1
+  33:../src/peripheral/spi.cpp **** 	        MPC.PWPR.BIT.PFSWE = 1; //書き込み許可  1で許可
+  34:../src/peripheral/spi.cpp **** 			MPC.PA4PFS.BIT.PSEL	= 0b001101; //SSLA0に設定
+  35:../src/peripheral/spi.cpp **** 			MPC.PA5PFS.BIT.PSEL = 0b001101; //RSPCKAに設定
+  36:../src/peripheral/spi.cpp **** 			MPC.PA6PFS.BIT.PSEL	= 0b001101; //MOSIAに設定
+  37:../src/peripheral/spi.cpp **** 			MPC.PA7PFS.BIT.PSEL = 0b001101; //MISOAに設定
+  38:../src/peripheral/spi.cpp **** 		MPC.PWPR.BIT.PFSWE = 0;  //PFSWEの書き込み禁止 0
+  39:../src/peripheral/spi.cpp **** 	MPC.PWPR.BIT.B0WI = 1; //書き込み禁止
+  40:../src/peripheral/spi.cpp **** 
+  41:../src/peripheral/spi.cpp **** 
+  42:../src/peripheral/spi.cpp **** 
+  43:../src/peripheral/spi.cpp **** 	PORTA.PMR.BIT.B4 = 1;   //ピンの設定をするときはまずピンを汎用ポートに設定
+  44:../src/peripheral/spi.cpp **** 	PORTA.PMR.BIT.B5 = 1;
+  45:../src/peripheral/spi.cpp **** 	PORTA.PMR.BIT.B6 = 1;
+  46:../src/peripheral/spi.cpp **** 	PORTA.PMR.BIT.B7 = 1;
+  47:../src/peripheral/spi.cpp **** 
+  48:../src/peripheral/spi.cpp **** 
+  49:../src/peripheral/spi.cpp **** 
+  50:../src/peripheral/spi.cpp **** 	RSPI0.SPDCR.BIT.SPLW = 1;   //SPDRレジスタへはロングアクセス
+  63                             		.loc 1 50 0
+  64 0062 FB EE 00 01 0D          		mov.L	#0xd0100, r14
+  28:../src/peripheral/spi.cpp **** 	PORTA.PMR.BIT.B6 = 0;
+  65                             		.loc 1 28 0
+  66 0067 7A 51                   		bclr #5, r1
+  67 0069 C7 41 60                		mov.B	r1, 96[r4]
+  29:../src/peripheral/spi.cpp **** 	PORTA.PMR.BIT.B7 = 0;
+  68                             		.loc 1 29 0
+  69 006c CD 45 60                		mov.B	96[r4], r5
+  70                             	.LBB26:
+  71                             	.LBB27:
+  14:../src/peripheral/spi.cpp **** 	TMR0.TCCR.BIT.CKS=0; //0:分周比1
+  72                             		.loc 1 14 0
+  73 006f FB 1E 00 82 08          		mov.L	#0x88200, r1
+  74                             	.LBE27:
+  75                             	.LBE26:
+  29:../src/peripheral/spi.cpp **** 	PORTA.PMR.BIT.B7 = 0;
+  76                             		.loc 1 29 0
+  77 0074 7A 65                   		bclr #6, r5
+  78 0076 C7 45 60                		mov.B	r5, 96[r4]
+  30:../src/peripheral/spi.cpp **** 
+  79                             		.loc 1 30 0
+  80 0079 CD 45 60                		mov.B	96[r4], r5
+  81 007c 75 25 7F                		and #0x7f, r5
+  82 007f C7 45 60                		mov.B	r5, 96[r4]
+  32:../src/peripheral/spi.cpp **** 	        MPC.PWPR.BIT.PFSWE = 1; //書き込み許可  1で許可
+  83                             		.loc 1 32 0
+  84 0082 8F BD                   		mov.B	31[r3], r5
+  85 0084 75 25 7F                		and #0x7f, r5
+  86 0087 87 BD                   		mov.B	r5, 31[r3]
+  33:../src/peripheral/spi.cpp **** 			MPC.PA4PFS.BIT.PSEL	= 0b001101; //SSLA0に設定
+  87                             		.loc 1 33 0
+  88 0089 F1 36 1F                		bset #6, 31[r3].B
+  34:../src/peripheral/spi.cpp **** 			MPC.PA5PFS.BIT.PSEL = 0b001101; //RSPCKAに設定
+  89                             		.loc 1 34 0
+  90 008c CD 35 94                		mov.B	148[r3], r5
+  91 008f 75 25 C0                		and #-64, r5
+  92 0092 65 D5                   		or	#13, r5
+  93 0094 C7 35 94                		mov.B	r5, 148[r3]
+  35:../src/peripheral/spi.cpp **** 			MPC.PA6PFS.BIT.PSEL	= 0b001101; //MOSIAに設定
+  94                             		.loc 1 35 0
+  95 0097 CD 35 95                		mov.B	149[r3], r5
+  96 009a 75 25 C0                		and #-64, r5
+  97 009d 65 D5                   		or	#13, r5
+  98 009f C7 35 95                		mov.B	r5, 149[r3]
+  36:../src/peripheral/spi.cpp **** 			MPC.PA7PFS.BIT.PSEL = 0b001101; //MISOAに設定
+  99                             		.loc 1 36 0
+ 100 00a2 CD 35 96                		mov.B	150[r3], r5
+ 101 00a5 75 25 C0                		and #-64, r5
+ 102 00a8 65 D5                   		or	#13, r5
+ 103 00aa C7 35 96                		mov.B	r5, 150[r3]
+  37:../src/peripheral/spi.cpp **** 		MPC.PWPR.BIT.PFSWE = 0;  //PFSWEの書き込み禁止 0
+ 104                             		.loc 1 37 0
+ 105 00ad CD 35 97                		mov.B	151[r3], r5
+ 106 00b0 75 25 C0                		and #-64, r5
+ 107 00b3 65 D5                   		or	#13, r5
+ 108 00b5 C7 35 97                		mov.B	r5, 151[r3]
+  38:../src/peripheral/spi.cpp **** 	MPC.PWPR.BIT.B0WI = 1; //書き込み禁止
+ 109                             		.loc 1 38 0
+ 110 00b8 F1 3E 1F                		bclr #6, 31[r3].B
+  39:../src/peripheral/spi.cpp **** 
+ 111                             		.loc 1 39 0
+ 112 00bb 8F BD                   		mov.B	31[r3], r5
+ 113 00bd 75 35 80                		or	#0xffffff80, r5
+ 114 00c0 87 BD                   		mov.B	r5, 31[r3]
+  43:../src/peripheral/spi.cpp **** 	PORTA.PMR.BIT.B5 = 1;
+ 115                             		.loc 1 43 0
+ 116 00c2 F1 44 60                		bset #4, 96[r4].B
+  44:../src/peripheral/spi.cpp **** 	PORTA.PMR.BIT.B6 = 1;
+ 117                             		.loc 1 44 0
+ 118 00c5 F1 45 60                		bset #5, 96[r4].B
+  45:../src/peripheral/spi.cpp **** 	PORTA.PMR.BIT.B7 = 1;
+ 119                             		.loc 1 45 0
+ 120 00c8 F1 46 60                		bset #6, 96[r4].B
+  46:../src/peripheral/spi.cpp **** 
+ 121                             		.loc 1 46 0
+ 122 00cb CD 43 60                		mov.B	96[r4], r3
+ 123 00ce 75 33 80                		or	#0xffffff80, r3
+ 124 00d1 C7 43 60                		mov.B	r3, 96[r4]
+ 125                             		.loc 1 50 0
+ 126 00d4 F1 E5 0B                		bset #5, 11[r14].B
+  51:../src/peripheral/spi.cpp **** 
+  52:../src/peripheral/spi.cpp **** 	//RSPIビットレートレジスタ(SPBR): 通常のシリアル通信と同様に設定する
+  53:../src/peripheral/spi.cpp **** 	//ビットレート = f(PCLKA)/[2 × (n + 1) × 2^N]
+  54:../src/peripheral/spi.cpp **** 	//mpu9250は1MHzまでOK
+  55:../src/peripheral/spi.cpp **** 	//icm20608gは8MHzまでOK
+  56:../src/peripheral/spi.cpp **** 	RSPI0.SPBR = 5;
+ 127                             		.loc 1 56 0
+ 128 00d7 F9 E4 0A 05             		mov.B	#5, 10[r14]
+  57:../src/peripheral/spi.cpp **** 	//RSPI制御レジスタ(SPCR)
+  58:../src/peripheral/spi.cpp **** 	RSPI0.SPCR.BIT.SPMS = 0;
+ 129                             		.loc 1 58 0
+ 130 00db F0 E8                   		bclr #0, [r14].B
+  59:../src/peripheral/spi.cpp **** 	RSPI0.SPCR.BIT.TXMD = 0;
+ 131                             		.loc 1 59 0
+ 132 00dd F0 E9                   		bclr #1, [r14].B
+  60:../src/peripheral/spi.cpp **** 
+  61:../src/peripheral/spi.cpp **** 
+  62:../src/peripheral/spi.cpp **** 	//RSPIコマンドレジスタ(SPCMDx): 送受信フォーマットの設定
+  63:../src/peripheral/spi.cpp **** 	RSPI0.SPCMD0.BIT.BRDV = 0;
+ 133                             		.loc 1 63 0
+ 134 00df DD E4 08                		mov.W	16[r14], r4
+ 135 00e2 75 24 F3                		and #-13, r4
+ 136 00e5 D7 E4 08                		mov.W	r4, 16[r14]
+  64:../src/peripheral/spi.cpp **** 	RSPI0.SPCMD0.BIT.CPHA = 1;
+ 137                             		.loc 1 64 0
+ 138 00e8 DD E4 08                		mov.W	16[r14], r4
+ 139 00eb 78 04                   		bset #0, r4
+ 140 00ed D7 E4 08                		mov.W	r4, 16[r14]
+  65:../src/peripheral/spi.cpp **** 	RSPI0.SPCMD0.BIT.CPOL = 1;
+ 141                             		.loc 1 65 0
+ 142 00f0 DD E4 08                		mov.W	16[r14], r4
+ 143 00f3 78 14                   		bset #1, r4
+ 144 00f5 D7 E4 08                		mov.W	r4, 16[r14]
+  66:../src/peripheral/spi.cpp **** 	RSPI0.SPCMD0.BIT.SSLA = 0;
+ 145                             		.loc 1 66 0
+ 146 00f8 DD E4 08                		mov.W	16[r14], r4
+ 147 00fb 75 24 8F                		and #0xffffff8f, r4
+ 148 00fe D7 E4 08                		mov.W	r4, 16[r14]
+  67:../src/peripheral/spi.cpp **** 	RSPI0.SPCMD0.BIT.SSLKP = 1;
+ 149                             		.loc 1 67 0
+ 150 0101 DD E4 08                		mov.W	16[r14], r4
+ 151 0104 78 74                   		bset #7, r4
+ 152 0106 D7 E4 08                		mov.W	r4, 16[r14]
+  68:../src/peripheral/spi.cpp **** 	RSPI0.SPDCR.BIT.SPFC = 0b00; //バッファのフレーム数を指定
+ 153                             		.loc 1 68 0
+ 154 0109 CD E4 0B                		mov.B	11[r14], r4
+ 155 010c 75 24 FC                		and #-4, r4
+ 156 010f C7 E4 0B                		mov.B	r4, 11[r14]
+  69:../src/peripheral/spi.cpp **** 
+  70:../src/peripheral/spi.cpp **** 	RSPI0.SPDCR.BIT.SPRDTD = 0; //受信バッファを読み出す
+ 157                             		.loc 1 70 0
+ 158 0112 F1 EC 0B                		bclr #4, 11[r14].B
+  71:../src/peripheral/spi.cpp **** 	RSPI0.SPCR.BIT.MSTR = 1;
+ 159                             		.loc 1 71 0
+ 160 0115 F0 E3                   		bset #3, [r14].B
+  72:../src/peripheral/spi.cpp **** 	dummy = RSPI0.SPCR.BIT.MSTR;
+ 161                             		.loc 1 72 0
+ 162 0117 CC EE                   		mov.B	[r14], r14
+ 163                             	.LVL0:
+ 164                             	.LBB29:
+ 165                             	.LBB28:
+  10:../src/peripheral/spi.cpp **** 	SYSTEM.MSTPCRA.BIT.MSTPA5 = 0;//TMR0と1 ON
+ 166                             		.loc 1 10 0
+ 167 0119 FA 29 FF 01 02 A5       		mov.W	#0xffffa502, 1022[r2]
+  11:../src/peripheral/spi.cpp ****     SYSTEM.PRCR.WORD = 0xA500;
+ 168                             		.loc 1 11 0
+ 169 011f ED 2E 04                		mov.L	16[r2], r14
+ 170 0122 7A 5E                   		bclr #5, r14
+ 171 0124 E7 2E 04                		mov.L	r14, 16[r2]
+  12:../src/peripheral/spi.cpp **** 
+ 172                             		.loc 1 12 0
+ 173 0127 FA 29 FF 01 00 A5       		mov.W	#0xffffa500, 1022[r2]
+  14:../src/peripheral/spi.cpp **** 	TMR0.TCCR.BIT.CKS=0; //0:分周比1
+ 174                             		.loc 1 14 0
+ 175 012d CD 1E 0A                		mov.B	10[r1], r14
+ 176 0130 75 2E E7                		and #-25, r14
+ 177 0133 78 3E                   		bset #3, r14
+ 178 0135 C7 1E 0A                		mov.B	r14, 10[r1]
+  15:../src/peripheral/spi.cpp **** 	TMR0.TCSTR.BIT.TCS = 1; //1:カウント開始 0:カウンタストップ
+ 179                             		.loc 1 15 0
+ 180 0138 CD 1E 0A                		mov.B	10[r1], r14
+ 181 013b 75 2E F8                		and #-8, r14
+ 182 013e C7 1E 0A                		mov.B	r14, 10[r1]
+  16:../src/peripheral/spi.cpp **** }
+ 183                             		.loc 1 16 0
+ 184 0141 F1 10 0C                		bset #0, 12[r1].B
+ 185 0144 02                      		rts
+ 186                             	.LBE28:
+ 187                             	.LBE29:
+ 188                             	.LBE25:
+ 189                             	.LFE1:
+ 191                             		.global	__Z20communicate8bitRSPI0h
+ 193                             	__Z20communicate8bitRSPI0h:
+ 194                             	.LFB2:
+  73:../src/peripheral/spi.cpp **** 
+  74:../src/peripheral/spi.cpp **** 	initTMR0();
+  75:../src/peripheral/spi.cpp **** }
+  76:../src/peripheral/spi.cpp **** 
+  77:../src/peripheral/spi.cpp **** uint8_t communicate8bitRSPI0(uint8_t transmit){
+ 195                             		.loc 1 77 0
+ 196                             	.LVL1:
+ 197                             	.LBB30:
+  78:../src/peripheral/spi.cpp **** 	unsigned int receive;
+  79:../src/peripheral/spi.cpp **** 	RSPI0.SPDR.LONG = (uint8_t)transmit;
+ 198                             		.loc 1 79 0
+ 199 0145 FB 4E 00 01 0D          		mov.L	#0xd0100, r4
+ 200 014a 5B 11                   		movu.B	r1, r1
+ 201 014c A0 49                   		mov.L	r1, 4[r4]
+ 202 014e EF 00                   		.balign 8,3,5
+ 203                             	.L5:
+  80:../src/peripheral/spi.cpp **** 	//while(RSPI0.SPSR.BIT.SPTEF != 1);
+  81:../src/peripheral/spi.cpp **** 	while(RSPI0.SPSR.BIT.SPRF == 0){
+ 204                             		.loc 1 81 0 discriminator 1
+ 205 0150 CD 4E 03                		mov.B	3[r4], r14
+ 206 0153 7C 7E                   		btst	#7, r14
+ 207 0155 20 FB                   		beq	.L5
+  82:../src/peripheral/spi.cpp **** 		//
+  83:../src/peripheral/spi.cpp **** 	}
+  84:../src/peripheral/spi.cpp **** 	receive = RSPI0.SPDR.LONG;
+ 208                             		.loc 1 84 0
+ 209 0157 FB EE 00 01 0D          		mov.L	#0xd0100, r14
+ 210 015c ED E1 01                		mov.L	4[r14], r1
+ 211                             	.LVL2:
+ 212                             	.LBE30:
+  85:../src/peripheral/spi.cpp **** 	return (uint8_t)(receive & 0xff);
+  86:../src/peripheral/spi.cpp **** }
+ 213                             		.loc 1 86 0
+ 214 015f 5B 11                   		movu.B	r1, r1
+ 215                             	.LVL3:
+ 216 0161 02                      		rts
+ 217                             	.LFE2:
+ 219                             		.global	__Z20communicate8bitRSPI1h
+ 221                             	__Z20communicate8bitRSPI1h:
+ 222                             	.LFB3:
+  87:../src/peripheral/spi.cpp **** 
+  88:../src/peripheral/spi.cpp **** uint8_t communicate8bitRSPI1(uint8_t transmit){
+ 223                             		.loc 1 88 0
+ 224                             	.LVL4:
+ 225                             	.LBB31:
+  89:../src/peripheral/spi.cpp **** 	unsigned int receive;
+  90:../src/peripheral/spi.cpp **** 	RSPI1.SPDR.LONG = transmit;
+ 226                             		.loc 1 90 0
+ 227 0162 FB 4E 20 01 0D          		mov.L	#0xd0120, r4
+ 228 0167 5B 11                   		movu.B	r1, r1
+ 229 0169 A0 49                   		mov.L	r1, 4[r4]
+ 230 016b 77 10 01 00 00          		.balign 8,3,5
+ 231                             	.L9:
+  91:../src/peripheral/spi.cpp **** //	myprintf3("---------%x\n",transmit);
+  92:../src/peripheral/spi.cpp **** 	//while(RSPI1.SPSR.BIT.SPTEF != 1);
+  93:../src/peripheral/spi.cpp **** 	while(RSPI1.SPSR.BIT.SPRF == 0){
+ 232                             		.loc 1 93 0 discriminator 1
+ 233 0170 CD 4E 03                		mov.B	3[r4], r14
+ 234 0173 7C 7E                   		btst	#7, r14
+ 235 0175 20 FB                   		beq	.L9
+  94:../src/peripheral/spi.cpp **** //		myprintf3("SPRF 0\n");
+  95:../src/peripheral/spi.cpp **** 	};
+  96:../src/peripheral/spi.cpp **** 	receive = RSPI1.SPDR.LONG;
+ 236                             		.loc 1 96 0
+ 237 0177 FB EE 20 01 0D          		mov.L	#0xd0120, r14
+ 238 017c ED E1 01                		mov.L	4[r14], r1
+ 239                             	.LVL5:
+ 240                             	.LBE31:
+  97:../src/peripheral/spi.cpp **** 	//while(RSPI1.SPSR.BIT.SPRF == 1){
+  98:../src/peripheral/spi.cpp **** 	//	myprintf3("SPRF 1\n");
+  99:../src/peripheral/spi.cpp **** 
+ 100:../src/peripheral/spi.cpp **** 	//};
+ 101:../src/peripheral/spi.cpp **** //	myprintf3("rec %d\n",RSPI1.SPDR.LONG);
+ 102:../src/peripheral/spi.cpp **** 	return (uint8_t)(receive & 0xff);
+ 103:../src/peripheral/spi.cpp **** }
+ 241                             		.loc 1 103 0
+ 242 017f 5B 11                   		movu.B	r1, r1
+ 243                             	.LVL6:
+ 244 0181 02                      		rts
+ 245                             	.LFE3:
+ 247                             		.global	__Z14setEnableRSPI0h
+ 249                             	__Z14setEnableRSPI0h:
+ 250                             	.LFB4:
+ 104:../src/peripheral/spi.cpp **** 
+ 105:../src/peripheral/spi.cpp **** void setEnableRSPI0(uint8_t en){
+ 251                             		.loc 1 105 0
+ 252                             	.LVL7:
+ 106:../src/peripheral/spi.cpp **** 	RSPI0.SPCR.BIT.SPE = en;
+ 253                             		.loc 1 106 0
+ 254 0182 FB EE 00 01 0D          		mov.L	#0xd0100, r14
+ 255 0187 CC E4                   		mov.B	[r14], r4
+ 256 0189 64 11                   		and #1, r1
+ 257                             	.LVL8:
+ 258 018b 6C 61                   		shll	#6, r1
+ 259 018d 7A 64                   		bclr #6, r4
+ 260 018f 57 14                   		or	r1, r4
+ 261 0191 C3 E4                   		mov.B	r4, [r14]
+ 262 0193 02                      		rts
+ 263                             	.LFE4:
+ 265                             		.global	__Z14setEnableRSPI1h
+ 267                             	__Z14setEnableRSPI1h:
+ 268                             	.LFB5:
+ 107:../src/peripheral/spi.cpp **** }
+ 108:../src/peripheral/spi.cpp **** 
+ 109:../src/peripheral/spi.cpp **** void setEnableRSPI1(uint8_t en){
+ 269                             		.loc 1 109 0
+ 270                             	.LVL9:
+ 110:../src/peripheral/spi.cpp **** 	RSPI1.SPCR.BIT.SPE = en;
+ 271                             		.loc 1 110 0
+ 272 0194 FB EE 20 01 0D          		mov.L	#0xd0120, r14
+ 273 0199 CC E4                   		mov.B	[r14], r4
+ 274 019b 64 11                   		and #1, r1
+ 275                             	.LVL10:
+ 276 019d 6C 61                   		shll	#6, r1
+ 277 019f 7A 64                   		bclr #6, r4
+ 278 01a1 57 14                   		or	r1, r4
+ 279 01a3 C3 E4                   		mov.B	r4, [r14]
+ 280 01a5 02                      		rts
+ 281                             	.LFE5:
+ 283                             		.global	__Z9initRSPI1v
+ 285                             	__Z9initRSPI1v:
+ 286                             	.LFB6:
+ 111:../src/peripheral/spi.cpp **** }
+ 112:../src/peripheral/spi.cpp **** 
+ 113:../src/peripheral/spi.cpp **** void initRSPI1(){
+ 287                             		.loc 1 113 0
+ 288                             	.LBB32:
+ 114:../src/peripheral/spi.cpp **** 	int dummy;
+ 115:../src/peripheral/spi.cpp **** 
+ 116:../src/peripheral/spi.cpp **** 	SYSTEM.PRCR.WORD = 0xA502;
+ 289                             		.loc 1 116 0
+ 290 01a6 FB EE 00 00 08          		mov.L	#0x80000, r14
+ 291 01ab FA E9 FF 01 02 A5       		mov.W	#0xffffa502, 1022[r14]
+ 117:../src/peripheral/spi.cpp **** 		MSTP(RSPI1) = 0;        //モジュールストップを解除
+ 292                             		.loc 1 117 0
+ 293 01b1 ED E3 05                		mov.L	20[r14], r3
+ 118:../src/peripheral/spi.cpp **** 	SYSTEM.PRCR.WORD = 0xA500;
+ 119:../src/peripheral/spi.cpp **** 
+ 120:../src/peripheral/spi.cpp **** 	//各ピンをSPIに割り付け
+ 121:../src/peripheral/spi.cpp **** 	PORTE.PMR.BIT.B4 = 0;   //ピンの設定をするときはまずピンを汎用ポートに設定
+ 294                             		.loc 1 121 0
+ 295 01b4 FB 4E 0E C0 08          		mov.L	#0x8c00e, r4
+ 117:../src/peripheral/spi.cpp **** 		MSTP(RSPI1) = 0;        //モジュールストップを解除
+ 296                             		.loc 1 117 0
+ 297 01b9 7B 03                   		bclr #16, r3
+ 298 01bb E7 E3 05                		mov.L	r3, 20[r14]
+ 118:../src/peripheral/spi.cpp **** 	SYSTEM.PRCR.WORD = 0xA500;
+ 299                             		.loc 1 118 0
+ 300 01be FA E9 FF 01 00 A5       		mov.W	#0xffffa500, 1022[r14]
+ 301                             		.loc 1 121 0
+ 302 01c4 CD 4E 60                		mov.B	96[r4], r14
+ 122:../src/peripheral/spi.cpp **** 	PORTE.PMR.BIT.B5 = 0;
+ 123:../src/peripheral/spi.cpp **** 	PORTE.PMR.BIT.B6 = 0;
+ 124:../src/peripheral/spi.cpp **** 	PORTE.PMR.BIT.B7 = 0;
+ 125:../src/peripheral/spi.cpp **** 
+ 126:../src/peripheral/spi.cpp **** 	MPC.PWPR.BIT.B0WI = 0;  //書き込み許可 0で許可
+ 303                             		.loc 1 126 0
+ 304 01c7 FB 3E 00 C1 08          		mov.L	#0x8c100, r3
+ 121:../src/peripheral/spi.cpp **** 	PORTE.PMR.BIT.B5 = 0;
+ 305                             		.loc 1 121 0
+ 306 01cc 7A 4E                   		bclr #4, r14
+ 307 01ce C7 4E 60                		mov.B	r14, 96[r4]
+ 122:../src/peripheral/spi.cpp **** 	PORTE.PMR.BIT.B5 = 0;
+ 308                             		.loc 1 122 0
+ 309 01d1 CD 42 60                		mov.B	96[r4], r2
+ 127:../src/peripheral/spi.cpp **** 	    MPC.PWPR.BIT.PFSWE = 1; //書き込み許可  1で許可
+ 128:../src/peripheral/spi.cpp **** 			MPC.PE4PFS.BIT.PSEL	= 0b001101; //SSLB0に設定
+ 129:../src/peripheral/spi.cpp **** 			MPC.PE5PFS.BIT.PSEL = 0b001101; //RSPCKBに設定
+ 130:../src/peripheral/spi.cpp **** 			MPC.PE6PFS.BIT.PSEL	= 0b001101; //MOSIBに設定
+ 131:../src/peripheral/spi.cpp **** 			MPC.PE7PFS.BIT.PSEL = 0b001101; //MISOBに設定
+ 132:../src/peripheral/spi.cpp **** 		MPC.PWPR.BIT.PFSWE = 0;  //PFSWEの書き込み禁止 0
+ 133:../src/peripheral/spi.cpp **** 	MPC.PWPR.BIT.B0WI = 1; //書き込み禁止
+ 134:../src/peripheral/spi.cpp **** 
+ 135:../src/peripheral/spi.cpp **** 
+ 136:../src/peripheral/spi.cpp **** 
+ 137:../src/peripheral/spi.cpp **** 	PORTE.PMR.BIT.B4 = 1;   //ピンの設定をするときはまずピンを汎用ポートに設定
+ 138:../src/peripheral/spi.cpp **** 	PORTE.PMR.BIT.B5 = 1;
+ 139:../src/peripheral/spi.cpp **** 	PORTE.PMR.BIT.B6 = 1;
+ 140:../src/peripheral/spi.cpp **** 	PORTE.PMR.BIT.B7 = 1;
+ 141:../src/peripheral/spi.cpp **** 
+ 142:../src/peripheral/spi.cpp **** 
+ 143:../src/peripheral/spi.cpp **** 
+ 144:../src/peripheral/spi.cpp **** 	RSPI1.SPDCR.BIT.SPLW = 1;   //SPDRレジスタへはロングアクセス
+ 310                             		.loc 1 144 0
+ 311 01d4 FB EE 20 01 0D          		mov.L	#0xd0120, r14
+ 122:../src/peripheral/spi.cpp **** 	PORTE.PMR.BIT.B6 = 0;
+ 312                             		.loc 1 122 0
+ 313 01d9 7A 52                   		bclr #5, r2
+ 314 01db C7 42 60                		mov.B	r2, 96[r4]
+ 123:../src/peripheral/spi.cpp **** 	PORTE.PMR.BIT.B7 = 0;
+ 315                             		.loc 1 123 0
+ 316 01de F1 4E 60                		bclr #6, 96[r4].B
+ 124:../src/peripheral/spi.cpp **** 
+ 317                             		.loc 1 124 0
+ 318 01e1 CD 42 60                		mov.B	96[r4], r2
+ 319 01e4 75 22 7F                		and #0x7f, r2
+ 320 01e7 C7 42 60                		mov.B	r2, 96[r4]
+ 126:../src/peripheral/spi.cpp **** 	    MPC.PWPR.BIT.PFSWE = 1; //書き込み許可  1で許可
+ 321                             		.loc 1 126 0
+ 322 01ea 8F BA                   		mov.B	31[r3], r2
+ 323 01ec 75 22 7F                		and #0x7f, r2
+ 324 01ef 87 BA                   		mov.B	r2, 31[r3]
+ 127:../src/peripheral/spi.cpp **** 			MPC.PE4PFS.BIT.PSEL	= 0b001101; //SSLB0に設定
+ 325                             		.loc 1 127 0
+ 326 01f1 F1 36 1F                		bset #6, 31[r3].B
+ 128:../src/peripheral/spi.cpp **** 			MPC.PE5PFS.BIT.PSEL = 0b001101; //RSPCKBに設定
+ 327                             		.loc 1 128 0
+ 328 01f4 CD 32 B4                		mov.B	180[r3], r2
+ 329 01f7 75 22 C0                		and #-64, r2
+ 330 01fa 65 D2                   		or	#13, r2
+ 331 01fc C7 32 B4                		mov.B	r2, 180[r3]
+ 129:../src/peripheral/spi.cpp **** 			MPC.PE6PFS.BIT.PSEL	= 0b001101; //MOSIBに設定
+ 332                             		.loc 1 129 0
+ 333 01ff CD 32 B5                		mov.B	181[r3], r2
+ 334 0202 75 22 C0                		and #-64, r2
+ 335 0205 65 D2                   		or	#13, r2
+ 336 0207 C7 32 B5                		mov.B	r2, 181[r3]
+ 130:../src/peripheral/spi.cpp **** 			MPC.PE7PFS.BIT.PSEL = 0b001101; //MISOBに設定
+ 337                             		.loc 1 130 0
+ 338 020a CD 32 B6                		mov.B	182[r3], r2
+ 339 020d 75 22 C0                		and #-64, r2
+ 340 0210 65 D2                   		or	#13, r2
+ 341 0212 C7 32 B6                		mov.B	r2, 182[r3]
+ 131:../src/peripheral/spi.cpp **** 		MPC.PWPR.BIT.PFSWE = 0;  //PFSWEの書き込み禁止 0
+ 342                             		.loc 1 131 0
+ 343 0215 CD 32 B7                		mov.B	183[r3], r2
+ 344 0218 75 22 C0                		and #-64, r2
+ 345 021b 65 D2                   		or	#13, r2
+ 346 021d C7 32 B7                		mov.B	r2, 183[r3]
+ 132:../src/peripheral/spi.cpp **** 	MPC.PWPR.BIT.B0WI = 1; //書き込み禁止
+ 347                             		.loc 1 132 0
+ 348 0220 F1 3E 1F                		bclr #6, 31[r3].B
+ 133:../src/peripheral/spi.cpp **** 
+ 349                             		.loc 1 133 0
+ 350 0223 8F BA                   		mov.B	31[r3], r2
+ 351 0225 75 32 80                		or	#0xffffff80, r2
+ 352 0228 87 BA                   		mov.B	r2, 31[r3]
+ 137:../src/peripheral/spi.cpp **** 	PORTE.PMR.BIT.B5 = 1;
+ 353                             		.loc 1 137 0
+ 354 022a F1 44 60                		bset #4, 96[r4].B
+ 138:../src/peripheral/spi.cpp **** 	PORTE.PMR.BIT.B6 = 1;
+ 355                             		.loc 1 138 0
+ 356 022d F1 45 60                		bset #5, 96[r4].B
+ 139:../src/peripheral/spi.cpp **** 	PORTE.PMR.BIT.B7 = 1;
+ 357                             		.loc 1 139 0
+ 358 0230 F1 46 60                		bset #6, 96[r4].B
+ 140:../src/peripheral/spi.cpp **** 
+ 359                             		.loc 1 140 0
+ 360 0233 CD 43 60                		mov.B	96[r4], r3
+ 361 0236 75 33 80                		or	#0xffffff80, r3
+ 362 0239 C7 43 60                		mov.B	r3, 96[r4]
+ 363                             		.loc 1 144 0
+ 364 023c F1 E5 0B                		bset #5, 11[r14].B
+ 145:../src/peripheral/spi.cpp **** 
+ 146:../src/peripheral/spi.cpp **** 	//RSPIビットレートレジスタ(SPBR): 通常のシリアル通信と同様に設定する
+ 147:../src/peripheral/spi.cpp **** 	//ビットレート = f(PCLKA)/[2 × (n + 1) × 2^N]
+ 148:../src/peripheral/spi.cpp **** 	//mpu9250は1MHzまでOK
+ 149:../src/peripheral/spi.cpp **** 	//icm20608gは8MHzまでOK
+ 150:../src/peripheral/spi.cpp **** 	RSPI1.SPBR = 47;
+ 365                             		.loc 1 150 0
+ 366 023f F9 E4 0A 2F             		mov.B	#47, 10[r14]
+ 151:../src/peripheral/spi.cpp **** 	//RSPI制御レジスタ(SPCR)
+ 152:../src/peripheral/spi.cpp **** 	RSPI1.SPCR.BIT.SPMS = 0;
+ 367                             		.loc 1 152 0
+ 368 0243 F0 E8                   		bclr #0, [r14].B
+ 153:../src/peripheral/spi.cpp **** 	RSPI1.SPCR.BIT.TXMD = 0;
+ 369                             		.loc 1 153 0
+ 370 0245 F0 E9                   		bclr #1, [r14].B
+ 154:../src/peripheral/spi.cpp **** 
+ 155:../src/peripheral/spi.cpp **** 	//RSPIコマンドレジスタ(SPCMDx): 送受信フォーマットの設定
+ 156:../src/peripheral/spi.cpp **** 	RSPI1.SPCMD0.BIT.BRDV = 0;
+ 371                             		.loc 1 156 0
+ 372 0247 DD E4 08                		mov.W	16[r14], r4
+ 373 024a 75 24 F3                		and #-13, r4
+ 374 024d D7 E4 08                		mov.W	r4, 16[r14]
+ 157:../src/peripheral/spi.cpp **** 	RSPI1.SPCMD0.BIT.CPHA = 1;
+ 375                             		.loc 1 157 0
+ 376 0250 DD E4 08                		mov.W	16[r14], r4
+ 377 0253 78 04                   		bset #0, r4
+ 378 0255 D7 E4 08                		mov.W	r4, 16[r14]
+ 158:../src/peripheral/spi.cpp **** 	RSPI1.SPCMD0.BIT.CPOL = 1;
+ 379                             		.loc 1 158 0
+ 380 0258 DD E4 08                		mov.W	16[r14], r4
+ 381 025b 78 14                   		bset #1, r4
+ 382 025d D7 E4 08                		mov.W	r4, 16[r14]
+ 159:../src/peripheral/spi.cpp **** 	RSPI1.SPCMD0.BIT.SSLA = 0;
+ 383                             		.loc 1 159 0
+ 384 0260 DD E4 08                		mov.W	16[r14], r4
+ 385 0263 75 24 8F                		and #0xffffff8f, r4
+ 386 0266 D7 E4 08                		mov.W	r4, 16[r14]
+ 160:../src/peripheral/spi.cpp **** 	RSPI1.SPCMD0.BIT.SSLKP = 1;
+ 387                             		.loc 1 160 0
+ 388 0269 DD E4 08                		mov.W	16[r14], r4
+ 389 026c 78 74                   		bset #7, r4
+ 390 026e D7 E4 08                		mov.W	r4, 16[r14]
+ 161:../src/peripheral/spi.cpp **** 	RSPI1.SPDCR.BIT.SPFC = 0b00; //バッファのフレーム数を指定
+ 391                             		.loc 1 161 0
+ 392 0271 CD E4 0B                		mov.B	11[r14], r4
+ 393 0274 75 24 FC                		and #-4, r4
+ 394 0277 C7 E4 0B                		mov.B	r4, 11[r14]
+ 162:../src/peripheral/spi.cpp **** 
+ 163:../src/peripheral/spi.cpp **** 	RSPI1.SPDCR.BIT.SPRDTD = 0; //受信バッファを読み出す
+ 395                             		.loc 1 163 0
+ 396 027a F1 EC 0B                		bclr #4, 11[r14].B
+ 164:../src/peripheral/spi.cpp **** 	RSPI1.SPCR.BIT.MSTR = 1;
+ 397                             		.loc 1 164 0
+ 398 027d F0 E3                   		bset #3, [r14].B
+ 165:../src/peripheral/spi.cpp **** 	dummy = RSPI1.SPCR.BIT.MSTR;
+ 399                             		.loc 1 165 0
+ 400 027f CC EE                   		mov.B	[r14], r14
+ 401                             	.LVL11:
+ 402 0281 02                      		rts
+ 403                             	.LBE32:
+ 404                             	.LFE6:
+ 406                             		.global	__Z21communicateNbyteRSPI0PhS_h
+ 408                             	__Z21communicateNbyteRSPI0PhS_h:
+ 409                             	.LFB7:
+ 166:../src/peripheral/spi.cpp **** 
+ 167:../src/peripheral/spi.cpp **** }
+ 168:../src/peripheral/spi.cpp **** 
+ 169:../src/peripheral/spi.cpp **** void communicateNbyteRSPI0(uint8_t* send, uint8_t* recv, uint8_t num){
+ 410                             		.loc 1 169 0
+ 411                             	.LVL12:
+ 412 0282 6E 7A                   		pushm	r7-r10
+ 413                             	.LCFI0:
+ 414                             	.LVL13:
+ 415                             	.LBB33:
+ 416                             	.LBB34:
+ 106:../src/peripheral/spi.cpp **** }
+ 417                             		.loc 1 106 0
+ 418 0284 FB 4E 00 01 0D          		mov.L	#0xd0100, r4
+ 419 0289 CC 4A                   		mov.B	[r4], r10
+ 420                             	.LBE34:
+ 421                             	.LBE33:
+ 422                             	.LBB36:
+ 170:../src/peripheral/spi.cpp **** 	setEnableRSPI0(1);
+ 171:../src/peripheral/spi.cpp **** 	for(int i=0;i<num;i++){
+ 423                             		.loc 1 171 0
+ 424 028b 5B 37                   		movu.B	r3, r7
+ 425                             	.LBE36:
+ 426                             	.LBB45:
+ 427                             	.LBB35:
+ 106:../src/peripheral/spi.cpp **** }
+ 428                             		.loc 1 106 0
+ 429 028d 78 6A                   		bset #6, r10
+ 430 028f C3 4A                   		mov.B	r10, [r4]
+ 431                             	.LVL14:
+ 432                             	.LBE35:
+ 433                             	.LBE45:
+ 434                             	.LBB46:
+ 435                             		.loc 1 171 0
+ 436 0291 61 07                   		cmp	#0, r7
+ 437 0293 20 30                   		beq	.L19
+ 438 0295 66 03                   		mov.L	#0, r3
+ 439                             	.LVL15:
+ 440                             	.LBB37:
+ 172:../src/peripheral/spi.cpp **** 		//1byte受信するたびにちょっと待ち時間が必要
+ 173:../src/peripheral/spi.cpp **** 		uint32_t dummy = TMR0.TCNT;
+ 441                             		.loc 1 173 0
+ 442 0297 FB 5E 00 82 08          		mov.L	#0x88200, r5
+ 443                             	.LBB38:
+ 444                             	.LBB39:
+  81:../src/peripheral/spi.cpp **** 		//
+ 445                             		.loc 1 81 0
+ 446 029c EF 4A                   		mov.L	r4, r10
+ 447                             	.LVL16:
+ 448 029e EF 00                   		.balign 8,3,3
+ 449                             	.L20:
+ 450 02a0 59 5F 08                		movu.B	8[r5], r15
+ 451                             		.balign 8,3,3
+ 452                             	.L16:
+ 453                             	.LBE39:
+ 454                             	.LBE38:
+ 174:../src/peripheral/spi.cpp **** 		while(dummy == TMR0.TCNT);
+ 455                             		.loc 1 174 0 discriminator 1
+ 456 02a3 59 5E 08                		movu.B	8[r5], r14
+ 457 02a6 47 EF                   		cmp	r14, r15
+ 458 02a8 20 FB                   		beq	.L16
+ 459                             	.LVL17:
+ 460                             	.LBB42:
+ 461                             	.LBB40:
+  79:../src/peripheral/spi.cpp **** 	//while(RSPI0.SPSR.BIT.SPTEF != 1);
+ 462                             		.loc 1 79 0
+ 463 02aa FD 38 1E                		movu.B	[r1+], r14
+ 464                             	.LVL18:
+ 465 02ad E7 4E 01                		mov.L	r14, 4[r4]
+ 466                             	.LVL19:
+ 467                             		.balign 8,3,5
+ 468                             	.L18:
+  81:../src/peripheral/spi.cpp **** 		//
+ 469                             		.loc 1 81 0
+ 470 02b0 CD 4E 03                		mov.B	3[r4], r14
+ 471 02b3 7C 7E                   		btst	#7, r14
+ 472 02b5 20 FB                   		beq	.L18
+  84:../src/peripheral/spi.cpp **** 	return (uint8_t)(receive & 0xff);
+ 473                             		.loc 1 84 0
+ 474 02b7 ED AE 01                		mov.L	4[r10], r14
+ 475                             	.LVL20:
+ 476                             	.LBE40:
+ 477                             	.LBE42:
+ 478                             	.LBE37:
+ 171:../src/peripheral/spi.cpp **** 		//1byte受信するたびにちょっと待ち時間が必要
+ 479                             		.loc 1 171 0
+ 480 02ba 62 13                   		add	#1, r3
+ 481                             	.LVL21:
+ 482                             	.LBB44:
+ 483                             	.LBB43:
+ 484                             	.LBB41:
+  85:../src/peripheral/spi.cpp **** }
+ 485                             		.loc 1 85 0
+ 486 02bc FD 20 2E                		mov.B	r14, [r2+]
+ 487                             	.LVL22:
+ 488                             	.LBE41:
+ 489                             	.LBE43:
+ 490                             	.LBE44:
+ 171:../src/peripheral/spi.cpp **** 		//1byte受信するたびにちょっと待ち時間が必要
+ 491                             		.loc 1 171 0
+ 492 02bf 47 73                   		cmp	r7, r3
+ 493 02c1 29 DF                   		blt	.L20
+ 494                             	.LVL23:
+ 495                             		.balign 8,3,4
+ 496                             	.L19:
+ 497                             	.LBE46:
+ 498                             	.LBB47:
+ 499                             	.LBB48:
+ 106:../src/peripheral/spi.cpp **** }
+ 500                             		.loc 1 106 0
+ 501 02c3 FB 7E 00 01 0D          		mov.L	#0xd0100, r7
+ 502                             	.LVL24:
+ 503 02c8 F0 7E                   		bclr #6, [r7].B
+ 504                             	.LBE48:
+ 505                             	.LBE47:
+ 175:../src/peripheral/spi.cpp **** 		recv[i] = communicate8bitRSPI0(send[i]);
+ 176:../src/peripheral/spi.cpp **** 	}
+ 177:../src/peripheral/spi.cpp **** 	setEnableRSPI0(0);
+ 178:../src/peripheral/spi.cpp **** }
+ 506                             		.loc 1 178 0
+ 507 02ca 3F 7A 04                		rtsd	#16, r7-r10
+ 508                             	.LFE7:
+ 510                             		.global	__Z21communicateNbyteRSPI1PhS_h
+ 512                             	__Z21communicateNbyteRSPI1PhS_h:
+ 513                             	.LFB8:
+ 179:../src/peripheral/spi.cpp **** 
+ 180:../src/peripheral/spi.cpp **** void communicateNbyteRSPI1(uint8_t* send, uint8_t* recv, uint8_t num){
+ 514                             		.loc 1 180 0
+ 515                             	.LVL25:
+ 516 02cd 6E 7A                   		pushm	r7-r10
+ 517                             	.LCFI1:
+ 518                             	.LVL26:
+ 519                             	.LBB49:
+ 520                             	.LBB50:
+ 110:../src/peripheral/spi.cpp **** }
+ 521                             		.loc 1 110 0
+ 522 02cf FB 4E 20 01 0D          		mov.L	#0xd0120, r4
+ 523 02d4 CC 4A                   		mov.B	[r4], r10
+ 524                             	.LBE50:
+ 525                             	.LBE49:
+ 526                             	.LBB52:
+ 181:../src/peripheral/spi.cpp **** 	setEnableRSPI1(1);
+ 182:../src/peripheral/spi.cpp **** 	for(int i=0;i<num;i++){
+ 527                             		.loc 1 182 0
+ 528 02d6 5B 37                   		movu.B	r3, r7
+ 529                             	.LBE52:
+ 530                             	.LBB61:
+ 531                             	.LBB51:
+ 110:../src/peripheral/spi.cpp **** }
+ 532                             		.loc 1 110 0
+ 533 02d8 78 6A                   		bset #6, r10
+ 534 02da C3 4A                   		mov.B	r10, [r4]
+ 535                             	.LVL27:
+ 536                             	.LBE51:
+ 537                             	.LBE61:
+ 538                             	.LBB62:
+ 539                             		.loc 1 182 0
+ 540 02dc 61 07                   		cmp	#0, r7
+ 541 02de 20 32                   		beq	.L29
+ 542 02e0 66 03                   		mov.L	#0, r3
+ 543                             	.LVL28:
+ 544                             	.LBB53:
+ 183:../src/peripheral/spi.cpp **** 
+ 184:../src/peripheral/spi.cpp **** 		//1byte受信するたびにちょっと待ち時間が必要
+ 185:../src/peripheral/spi.cpp **** 		uint32_t dummy = TMR0.TCNT;
+ 545                             		.loc 1 185 0
+ 546 02e2 FB 5E 00 82 08          		mov.L	#0x88200, r5
+ 547                             	.LBB54:
+ 548                             	.LBB55:
+  93:../src/peripheral/spi.cpp **** //		myprintf3("SPRF 0\n");
+ 549                             		.loc 1 93 0
+ 550 02e7 EF 4A                   		mov.L	r4, r10
+ 551                             	.LVL29:
+ 552                             		.balign 8,3,3
+ 553                             	.L30:
+ 554 02e9 59 5F 08                		movu.B	8[r5], r15
+ 555                             		.balign 8,3,3
+ 556                             	.L26:
+ 557                             	.LBE55:
+ 558                             	.LBE54:
+ 186:../src/peripheral/spi.cpp **** 		while(dummy == TMR0.TCNT);
+ 559                             		.loc 1 186 0 discriminator 1
+ 560 02ec 59 5E 08                		movu.B	8[r5], r14
+ 561 02ef 47 EF                   		cmp	r14, r15
+ 562 02f1 20 FB                   		beq	.L26
+ 563                             	.LVL30:
+ 564                             	.LBB58:
+ 565                             	.LBB56:
+  90:../src/peripheral/spi.cpp **** //	myprintf3("---------%x\n",transmit);
+ 566                             		.loc 1 90 0
+ 567 02f3 FD 38 1E                		movu.B	[r1+], r14
+ 568                             	.LVL31:
+ 569 02f6 E7 4E 01                		mov.L	r14, 4[r4]
+ 570                             	.LVL32:
+ 571                             		.balign 8,3,5
+ 572                             	.L28:
+  93:../src/peripheral/spi.cpp **** //		myprintf3("SPRF 0\n");
+ 573                             		.loc 1 93 0
+ 574 02f9 CD 4E 03                		mov.B	3[r4], r14
+ 575 02fc 7C 7E                   		btst	#7, r14
+ 576 02fe 20 FB                   		beq	.L28
+  96:../src/peripheral/spi.cpp **** 	//while(RSPI1.SPSR.BIT.SPRF == 1){
+ 577                             		.loc 1 96 0
+ 578 0300 ED AE 01                		mov.L	4[r10], r14
+ 579                             	.LVL33:
+ 580                             	.LBE56:
+ 581                             	.LBE58:
+ 582                             	.LBE53:
+ 182:../src/peripheral/spi.cpp **** 
+ 583                             		.loc 1 182 0
+ 584 0303 62 13                   		add	#1, r3
+ 585                             	.LVL34:
+ 586                             	.LBB60:
+ 587                             	.LBB59:
+ 588                             	.LBB57:
+ 102:../src/peripheral/spi.cpp **** }
+ 589                             		.loc 1 102 0
+ 590 0305 FD 20 2E                		mov.B	r14, [r2+]
+ 591                             	.LVL35:
+ 592                             	.LBE57:
+ 593                             	.LBE59:
+ 594                             	.LBE60:
+ 182:../src/peripheral/spi.cpp **** 
+ 595                             		.loc 1 182 0
+ 596 0308 47 73                   		cmp	r7, r3
+ 597 030a 29 DF                   		blt	.L30
+ 598                             	.LVL36:
+ 599 030c 76 10 01 00             		.balign 8,3,4
+ 600                             	.L29:
+ 601                             	.LBE62:
+ 602                             	.LBB63:
+ 603                             	.LBB64:
+ 110:../src/peripheral/spi.cpp **** }
+ 604                             		.loc 1 110 0
+ 605 0310 FB 7E 20 01 0D          		mov.L	#0xd0120, r7
+ 606                             	.LVL37:
+ 607 0315 F0 7E                   		bclr #6, [r7].B
+ 608                             	.LBE64:
+ 609                             	.LBE63:
+ 187:../src/peripheral/spi.cpp **** 		recv[i] = communicate8bitRSPI1(send[i]);
+ 188:../src/peripheral/spi.cpp **** 	}
+ 189:../src/peripheral/spi.cpp **** 	setEnableRSPI1(0);
+ 190:../src/peripheral/spi.cpp **** }
+ 610                             		.loc 1 190 0
+ 611 0317 3F 7A 04                		rtsd	#16, r7-r10
+ 612                             	.LFE8:
+ 728                             	.Letext0:
+ 729                             		.file 2 "c:\\progra~2\\gccfor~2.201\\rx-elf\\rx-elf\\rx-elf\\include\\machine\\_default_types.h"
+ 730                             		.file 3 "c:\\progra~2\\gccfor~2.201\\rx-elf\\rx-elf\\rx-elf\\include\\stdint.h"
+ 731                             		.file 4 "../src/peripheral/iodefine.h"

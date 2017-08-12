@@ -1,0 +1,346 @@
+   1                             		.file	"timeInterrupt.cpp"
+   2                             		.section P,"ax"
+   3                             	.Ltext0:
+   4                             		.global	__Z8initCMT2v
+   6                             	__Z8initCMT2v:
+   7                             	.LFB0:
+   8                             		.file 1 "../src/peripheral/timeInterrupt.cpp"
+   1:../src/peripheral/timeInterrupt.cpp **** 
+   2:../src/peripheral/timeInterrupt.cpp **** #include <timeInterrupt.hpp>
+   3:../src/peripheral/timeInterrupt.cpp **** 
+   4:../src/peripheral/timeInterrupt.cpp **** #include "iodefine.h"
+   5:../src/peripheral/timeInterrupt.cpp **** #include "clock.h"
+   6:../src/peripheral/timeInterrupt.cpp **** #include "timer.h"
+   7:../src/peripheral/timeInterrupt.cpp **** 
+   8:../src/peripheral/timeInterrupt.cpp **** #include "stdint.h"
+   9:../src/peripheral/timeInterrupt.cpp **** 
+  10:../src/peripheral/timeInterrupt.cpp **** volatile static uint32_t uCountIntCMT0 = 0;
+  11:../src/peripheral/timeInterrupt.cpp **** volatile static uint32_t uCountIntCMT1 = 0;
+  12:../src/peripheral/timeInterrupt.cpp **** 
+  13:../src/peripheral/timeInterrupt.cpp **** //タイマ割り込みを設定
+  14:../src/peripheral/timeInterrupt.cpp **** 
+  15:../src/peripheral/timeInterrupt.cpp **** 
+  16:../src/peripheral/timeInterrupt.cpp **** 
+  17:../src/peripheral/timeInterrupt.cpp **** //CMT2を使おうとしたが, なぜかKPIT環境では使えなかった
+  18:../src/peripheral/timeInterrupt.cpp **** void initCMT2(){
+   9                             		.loc 1 18 0
+  19:../src/peripheral/timeInterrupt.cpp **** 	SYSTEM.PRCR.WORD = 0xA502;
+  10                             		.loc 1 19 0
+  11 0000 FB EE 00 00 08          		mov.L	#0x80000, r14
+  12 0005 FA E9 FF 01 02 A5       		mov.W	#0xffffa502, 1022[r14]
+  20:../src/peripheral/timeInterrupt.cpp **** 	SYSTEM.MSTPCRA.BIT.MSTPA14 = 0;//CMT2と3 ON
+  13                             		.loc 1 20 0
+  14 000b ED E4 04                		mov.L	16[r14], r4
+  21:../src/peripheral/timeInterrupt.cpp ****     SYSTEM.PRCR.WORD = 0xA500;
+  22:../src/peripheral/timeInterrupt.cpp **** 
+  23:../src/peripheral/timeInterrupt.cpp **** 	CMT2.CMCR.BIT.CKS=0; //0:8分周 1:32分周 2:128分周 3:512分周
+  15                             		.loc 1 23 0
+  16 000e FB 3E 12 80 08          		mov.L	#0x88012, r3
+  20:../src/peripheral/timeInterrupt.cpp **** 	SYSTEM.MSTPCRA.BIT.MSTPA14 = 0;//CMT2と3 ON
+  17                             		.loc 1 20 0
+  18 0013 7A E4                   		bclr #14, r4
+  19 0015 E7 E4 04                		mov.L	r4, 16[r14]
+  21:../src/peripheral/timeInterrupt.cpp ****     SYSTEM.PRCR.WORD = 0xA500;
+  20                             		.loc 1 21 0
+  21 0018 FA E9 FF 01 00 A5       		mov.W	#0xffffa500, 1022[r14]
+  22                             		.loc 1 23 0
+  23 001e DC 3E                   		mov.W	[r3], r14
+  24 0020 75 2E FC                		and #-4, r14
+  25 0023 D3 3E                   		mov.W	r14, [r3]
+  26 0025 02                      		rts
+  27                             	.LFE0:
+  29                             		.global	__Z8initCMT0v
+  31                             	__Z8initCMT0v:
+  32                             	.LFB1:
+  24:../src/peripheral/timeInterrupt.cpp **** }
+  25:../src/peripheral/timeInterrupt.cpp **** 
+  26:../src/peripheral/timeInterrupt.cpp **** 
+  27:../src/peripheral/timeInterrupt.cpp **** 
+  28:../src/peripheral/timeInterrupt.cpp **** void initCMT0(){
+  33                             		.loc 1 28 0
+  29:../src/peripheral/timeInterrupt.cpp **** 	SYSTEM.PRCR.WORD = 0xA502;
+  34                             		.loc 1 29 0
+  35 0026 FB 4E 00 00 08          		mov.L	#0x80000, r4
+  36 002b FA 49 FF 01 02 A5       		mov.W	#0xffffa502, 1022[r4]
+  30:../src/peripheral/timeInterrupt.cpp **** 	SYSTEM.MSTPCRA.BIT.MSTPA15 = 0;//CMT0と1 ON
+  37                             		.loc 1 30 0
+  38 0031 A9 43                   		mov.L	16[r4], r3
+  31:../src/peripheral/timeInterrupt.cpp ****     SYSTEM.PRCR.WORD = 0xA500;
+  32:../src/peripheral/timeInterrupt.cpp **** 
+  33:../src/peripheral/timeInterrupt.cpp **** 	CMT0.CMCR.BIT.CMIE=1;//割り込みを許可
+  39                             		.loc 1 33 0
+  40 0033 FB EE 02 80 08          		mov.L	#0x88002, r14
+  30:../src/peripheral/timeInterrupt.cpp **** 	SYSTEM.MSTPCRA.BIT.MSTPA15 = 0;//CMT0と1 ON
+  41                             		.loc 1 30 0
+  42 0038 7A F3                   		bclr #15, r3
+  43 003a A1 43                   		mov.L	r3, 16[r4]
+  31:../src/peripheral/timeInterrupt.cpp ****     SYSTEM.PRCR.WORD = 0xA500;
+  44                             		.loc 1 31 0
+  45 003c FA 49 FF 01 00 A5       		mov.W	#0xffffa500, 1022[r4]
+  46                             		.loc 1 33 0
+  47 0042 DC E3                   		mov.W	[r14], r3
+  34:../src/peripheral/timeInterrupt.cpp **** 	IEN(CMT0,CMI0) = 1;//割り込み要求を許可
+  48                             		.loc 1 34 0
+  49 0044 FB 4E 00 70 08          		mov.L	#0x87000, r4
+  33:../src/peripheral/timeInterrupt.cpp **** 	IEN(CMT0,CMI0) = 1;//割り込み要求を許可
+  50                             		.loc 1 33 0
+  51 0049 78 63                   		bset #6, r3
+  52 004b D3 E3                   		mov.W	r3, [r14]
+  53                             		.loc 1 34 0
+  54 004d F2 44 03 02             		bset #4, 515[r4].B
+  35:../src/peripheral/timeInterrupt.cpp **** 
+  36:../src/peripheral/timeInterrupt.cpp **** 	CMT0.CMCR.BIT.CKS=0; //0:8分周 1:32分周 2:128分周 3:512分周
+  55                             		.loc 1 36 0
+  56 0051 DC E3                   		mov.W	[r14], r3
+  57 0053 75 23 FC                		and #-4, r3
+  58 0056 D3 E3                   		mov.W	r3, [r14]
+  37:../src/peripheral/timeInterrupt.cpp **** 	CMT0.CMCOR = 1500-1;// 1500:250usec 6000:1msec
+  59                             		.loc 1 37 0
+  60 0058 F9 E9 02 DB 05          		mov.W	#0x5db, 4[r14]
+  38:../src/peripheral/timeInterrupt.cpp **** 
+  39:../src/peripheral/timeInterrupt.cpp **** 	IR(CMT0,CMI0)=0;//割り込みステータフラグをクリア
+  61                             		.loc 1 39 0
+  62 005d F1 48 1C                		bclr #0, 28[r4].B
+  63 0060 02                      		rts
+  64                             	.LFE1:
+  66                             		.global	__Z15setPriorityCMT0h
+  68                             	__Z15setPriorityCMT0h:
+  69                             	.LFB2:
+  40:../src/peripheral/timeInterrupt.cpp **** 
+  41:../src/peripheral/timeInterrupt.cpp **** }
+  42:../src/peripheral/timeInterrupt.cpp **** 
+  43:../src/peripheral/timeInterrupt.cpp **** void setPriorityCMT0(uint8_t priori){
+  70                             		.loc 1 43 0
+  71                             	.LVL0:
+  44:../src/peripheral/timeInterrupt.cpp **** 	IPR(CMT0,CMI0) = priori; //割り込み優先度 15が最高
+  72                             		.loc 1 44 0
+  73 0061 FB EE 00 70 08          		mov.L	#0x87000, r14
+  74 0066 CE E4 04 03             		mov.B	772[r14], r4
+  75 006a 64 F1                   		and #15, r1
+  76                             	.LVL1:
+  77 006c 75 24 F0                		and #-16, r4
+  78 006f 57 14                   		or	r1, r4
+  79 0071 CB E4 04 03             		mov.B	r4, 772[r14]
+  80 0075 02                      		rts
+  81                             	.LFE2:
+  83                             		.global	__Z9startCMT0v
+  85                             	__Z9startCMT0v:
+  86                             	.LFB3:
+  45:../src/peripheral/timeInterrupt.cpp **** }
+  46:../src/peripheral/timeInterrupt.cpp **** 
+  47:../src/peripheral/timeInterrupt.cpp **** void startCMT0(){
+  87                             		.loc 1 47 0
+  48:../src/peripheral/timeInterrupt.cpp **** 	CMT.CMSTR0.BIT.STR0=1;
+  88                             		.loc 1 48 0
+  89 0076 FB EE 00 80 08          		mov.L	#0x88000, r14
+  90 007b DC E4                   		mov.W	[r14], r4
+  91 007d 78 04                   		bset #0, r4
+  92 007f D3 E4                   		mov.W	r4, [r14]
+  93 0081 02                      		rts
+  94                             	.LFE3:
+  96                             		.global	__Z8stopCMT0v
+  98                             	__Z8stopCMT0v:
+  99                             	.LFB4:
+  49:../src/peripheral/timeInterrupt.cpp **** }
+  50:../src/peripheral/timeInterrupt.cpp **** 
+  51:../src/peripheral/timeInterrupt.cpp **** void stopCMT0(){
+ 100                             		.loc 1 51 0
+  52:../src/peripheral/timeInterrupt.cpp **** 	CMT.CMSTR0.BIT.STR0=0;
+ 101                             		.loc 1 52 0
+ 102 0082 FB EE 00 80 08          		mov.L	#0x88000, r14
+ 103 0087 DC E4                   		mov.W	[r14], r4
+ 104 0089 7A 04                   		bclr #0, r4
+ 105 008b D3 E4                   		mov.W	r4, [r14]
+ 106 008d 02                      		rts
+ 107                             	.LFE4:
+ 109                             		.global	__Z20endTimeuCountIntCMT0v
+ 111                             	__Z20endTimeuCountIntCMT0v:
+ 112                             	.LFB5:
+  53:../src/peripheral/timeInterrupt.cpp **** }
+  54:../src/peripheral/timeInterrupt.cpp **** 
+  55:../src/peripheral/timeInterrupt.cpp **** 
+  56:../src/peripheral/timeInterrupt.cpp **** uint32_t endTimeuCountIntCMT0(){
+ 113                             		.loc 1 56 0
+  57:../src/peripheral/timeInterrupt.cpp **** 	uCountIntCMT0 = CMT0.CMCNT/6;
+ 114                             		.loc 1 57 0
+ 115 008e FB EE 02 80 08          		mov.L	#0x88002, r14
+ 116 0093 5D EE 01                		movu.W	2[r14], r14
+ 117 0096 FB 42 AB AA AA AA       		mov.L	#0xaaaaaaab, r4
+ 118 009c FC 1F 4E                		emulu	r4, r14
+ 119 009f FD 82 F4                		shlr	#2, r15, r4
+ 120 00a2 FB E2 04 00 00 00       		mov.L	#__ZL13uCountIntCMT0, r14
+ 121 00a8 5F 44                   		movu.W	r4, r4
+ 122 00aa E3 E4                   		mov.L	r4, [r14]
+  58:../src/peripheral/timeInterrupt.cpp **** 	return uCountIntCMT0;
+ 123                             		.loc 1 58 0
+ 124 00ac EC E1                   		mov.L	[r14], r1
+  59:../src/peripheral/timeInterrupt.cpp **** }
+ 125                             		.loc 1 59 0
+ 126 00ae 02                      		rts
+ 127                             	.LFE5:
+ 129                             		.global	__Z20getTimeuCountIntCMT0v
+ 131                             	__Z20getTimeuCountIntCMT0v:
+ 132                             	.LFB6:
+  60:../src/peripheral/timeInterrupt.cpp **** 
+  61:../src/peripheral/timeInterrupt.cpp **** uint32_t getTimeuCountIntCMT0(){
+ 133                             		.loc 1 61 0
+  62:../src/peripheral/timeInterrupt.cpp **** 	return uCountIntCMT0;
+ 134                             		.loc 1 62 0
+ 135 00af FB E2 04 00 00 00       		mov.L	#__ZL13uCountIntCMT0, r14
+ 136 00b5 EC E1                   		mov.L	[r14], r1
+  63:../src/peripheral/timeInterrupt.cpp **** }
+ 137                             		.loc 1 63 0
+ 138 00b7 02                      		rts
+ 139                             	.LFE6:
+ 141                             		.global	__Z8initCMT1v
+ 143                             	__Z8initCMT1v:
+ 144                             	.LFB7:
+  64:../src/peripheral/timeInterrupt.cpp **** 
+  65:../src/peripheral/timeInterrupt.cpp **** 
+  66:../src/peripheral/timeInterrupt.cpp **** 
+  67:../src/peripheral/timeInterrupt.cpp **** 
+  68:../src/peripheral/timeInterrupt.cpp **** void initCMT1(){
+ 145                             		.loc 1 68 0
+  69:../src/peripheral/timeInterrupt.cpp **** 	SYSTEM.PRCR.WORD = 0xA502;
+ 146                             		.loc 1 69 0
+ 147 00b8 FB 4E 00 00 08          		mov.L	#0x80000, r4
+ 148 00bd FA 49 FF 01 02 A5       		mov.W	#0xffffa502, 1022[r4]
+  70:../src/peripheral/timeInterrupt.cpp **** 	SYSTEM.MSTPCRA.BIT.MSTPA15 = 0;//CMT0と1 ON
+ 149                             		.loc 1 70 0
+ 150 00c3 A9 43                   		mov.L	16[r4], r3
+  71:../src/peripheral/timeInterrupt.cpp ****     SYSTEM.PRCR.WORD = 0xA500;
+  72:../src/peripheral/timeInterrupt.cpp **** 
+  73:../src/peripheral/timeInterrupt.cpp **** 	CMT1.CMCR.BIT.CMIE=1;//割り込みを許可
+ 151                             		.loc 1 73 0
+ 152 00c5 FB EE 08 80 08          		mov.L	#0x88008, r14
+  70:../src/peripheral/timeInterrupt.cpp **** 	SYSTEM.MSTPCRA.BIT.MSTPA15 = 0;//CMT0と1 ON
+ 153                             		.loc 1 70 0
+ 154 00ca 7A F3                   		bclr #15, r3
+ 155 00cc A1 43                   		mov.L	r3, 16[r4]
+  71:../src/peripheral/timeInterrupt.cpp ****     SYSTEM.PRCR.WORD = 0xA500;
+ 156                             		.loc 1 71 0
+ 157 00ce FA 49 FF 01 00 A5       		mov.W	#0xffffa500, 1022[r4]
+ 158                             		.loc 1 73 0
+ 159 00d4 DC E3                   		mov.W	[r14], r3
+  74:../src/peripheral/timeInterrupt.cpp **** 	IEN(CMT1,CMI1) = 1;//割り込み要求を許可
+ 160                             		.loc 1 74 0
+ 161 00d6 FB 4E 00 70 08          		mov.L	#0x87000, r4
+  73:../src/peripheral/timeInterrupt.cpp **** 	IEN(CMT1,CMI1) = 1;//割り込み要求を許可
+ 162                             		.loc 1 73 0
+ 163 00db 78 63                   		bset #6, r3
+ 164 00dd D3 E3                   		mov.W	r3, [r14]
+ 165                             		.loc 1 74 0
+ 166 00df F2 45 03 02             		bset #5, 515[r4].B
+  75:../src/peripheral/timeInterrupt.cpp **** 
+  76:../src/peripheral/timeInterrupt.cpp **** 	CMT1.CMCR.BIT.CKS=0; //0:8分周 1:32分周 2:128分周 3:512分周
+ 167                             		.loc 1 76 0
+ 168 00e3 DC E3                   		mov.W	[r14], r3
+ 169 00e5 75 23 FC                		and #-4, r3
+ 170 00e8 D3 E3                   		mov.W	r3, [r14]
+  77:../src/peripheral/timeInterrupt.cpp **** 	CMT1.CMCOR = 60-1;//60:10usec 300:50usec 1500:250usec 6000:1msec
+ 171                             		.loc 1 77 0
+ 172 00ea F9 E5 02 3B             		mov.W	#59, 4[r14]
+  78:../src/peripheral/timeInterrupt.cpp **** 
+  79:../src/peripheral/timeInterrupt.cpp **** 	IR(CMT0,CMI0)=0;//割り込みステータフラグをクリア
+ 173                             		.loc 1 79 0
+ 174 00ee F1 48 1C                		bclr #0, 28[r4].B
+ 175 00f1 02                      		rts
+ 176                             	.LFE7:
+ 178                             		.global	__Z15setPriorityCMT1h
+ 180                             	__Z15setPriorityCMT1h:
+ 181                             	.LFB8:
+  80:../src/peripheral/timeInterrupt.cpp **** 
+  81:../src/peripheral/timeInterrupt.cpp **** }
+  82:../src/peripheral/timeInterrupt.cpp **** 
+  83:../src/peripheral/timeInterrupt.cpp **** void setPriorityCMT1(uint8_t priori){
+ 182                             		.loc 1 83 0
+ 183                             	.LVL2:
+  84:../src/peripheral/timeInterrupt.cpp **** 	IPR(CMT1,CMI1) = priori; //割り込み優先度 15が最高
+ 184                             		.loc 1 84 0
+ 185 00f2 FB EE 00 70 08          		mov.L	#0x87000, r14
+ 186 00f7 CE E4 05 03             		mov.B	773[r14], r4
+ 187 00fb 64 F1                   		and #15, r1
+ 188                             	.LVL3:
+ 189 00fd 75 24 F0                		and #-16, r4
+ 190 0100 57 14                   		or	r1, r4
+ 191 0102 CB E4 05 03             		mov.B	r4, 773[r14]
+ 192 0106 02                      		rts
+ 193                             	.LFE8:
+ 195                             		.global	__Z9startCMT1v
+ 197                             	__Z9startCMT1v:
+ 198                             	.LFB9:
+  85:../src/peripheral/timeInterrupt.cpp **** }
+  86:../src/peripheral/timeInterrupt.cpp **** 
+  87:../src/peripheral/timeInterrupt.cpp **** void startCMT1(){
+ 199                             		.loc 1 87 0
+  88:../src/peripheral/timeInterrupt.cpp **** 	CMT.CMSTR0.BIT.STR1=1;
+ 200                             		.loc 1 88 0
+ 201 0107 FB EE 00 80 08          		mov.L	#0x88000, r14
+ 202 010c DC E4                   		mov.W	[r14], r4
+ 203 010e 78 14                   		bset #1, r4
+ 204 0110 D3 E4                   		mov.W	r4, [r14]
+ 205 0112 02                      		rts
+ 206                             	.LFE9:
+ 208                             		.global	__Z8stopCMT1v
+ 210                             	__Z8stopCMT1v:
+ 211                             	.LFB10:
+  89:../src/peripheral/timeInterrupt.cpp **** }
+  90:../src/peripheral/timeInterrupt.cpp **** 
+  91:../src/peripheral/timeInterrupt.cpp **** void stopCMT1(){
+ 212                             		.loc 1 91 0
+  92:../src/peripheral/timeInterrupt.cpp **** 	CMT.CMSTR0.BIT.STR1=0;
+ 213                             		.loc 1 92 0
+ 214 0113 FB EE 00 80 08          		mov.L	#0x88000, r14
+ 215 0118 DC E4                   		mov.W	[r14], r4
+ 216 011a 7A 14                   		bclr #1, r4
+ 217 011c D3 E4                   		mov.W	r4, [r14]
+ 218 011e 02                      		rts
+ 219                             	.LFE10:
+ 221                             		.global	__Z20endTimeuCountIntCMT1v
+ 223                             	__Z20endTimeuCountIntCMT1v:
+ 224                             	.LFB11:
+  93:../src/peripheral/timeInterrupt.cpp **** }
+  94:../src/peripheral/timeInterrupt.cpp **** 
+  95:../src/peripheral/timeInterrupt.cpp **** 
+  96:../src/peripheral/timeInterrupt.cpp **** uint32_t endTimeuCountIntCMT1(){
+ 225                             		.loc 1 96 0
+  97:../src/peripheral/timeInterrupt.cpp **** 	uCountIntCMT1 = CMT1.CMCNT/6;
+ 226                             		.loc 1 97 0
+ 227 011f FB EE 08 80 08          		mov.L	#0x88008, r14
+ 228 0124 5D EE 01                		movu.W	2[r14], r14
+ 229 0127 FB 42 AB AA AA AA       		mov.L	#0xaaaaaaab, r4
+ 230 012d FC 1F 4E                		emulu	r4, r14
+ 231 0130 FD 82 F4                		shlr	#2, r15, r4
+ 232 0133 FB E2 00 00 00 00       		mov.L	#__ZL13uCountIntCMT1, r14
+ 233 0139 5F 44                   		movu.W	r4, r4
+ 234 013b E3 E4                   		mov.L	r4, [r14]
+  98:../src/peripheral/timeInterrupt.cpp **** 	return uCountIntCMT1;
+ 235                             		.loc 1 98 0
+ 236 013d EC E1                   		mov.L	[r14], r1
+  99:../src/peripheral/timeInterrupt.cpp **** }
+ 237                             		.loc 1 99 0
+ 238 013f 02                      		rts
+ 239                             	.LFE11:
+ 241                             		.global	__Z20getTimeuCountIntCMT1v
+ 243                             	__Z20getTimeuCountIntCMT1v:
+ 244                             	.LFB12:
+ 100:../src/peripheral/timeInterrupt.cpp **** 
+ 101:../src/peripheral/timeInterrupt.cpp **** uint32_t getTimeuCountIntCMT1(){
+ 245                             		.loc 1 101 0
+ 102:../src/peripheral/timeInterrupt.cpp **** 	return uCountIntCMT1;
+ 246                             		.loc 1 102 0
+ 247 0140 FB E2 00 00 00 00       		mov.L	#__ZL13uCountIntCMT1, r14
+ 248 0146 EC E1                   		mov.L	[r14], r1
+ 103:../src/peripheral/timeInterrupt.cpp **** }
+ 249                             		.loc 1 103 0
+ 250 0148 02                      		rts
+ 251                             	.LFE12:
+ 253                             		.local	__ZL13uCountIntCMT1
+ 254                             		.comm	__ZL13uCountIntCMT1,4,4
+ 255                             		.local	__ZL13uCountIntCMT0
+ 256                             		.comm	__ZL13uCountIntCMT0,4,4
+ 379                             	.Letext0:
+ 380                             		.file 2 "c:\\progra~2\\gccfor~2.201\\rx-elf\\rx-elf\\rx-elf\\include\\machine\\_default_types.h"
+ 381                             		.file 3 "c:\\progra~2\\gccfor~2.201\\rx-elf\\rx-elf\\rx-elf\\include\\stdint.h"
+ 382                             		.file 4 "../src/peripheral/iodefine.h"
+ 383                             		.file 5 "../src/peripheral/clock.h"

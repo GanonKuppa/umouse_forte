@@ -1,0 +1,218 @@
+   1                             		.file	"phaseCounting.cpp"
+   2                             		.section P,"ax"
+   3                             	.Ltext0:
+   4                             		.global	__Z8initMTU1v
+   6                             	__Z8initMTU1v:
+   7                             	.LFB0:
+   8                             		.file 1 "../src/peripheral/phaseCounting.cpp"
+   1:../src/peripheral/phaseCounting.cpp **** /*
+   2:../src/peripheral/phaseCounting.cpp ****  * phaseCounting.cpp
+   3:../src/peripheral/phaseCounting.cpp ****  *
+   4:../src/peripheral/phaseCounting.cpp ****  *  Created on: 2016/11/06
+   5:../src/peripheral/phaseCounting.cpp ****  *      Author: ryota
+   6:../src/peripheral/phaseCounting.cpp ****  */
+   7:../src/peripheral/phaseCounting.cpp **** 
+   8:../src/peripheral/phaseCounting.cpp **** #include "iodefine.h"
+   9:../src/peripheral/phaseCounting.cpp **** #include <stdint.h>
+  10:../src/peripheral/phaseCounting.cpp **** 
+  11:../src/peripheral/phaseCounting.cpp **** #include "phaseCounting.h"
+  12:../src/peripheral/phaseCounting.cpp **** #include "clock.h"
+  13:../src/peripheral/phaseCounting.cpp **** #include "myUtil.h"
+  14:../src/peripheral/phaseCounting.cpp **** 
+  15:../src/peripheral/phaseCounting.cpp **** 
+  16:../src/peripheral/phaseCounting.cpp **** void initMTU1(){
+   9                             		.loc 1 16 0
+  17:../src/peripheral/phaseCounting.cpp **** 	SYSTEM.PRCR.WORD = 0xA502;
+  10                             		.loc 1 17 0
+  11 0000 FB EE 00 00 08          		mov.L	#0x80000, r14
+  12 0005 FA E9 FF 01 02 A5       		mov.W	#0xffffa502, 1022[r14]
+  18:../src/peripheral/phaseCounting.cpp **** 	MSTP(MTU1)= 0;
+  13                             		.loc 1 18 0
+  14 000b ED E4 04                		mov.L	16[r14], r4
+  19:../src/peripheral/phaseCounting.cpp **** 	SYSTEM.PRCR.WORD = 0xA500;
+  20:../src/peripheral/phaseCounting.cpp **** 
+  21:../src/peripheral/phaseCounting.cpp **** 	MTU.TSTRA.BIT.CST1 = 0;
+  15                             		.loc 1 21 0
+  16 000e FB 3E 0A 12 0C          		mov.L	#0xc120a, r3
+  18:../src/peripheral/phaseCounting.cpp **** 	MSTP(MTU1)= 0;
+  17                             		.loc 1 18 0
+  18 0013 7A 94                   		bclr #9, r4
+  19 0015 E7 E4 04                		mov.L	r4, 16[r14]
+  19:../src/peripheral/phaseCounting.cpp **** 	SYSTEM.PRCR.WORD = 0xA500;
+  20                             		.loc 1 19 0
+  21 0018 FA E9 FF 01 00 A5       		mov.W	#0xffffa500, 1022[r14]
+  22                             		.loc 1 21 0
+  23 001e CD 3E 76                		mov.B	118[r3], r14
+  22:../src/peripheral/phaseCounting.cpp **** 	MTU1.TCNT = 0;
+  24                             		.loc 1 22 0
+  25 0021 FB 2E 90 12 0C          		mov.L	#0xc1290, r2
+  21:../src/peripheral/phaseCounting.cpp **** 	MTU1.TCNT = 0;
+  26                             		.loc 1 21 0
+  27 0026 7A 1E                   		bclr #1, r14
+  28 0028 C7 3E 76                		mov.B	r14, 118[r3]
+  29                             		.loc 1 22 0
+  30 002b F9 25 7B 00             		mov.W	#0, 246[r2]
+  23:../src/peripheral/phaseCounting.cpp **** 
+  24:../src/peripheral/phaseCounting.cpp **** 	PORT2.PDR.BIT.B5 = 0;
+  31                             		.loc 1 24 0
+  32 002f FB EE 02 C0 08          		mov.L	#0x8c002, r14
+  33 0034 CC E1                   		mov.B	[r14], r1
+  25:../src/peripheral/phaseCounting.cpp **** 	PORT2.PMR.BIT.B5 = 0;
+  26:../src/peripheral/phaseCounting.cpp **** 	PORT2.PDR.BIT.B4 = 0;
+  27:../src/peripheral/phaseCounting.cpp **** 	PORT2.PMR.BIT.B4 = 0;
+  28:../src/peripheral/phaseCounting.cpp **** 
+  29:../src/peripheral/phaseCounting.cpp **** 	MPC.PWPR.BIT.B0WI = 0;
+  34                             		.loc 1 29 0
+  35 0036 FB 4E 00 C1 08          		mov.L	#0x8c100, r4
+  24:../src/peripheral/phaseCounting.cpp **** 	PORT2.PMR.BIT.B5 = 0;
+  36                             		.loc 1 24 0
+  37 003b 7A 51                   		bclr #5, r1
+  38 003d C3 E1                   		mov.B	r1, [r14]
+  25:../src/peripheral/phaseCounting.cpp **** 	PORT2.PMR.BIT.B5 = 0;
+  39                             		.loc 1 25 0
+  40 003f F1 ED 60                		bclr #5, 96[r14].B
+  26:../src/peripheral/phaseCounting.cpp **** 	PORT2.PMR.BIT.B4 = 0;
+  41                             		.loc 1 26 0
+  42 0042 F0 EC                   		bclr #4, [r14].B
+  27:../src/peripheral/phaseCounting.cpp **** 
+  43                             		.loc 1 27 0
+  44 0044 F1 EC 60                		bclr #4, 96[r14].B
+  45                             		.loc 1 29 0
+  46 0047 8F C9                   		mov.B	31[r4], r1
+  47 0049 75 21 7F                		and #0x7f, r1
+  48 004c 87 C9                   		mov.B	r1, 31[r4]
+  30:../src/peripheral/phaseCounting.cpp **** 	MPC.PWPR.BIT.PFSWE = 1;
+  49                             		.loc 1 30 0
+  50 004e F1 46 1F                		bset #6, 31[r4].B
+  31:../src/peripheral/phaseCounting.cpp **** 	MPC.P25PFS.BYTE = 2;  //MTCLKB
+  51                             		.loc 1 31 0
+  52 0051 F9 44 55 02             		mov.B	#2, 85[r4]
+  32:../src/peripheral/phaseCounting.cpp **** 	MPC.P24PFS.BYTE = 2;  //MTCLKA
+  53                             		.loc 1 32 0
+  54 0055 F9 44 54 02             		mov.B	#2, 84[r4]
+  33:../src/peripheral/phaseCounting.cpp **** 	MPC.PWPR.BYTE =0x80;
+  55                             		.loc 1 33 0
+  56 0059 F9 44 1F 80             		mov.B	#0xffffff80, 31[r4]
+  34:../src/peripheral/phaseCounting.cpp **** 
+  35:../src/peripheral/phaseCounting.cpp **** 	PORT2.PMR.BIT.B5 = 1;
+  57                             		.loc 1 35 0
+  58 005d F1 E5 60                		bset #5, 96[r14].B
+  36:../src/peripheral/phaseCounting.cpp **** 	PORT2.PMR.BIT.B4 = 1;
+  59                             		.loc 1 36 0
+  60 0060 F1 E4 60                		bset #4, 96[r14].B
+  37:../src/peripheral/phaseCounting.cpp **** 
+  38:../src/peripheral/phaseCounting.cpp **** 	MTU1.TMDR1.BIT.MD  = 4;    //位相計数モード1
+  61                             		.loc 1 38 0
+  62 0063 CD 2E F1                		mov.B	241[r2], r14
+  63 0066 75 2E F0                		and #-16, r14
+  64 0069 78 2E                   		bset #2, r14
+  65 006b C7 2E F1                		mov.B	r14, 241[r2]
+  39:../src/peripheral/phaseCounting.cpp **** 
+  40:../src/peripheral/phaseCounting.cpp **** 	MTU.TSTRA.BIT.CST1 =1;
+  66                             		.loc 1 40 0
+  67 006e F1 31 76                		bset #1, 118[r3].B
+  68 0071 02                      		rts
+  69                             	.LFE0:
+  71                             		.global	__Z8initMTU2v
+  73                             	__Z8initMTU2v:
+  74                             	.LFB1:
+  41:../src/peripheral/phaseCounting.cpp **** 
+  42:../src/peripheral/phaseCounting.cpp **** }
+  43:../src/peripheral/phaseCounting.cpp **** 
+  44:../src/peripheral/phaseCounting.cpp **** void initMTU2(){
+  75                             		.loc 1 44 0
+  45:../src/peripheral/phaseCounting.cpp **** 	SYSTEM.PRCR.WORD = 0xA502;
+  76                             		.loc 1 45 0
+  77 0072 FB EE 00 00 08          		mov.L	#0x80000, r14
+  78 0077 FA E9 FF 01 02 A5       		mov.W	#0xffffa502, 1022[r14]
+  46:../src/peripheral/phaseCounting.cpp **** 	MSTP(MTU2)= 0;
+  79                             		.loc 1 46 0
+  80 007d ED E4 04                		mov.L	16[r14], r4
+  47:../src/peripheral/phaseCounting.cpp **** 	SYSTEM.PRCR.WORD = 0xA500;
+  48:../src/peripheral/phaseCounting.cpp **** 
+  49:../src/peripheral/phaseCounting.cpp **** 	MTU.TSTRA.BIT.CST2 = 0;
+  81                             		.loc 1 49 0
+  82 0080 FB 3E 0A 12 0C          		mov.L	#0xc120a, r3
+  46:../src/peripheral/phaseCounting.cpp **** 	MSTP(MTU2)= 0;
+  83                             		.loc 1 46 0
+  84 0085 7A 94                   		bclr #9, r4
+  85 0087 E7 E4 04                		mov.L	r4, 16[r14]
+  47:../src/peripheral/phaseCounting.cpp **** 	SYSTEM.PRCR.WORD = 0xA500;
+  86                             		.loc 1 47 0
+  87 008a FA E9 FF 01 00 A5       		mov.W	#0xffffa500, 1022[r14]
+  88                             		.loc 1 49 0
+  89 0090 CD 3E 76                		mov.B	118[r3], r14
+  50:../src/peripheral/phaseCounting.cpp **** 	MTU2.TCNT = 0;
+  90                             		.loc 1 50 0
+  91 0093 FB 2E 92 12 0C          		mov.L	#0xc1292, r2
+  49:../src/peripheral/phaseCounting.cpp **** 	MTU2.TCNT = 0;
+  92                             		.loc 1 49 0
+  93 0098 7A 2E                   		bclr #2, r14
+  94 009a C7 3E 76                		mov.B	r14, 118[r3]
+  95                             		.loc 1 50 0
+  96 009d F9 25 BA 00             		mov.W	#0, 372[r2]
+  51:../src/peripheral/phaseCounting.cpp **** 
+  52:../src/peripheral/phaseCounting.cpp **** 	PORT2.PDR.BIT.B3 = 0;
+  97                             		.loc 1 52 0
+  98 00a1 FB EE 02 C0 08          		mov.L	#0x8c002, r14
+  99 00a6 CC E1                   		mov.B	[r14], r1
+  53:../src/peripheral/phaseCounting.cpp **** 	PORT2.PMR.BIT.B3 = 0;
+  54:../src/peripheral/phaseCounting.cpp **** 	PORT2.PDR.BIT.B2 = 0;
+  55:../src/peripheral/phaseCounting.cpp **** 	PORT2.PMR.BIT.B2 = 0;
+  56:../src/peripheral/phaseCounting.cpp **** 
+  57:../src/peripheral/phaseCounting.cpp **** 	MPC.PWPR.BIT.B0WI  = 0;
+ 100                             		.loc 1 57 0
+ 101 00a8 FB 4E 00 C1 08          		mov.L	#0x8c100, r4
+  52:../src/peripheral/phaseCounting.cpp **** 	PORT2.PMR.BIT.B3 = 0;
+ 102                             		.loc 1 52 0
+ 103 00ad 7A 31                   		bclr #3, r1
+ 104 00af C3 E1                   		mov.B	r1, [r14]
+  53:../src/peripheral/phaseCounting.cpp **** 	PORT2.PMR.BIT.B3 = 0;
+ 105                             		.loc 1 53 0
+ 106 00b1 F1 EB 60                		bclr #3, 96[r14].B
+  54:../src/peripheral/phaseCounting.cpp **** 	PORT2.PMR.BIT.B2 = 0;
+ 107                             		.loc 1 54 0
+ 108 00b4 F0 EA                   		bclr #2, [r14].B
+  55:../src/peripheral/phaseCounting.cpp **** 
+ 109                             		.loc 1 55 0
+ 110 00b6 F1 EA 60                		bclr #2, 96[r14].B
+ 111                             		.loc 1 57 0
+ 112 00b9 8F C9                   		mov.B	31[r4], r1
+ 113 00bb 75 21 7F                		and #0x7f, r1
+ 114 00be 87 C9                   		mov.B	r1, 31[r4]
+  58:../src/peripheral/phaseCounting.cpp **** 	MPC.PWPR.BIT.PFSWE = 1;
+ 115                             		.loc 1 58 0
+ 116 00c0 F1 46 1F                		bset #6, 31[r4].B
+  59:../src/peripheral/phaseCounting.cpp **** 	MPC.P23PFS.BYTE    = 2;  //MTCLKC
+ 117                             		.loc 1 59 0
+ 118 00c3 F9 44 53 02             		mov.B	#2, 83[r4]
+  60:../src/peripheral/phaseCounting.cpp **** 	MPC.P22PFS.BYTE    = 2;  //MTCLKD
+ 119                             		.loc 1 60 0
+ 120 00c7 F9 44 52 02             		mov.B	#2, 82[r4]
+  61:../src/peripheral/phaseCounting.cpp **** 	MPC.PWPR.BYTE      = 0x80;
+ 121                             		.loc 1 61 0
+ 122 00cb F9 44 1F 80             		mov.B	#0xffffff80, 31[r4]
+  62:../src/peripheral/phaseCounting.cpp **** 
+  63:../src/peripheral/phaseCounting.cpp **** 	PORT2.PMR.BIT.B3 = 1;
+ 123                             		.loc 1 63 0
+ 124 00cf F1 E3 60                		bset #3, 96[r14].B
+  64:../src/peripheral/phaseCounting.cpp **** 	PORT2.PMR.BIT.B2 = 1;
+ 125                             		.loc 1 64 0
+ 126 00d2 F1 E2 60                		bset #2, 96[r14].B
+  65:../src/peripheral/phaseCounting.cpp **** 
+  66:../src/peripheral/phaseCounting.cpp **** 
+  67:../src/peripheral/phaseCounting.cpp **** 	MTU2.TMDR1.BIT.MD  = 4;    //位相計数モード1
+ 127                             		.loc 1 67 0
+ 128 00d5 CE 2E 6F 01             		mov.B	367[r2], r14
+ 129 00d9 75 2E F0                		and #-16, r14
+ 130 00dc 78 2E                   		bset #2, r14
+ 131 00de CB 2E 6F 01             		mov.B	r14, 367[r2]
+  68:../src/peripheral/phaseCounting.cpp **** 
+  69:../src/peripheral/phaseCounting.cpp **** 	MTU.TSTRA.BIT.CST2 =1;
+ 132                             		.loc 1 69 0
+ 133 00e2 F1 32 76                		bset #2, 118[r3].B
+ 134 00e5 02                      		rts
+ 135                             	.LFE1:
+ 171                             	.Letext0:
+ 172                             		.file 2 "../src/peripheral/iodefine.h"
+ 173                             		.file 3 "../src/peripheral/clock.h"

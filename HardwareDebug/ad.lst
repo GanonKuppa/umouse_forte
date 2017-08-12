@@ -1,0 +1,1476 @@
+   1                             		.file	"ad.cpp"
+   2                             		.section P,"ax"
+   3                             	.Ltext0:
+   4                             		.global	__Z6initADv
+   6                             	__Z6initADv:
+   7                             	.LFB0:
+   8                             		.file 1 "../src/peripheral/ad.cpp"
+   1:../src/peripheral/ad.cpp **** /*
+   2:../src/peripheral/ad.cpp ****  * ad.cpp
+   3:../src/peripheral/ad.cpp ****  *
+   4:../src/peripheral/ad.cpp ****  *  Created on: 2016/09/23
+   5:../src/peripheral/ad.cpp ****  *      Author: ryota
+   6:../src/peripheral/ad.cpp ****  */
+   7:../src/peripheral/ad.cpp **** 
+   8:../src/peripheral/ad.cpp **** #include <stdint.h>
+   9:../src/peripheral/ad.cpp **** 
+  10:../src/peripheral/ad.cpp **** #include "iodefine.h"
+  11:../src/peripheral/ad.cpp **** #include "ad.h"
+  12:../src/peripheral/ad.cpp **** 
+  13:../src/peripheral/ad.cpp **** /**
+  14:../src/peripheral/ad.cpp ****  * AN000 :AD_VBAT     1個
+  15:../src/peripheral/ad.cpp ****  *   P40
+  16:../src/peripheral/ad.cpp ****  * AN001-AN007:       7個
+  17:../src/peripheral/ad.cpp ****  *   P41,P42,P43,P44,P45,P46,P47
+  18:../src/peripheral/ad.cpp ****  * AN108,AN109,AN110: 3個
+  19:../src/peripheral/ad.cpp ****  * 合計 11個のADピンを使用
+  20:../src/peripheral/ad.cpp ****  *   PD0,PD1,PD2
+  21:../src/peripheral/ad.cpp ****  */
+  22:../src/peripheral/ad.cpp **** 
+  23:../src/peripheral/ad.cpp **** 
+  24:../src/peripheral/ad.cpp **** 
+  25:../src/peripheral/ad.cpp **** 
+  26:../src/peripheral/ad.cpp **** /***********AD変換初期化******************/
+  27:../src/peripheral/ad.cpp **** void initAD(void){
+   9                             		.loc 1 27 0
+  28:../src/peripheral/ad.cpp **** 	SYSTEM.PRCR.WORD = 0xA502;
+  10                             		.loc 1 28 0
+  11 0000 FB 3E 00 00 08          		mov.L	#0x80000, r3
+  12 0005 FA 39 FF 01 02 A5       		mov.W	#0xffffa502, 1022[r3]
+  29:../src/peripheral/ad.cpp **** 		MSTP(S12AD) = 0;
+  13                             		.loc 1 29 0
+  14 000b ED 3E 04                		mov.L	16[r3], r14
+  30:../src/peripheral/ad.cpp **** 	SYSTEM.PRCR.WORD = 0xA500;
+  31:../src/peripheral/ad.cpp **** 
+  32:../src/peripheral/ad.cpp **** 	SYSTEM.PRCR.WORD = 0xA502;
+  33:../src/peripheral/ad.cpp **** 		MSTP(S12AD1) = 0;
+  34:../src/peripheral/ad.cpp **** 	SYSTEM.PRCR.WORD = 0xA500;
+  35:../src/peripheral/ad.cpp **** 
+  36:../src/peripheral/ad.cpp **** 	//AN000: AD_VBAT
+  37:../src/peripheral/ad.cpp **** 	PORT4.PDR.BIT.B0    = 0;
+  15                             		.loc 1 37 0
+  16 000e FB 4E 04 C0 08          		mov.L	#0x8c004, r4
+  29:../src/peripheral/ad.cpp **** 		MSTP(S12AD) = 0;
+  17                             		.loc 1 29 0
+  18 0013 7B 1E                   		bclr #17, r14
+  19 0015 E7 3E 04                		mov.L	r14, 16[r3]
+  30:../src/peripheral/ad.cpp **** 	SYSTEM.PRCR.WORD = 0xA500;
+  20                             		.loc 1 30 0
+  21 0018 FA 39 FF 01 00 A5       		mov.W	#0xffffa500, 1022[r3]
+  32:../src/peripheral/ad.cpp **** 		MSTP(S12AD1) = 0;
+  22                             		.loc 1 32 0
+  23 001e FA 39 FF 01 02 A5       		mov.W	#0xffffa502, 1022[r3]
+  33:../src/peripheral/ad.cpp **** 	SYSTEM.PRCR.WORD = 0xA500;
+  24                             		.loc 1 33 0
+  25 0024 A9 32                   		mov.L	16[r3], r2
+  38:../src/peripheral/ad.cpp **** 	PORT4.PMR.BIT.B0    = 0;
+  39:../src/peripheral/ad.cpp **** 	MPC.PWPR.BIT.B0WI   = 0;
+  26                             		.loc 1 39 0
+  27 0026 FB EE 00 C1 08          		mov.L	#0x8c100, r14
+  33:../src/peripheral/ad.cpp **** 	SYSTEM.PRCR.WORD = 0xA500;
+  28                             		.loc 1 33 0
+  29 002b 7B 02                   		bclr #16, r2
+  30 002d A1 32                   		mov.L	r2, 16[r3]
+  34:../src/peripheral/ad.cpp **** 
+  31                             		.loc 1 34 0
+  32 002f FA 39 FF 01 00 A5       		mov.W	#0xffffa500, 1022[r3]
+  37:../src/peripheral/ad.cpp **** 	PORT4.PMR.BIT.B0    = 0;
+  33                             		.loc 1 37 0
+  34 0035 CC 42                   		mov.B	[r4], r2
+  40:../src/peripheral/ad.cpp **** 	MPC.PWPR.BIT.PFSWE  = 1;
+  41:../src/peripheral/ad.cpp **** 	MPC.P40PFS.BIT.ASEL = 1;
+  42:../src/peripheral/ad.cpp **** 	MPC.PWPR.BIT.PFSWE  = 0;
+  43:../src/peripheral/ad.cpp **** 	MPC.PWPR.BIT.B0WI   = 1;
+  44:../src/peripheral/ad.cpp **** 
+  45:../src/peripheral/ad.cpp **** 	//AN001
+  46:../src/peripheral/ad.cpp **** 	PORT4.PDR.BIT.B1    = 0;
+  47:../src/peripheral/ad.cpp **** 	PORT4.PMR.BIT.B1    = 0;
+  48:../src/peripheral/ad.cpp **** 	MPC.PWPR.BIT.B0WI   = 0;
+  49:../src/peripheral/ad.cpp **** 	MPC.PWPR.BIT.PFSWE  = 1;
+  50:../src/peripheral/ad.cpp **** 	MPC.P41PFS.BIT.ASEL = 1;
+  51:../src/peripheral/ad.cpp **** 	MPC.PWPR.BIT.PFSWE  = 0;
+  52:../src/peripheral/ad.cpp **** 	MPC.PWPR.BIT.B0WI   = 1;
+  53:../src/peripheral/ad.cpp **** 
+  54:../src/peripheral/ad.cpp **** 	//AN002
+  55:../src/peripheral/ad.cpp **** 	PORT4.PDR.BIT.B2    = 0;
+  56:../src/peripheral/ad.cpp **** 	PORT4.PMR.BIT.B2    = 0;
+  57:../src/peripheral/ad.cpp **** 	MPC.PWPR.BIT.B0WI   = 0;
+  58:../src/peripheral/ad.cpp **** 	MPC.PWPR.BIT.PFSWE  = 1;
+  59:../src/peripheral/ad.cpp **** 	MPC.P42PFS.BIT.ASEL = 1;
+  60:../src/peripheral/ad.cpp **** 	MPC.PWPR.BIT.PFSWE  = 0;
+  61:../src/peripheral/ad.cpp **** 	MPC.PWPR.BIT.B0WI   = 1;
+  62:../src/peripheral/ad.cpp **** 
+  63:../src/peripheral/ad.cpp **** 	//AN003
+  64:../src/peripheral/ad.cpp **** 	PORT4.PDR.BIT.B3    = 0;
+  65:../src/peripheral/ad.cpp **** 	PORT4.PMR.BIT.B3    = 0;
+  66:../src/peripheral/ad.cpp **** 	MPC.PWPR.BIT.B0WI   = 0;
+  67:../src/peripheral/ad.cpp **** 	MPC.PWPR.BIT.PFSWE  = 1;
+  68:../src/peripheral/ad.cpp **** 	MPC.P43PFS.BIT.ASEL = 1;
+  69:../src/peripheral/ad.cpp **** 	MPC.PWPR.BIT.PFSWE  = 0;
+  70:../src/peripheral/ad.cpp **** 	MPC.PWPR.BIT.B0WI   = 1;
+  71:../src/peripheral/ad.cpp **** 
+  72:../src/peripheral/ad.cpp **** 	//AN004
+  73:../src/peripheral/ad.cpp **** 	PORT4.PDR.BIT.B4    = 0;
+  74:../src/peripheral/ad.cpp **** 	PORT4.PMR.BIT.B4    = 0;
+  75:../src/peripheral/ad.cpp **** 	MPC.PWPR.BIT.B0WI   = 0;
+  76:../src/peripheral/ad.cpp **** 	MPC.PWPR.BIT.PFSWE  = 1;
+  77:../src/peripheral/ad.cpp **** 	MPC.P44PFS.BIT.ASEL = 1;
+  78:../src/peripheral/ad.cpp **** 	MPC.PWPR.BIT.PFSWE  = 0;
+  79:../src/peripheral/ad.cpp **** 	MPC.PWPR.BIT.B0WI   = 1;
+  80:../src/peripheral/ad.cpp **** 
+  81:../src/peripheral/ad.cpp **** 	//AN005
+  82:../src/peripheral/ad.cpp **** 	PORT4.PDR.BIT.B5    = 0;
+  83:../src/peripheral/ad.cpp **** 	PORT4.PMR.BIT.B5    = 0;
+  84:../src/peripheral/ad.cpp **** 	MPC.PWPR.BIT.B0WI   = 0;
+  85:../src/peripheral/ad.cpp **** 	MPC.PWPR.BIT.PFSWE  = 1;
+  86:../src/peripheral/ad.cpp **** 	MPC.P45PFS.BIT.ASEL = 1;
+  87:../src/peripheral/ad.cpp **** 	MPC.PWPR.BIT.PFSWE  = 0;
+  88:../src/peripheral/ad.cpp **** 	MPC.PWPR.BIT.B0WI   = 1;
+  89:../src/peripheral/ad.cpp **** 
+  90:../src/peripheral/ad.cpp **** 	//AN006
+  91:../src/peripheral/ad.cpp **** 	PORT4.PDR.BIT.B6    = 0;
+  92:../src/peripheral/ad.cpp **** 	PORT4.PMR.BIT.B6    = 0;
+  93:../src/peripheral/ad.cpp **** 	MPC.PWPR.BIT.B0WI   = 0;
+  94:../src/peripheral/ad.cpp **** 	MPC.PWPR.BIT.PFSWE  = 1;
+  95:../src/peripheral/ad.cpp **** 	MPC.P46PFS.BIT.ASEL = 1;
+  96:../src/peripheral/ad.cpp **** 	MPC.PWPR.BIT.PFSWE  = 0;
+  97:../src/peripheral/ad.cpp **** 	MPC.PWPR.BIT.B0WI   = 1;
+  98:../src/peripheral/ad.cpp **** 
+  99:../src/peripheral/ad.cpp **** 	//AN007
+ 100:../src/peripheral/ad.cpp **** 	PORT4.PDR.BIT.B7    = 0;
+ 101:../src/peripheral/ad.cpp **** 	PORT4.PMR.BIT.B7    = 0;
+ 102:../src/peripheral/ad.cpp **** 	MPC.PWPR.BIT.B0WI   = 0;
+ 103:../src/peripheral/ad.cpp **** 	MPC.PWPR.BIT.PFSWE  = 1;
+ 104:../src/peripheral/ad.cpp **** 	MPC.P47PFS.BIT.ASEL = 1;
+ 105:../src/peripheral/ad.cpp **** 	MPC.PWPR.BIT.PFSWE  = 0;
+ 106:../src/peripheral/ad.cpp **** 	MPC.PWPR.BIT.B0WI   = 1;
+ 107:../src/peripheral/ad.cpp **** 
+ 108:../src/peripheral/ad.cpp **** 	//AN108
+ 109:../src/peripheral/ad.cpp **** 	PORTD.PDR.BIT.B0    = 0;
+  35                             		.loc 1 109 0
+  36 0037 FB 3E 0D C0 08          		mov.L	#0x8c00d, r3
+  37:../src/peripheral/ad.cpp **** 	PORT4.PMR.BIT.B0    = 0;
+  37                             		.loc 1 37 0
+  38 003c 7A 02                   		bclr #0, r2
+  39 003e C3 42                   		mov.B	r2, [r4]
+  38:../src/peripheral/ad.cpp **** 	MPC.PWPR.BIT.B0WI   = 0;
+  40                             		.loc 1 38 0
+  41 0040 CD 42 60                		mov.B	96[r4], r2
+ 110:../src/peripheral/ad.cpp **** 	PORTD.PMR.BIT.B0    = 0;
+ 111:../src/peripheral/ad.cpp **** 	MPC.PWPR.BIT.B0WI   = 0;
+ 112:../src/peripheral/ad.cpp **** 	MPC.PWPR.BIT.PFSWE  = 1;
+ 113:../src/peripheral/ad.cpp **** 	MPC.PD0PFS.BIT.ASEL = 1;
+ 114:../src/peripheral/ad.cpp **** 	MPC.PWPR.BIT.PFSWE  = 0;
+ 115:../src/peripheral/ad.cpp **** 	MPC.PWPR.BIT.B0WI   = 1;
+ 116:../src/peripheral/ad.cpp **** 
+ 117:../src/peripheral/ad.cpp **** 	//AN109
+ 118:../src/peripheral/ad.cpp **** 	PORTD.PDR.BIT.B1    = 0;
+ 119:../src/peripheral/ad.cpp **** 	PORTD.PMR.BIT.B1    = 0;
+ 120:../src/peripheral/ad.cpp **** 	MPC.PWPR.BIT.B0WI   = 0;
+ 121:../src/peripheral/ad.cpp **** 	MPC.PWPR.BIT.PFSWE  = 1;
+ 122:../src/peripheral/ad.cpp **** 	MPC.PD1PFS.BIT.ASEL = 1;
+ 123:../src/peripheral/ad.cpp **** 	MPC.PWPR.BIT.PFSWE  = 0;
+ 124:../src/peripheral/ad.cpp **** 	MPC.PWPR.BIT.B0WI   = 1;
+ 125:../src/peripheral/ad.cpp **** 
+ 126:../src/peripheral/ad.cpp **** 	//AN110
+ 127:../src/peripheral/ad.cpp **** 	PORTD.PDR.BIT.B2    = 0;
+ 128:../src/peripheral/ad.cpp **** 	PORTD.PMR.BIT.B2    = 0;
+ 129:../src/peripheral/ad.cpp **** 	MPC.PWPR.BIT.B0WI   = 0;
+ 130:../src/peripheral/ad.cpp **** 	MPC.PWPR.BIT.PFSWE  = 1;
+ 131:../src/peripheral/ad.cpp **** 	MPC.PD2PFS.BIT.ASEL = 1;
+ 132:../src/peripheral/ad.cpp **** 	MPC.PWPR.BIT.PFSWE  = 0;
+ 133:../src/peripheral/ad.cpp **** 	MPC.PWPR.BIT.B0WI   = 1;
+ 134:../src/peripheral/ad.cpp **** 
+ 135:../src/peripheral/ad.cpp **** 
+ 136:../src/peripheral/ad.cpp **** 	S12AD.ADCSR.BIT.EXTRG = 1;
+  42                             		.loc 1 136 0
+  43 0043 FB 1E 00 90 08          		mov.L	#0x89000, r1
+  38:../src/peripheral/ad.cpp **** 	MPC.PWPR.BIT.B0WI   = 0;
+  44                             		.loc 1 38 0
+  45 0048 7A 02                   		bclr #0, r2
+  46 004a C7 42 60                		mov.B	r2, 96[r4]
+  39:../src/peripheral/ad.cpp **** 	MPC.PWPR.BIT.PFSWE  = 1;
+  47                             		.loc 1 39 0
+  48 004d CD E5 1F                		mov.B	31[r14], r5
+ 137:../src/peripheral/ad.cpp **** 	S12AD.ADCSR.BIT.TRGE = 1;
+ 138:../src/peripheral/ad.cpp **** 	S12AD.ADCSR.BIT.ADCS = 0;
+ 139:../src/peripheral/ad.cpp **** 
+ 140:../src/peripheral/ad.cpp **** 	S12AD1.ADCSR.BIT.EXTRG = 1;
+  49                             		.loc 1 140 0
+  50 0050 FB 2E 00 91 08          		mov.L	#0x89100, r2
+  39:../src/peripheral/ad.cpp **** 	MPC.PWPR.BIT.PFSWE  = 1;
+  51                             		.loc 1 39 0
+  52 0055 75 25 7F                		and #0x7f, r5
+  53 0058 C7 E5 1F                		mov.B	r5, 31[r14]
+  40:../src/peripheral/ad.cpp **** 	MPC.P40PFS.BIT.ASEL = 1;
+  54                             		.loc 1 40 0
+  55 005b F1 E6 1F                		bset #6, 31[r14].B
+  41:../src/peripheral/ad.cpp **** 	MPC.PWPR.BIT.PFSWE  = 0;
+  56                             		.loc 1 41 0
+  57 005e CD E5 60                		mov.B	96[r14], r5
+  58 0061 75 35 80                		or	#0xffffff80, r5
+  59 0064 C7 E5 60                		mov.B	r5, 96[r14]
+  42:../src/peripheral/ad.cpp **** 	MPC.PWPR.BIT.B0WI   = 1;
+  60                             		.loc 1 42 0
+  61 0067 F1 EE 1F                		bclr #6, 31[r14].B
+  43:../src/peripheral/ad.cpp **** 
+  62                             		.loc 1 43 0
+  63 006a CD E5 1F                		mov.B	31[r14], r5
+  64 006d 75 35 80                		or	#0xffffff80, r5
+  65 0070 C7 E5 1F                		mov.B	r5, 31[r14]
+  46:../src/peripheral/ad.cpp **** 	PORT4.PMR.BIT.B1    = 0;
+  66                             		.loc 1 46 0
+  67 0073 F0 49                   		bclr #1, [r4].B
+  47:../src/peripheral/ad.cpp **** 	MPC.PWPR.BIT.B0WI   = 0;
+  68                             		.loc 1 47 0
+  69 0075 F1 49 60                		bclr #1, 96[r4].B
+  48:../src/peripheral/ad.cpp **** 	MPC.PWPR.BIT.PFSWE  = 1;
+  70                             		.loc 1 48 0
+  71 0078 CD E5 1F                		mov.B	31[r14], r5
+  72 007b 75 25 7F                		and #0x7f, r5
+  73 007e C7 E5 1F                		mov.B	r5, 31[r14]
+  49:../src/peripheral/ad.cpp **** 	MPC.P41PFS.BIT.ASEL = 1;
+  74                             		.loc 1 49 0
+  75 0081 F1 E6 1F                		bset #6, 31[r14].B
+  50:../src/peripheral/ad.cpp **** 	MPC.PWPR.BIT.PFSWE  = 0;
+  76                             		.loc 1 50 0
+  77 0084 CD E5 61                		mov.B	97[r14], r5
+  78 0087 75 35 80                		or	#0xffffff80, r5
+  79 008a C7 E5 61                		mov.B	r5, 97[r14]
+  51:../src/peripheral/ad.cpp **** 	MPC.PWPR.BIT.B0WI   = 1;
+  80                             		.loc 1 51 0
+  81 008d F1 EE 1F                		bclr #6, 31[r14].B
+  52:../src/peripheral/ad.cpp **** 
+  82                             		.loc 1 52 0
+  83 0090 CD E5 1F                		mov.B	31[r14], r5
+  84 0093 75 35 80                		or	#0xffffff80, r5
+  85 0096 C7 E5 1F                		mov.B	r5, 31[r14]
+  55:../src/peripheral/ad.cpp **** 	PORT4.PMR.BIT.B2    = 0;
+  86                             		.loc 1 55 0
+  87 0099 F0 4A                   		bclr #2, [r4].B
+  56:../src/peripheral/ad.cpp **** 	MPC.PWPR.BIT.B0WI   = 0;
+  88                             		.loc 1 56 0
+  89 009b F1 4A 60                		bclr #2, 96[r4].B
+  57:../src/peripheral/ad.cpp **** 	MPC.PWPR.BIT.PFSWE  = 1;
+  90                             		.loc 1 57 0
+  91 009e CD E5 1F                		mov.B	31[r14], r5
+  92 00a1 75 25 7F                		and #0x7f, r5
+  93 00a4 C7 E5 1F                		mov.B	r5, 31[r14]
+  58:../src/peripheral/ad.cpp **** 	MPC.P42PFS.BIT.ASEL = 1;
+  94                             		.loc 1 58 0
+  95 00a7 F1 E6 1F                		bset #6, 31[r14].B
+  59:../src/peripheral/ad.cpp **** 	MPC.PWPR.BIT.PFSWE  = 0;
+  96                             		.loc 1 59 0
+  97 00aa CD E5 62                		mov.B	98[r14], r5
+  98 00ad 75 35 80                		or	#0xffffff80, r5
+  99 00b0 C7 E5 62                		mov.B	r5, 98[r14]
+  60:../src/peripheral/ad.cpp **** 	MPC.PWPR.BIT.B0WI   = 1;
+ 100                             		.loc 1 60 0
+ 101 00b3 F1 EE 1F                		bclr #6, 31[r14].B
+  61:../src/peripheral/ad.cpp **** 
+ 102                             		.loc 1 61 0
+ 103 00b6 CD E5 1F                		mov.B	31[r14], r5
+ 104 00b9 75 35 80                		or	#0xffffff80, r5
+ 105 00bc C7 E5 1F                		mov.B	r5, 31[r14]
+  64:../src/peripheral/ad.cpp **** 	PORT4.PMR.BIT.B3    = 0;
+ 106                             		.loc 1 64 0
+ 107 00bf F0 4B                   		bclr #3, [r4].B
+  65:../src/peripheral/ad.cpp **** 	MPC.PWPR.BIT.B0WI   = 0;
+ 108                             		.loc 1 65 0
+ 109 00c1 F1 4B 60                		bclr #3, 96[r4].B
+  66:../src/peripheral/ad.cpp **** 	MPC.PWPR.BIT.PFSWE  = 1;
+ 110                             		.loc 1 66 0
+ 111 00c4 CD E5 1F                		mov.B	31[r14], r5
+ 112 00c7 75 25 7F                		and #0x7f, r5
+ 113 00ca C7 E5 1F                		mov.B	r5, 31[r14]
+  67:../src/peripheral/ad.cpp **** 	MPC.P43PFS.BIT.ASEL = 1;
+ 114                             		.loc 1 67 0
+ 115 00cd F1 E6 1F                		bset #6, 31[r14].B
+  68:../src/peripheral/ad.cpp **** 	MPC.PWPR.BIT.PFSWE  = 0;
+ 116                             		.loc 1 68 0
+ 117 00d0 CD E5 63                		mov.B	99[r14], r5
+ 118 00d3 75 35 80                		or	#0xffffff80, r5
+ 119 00d6 C7 E5 63                		mov.B	r5, 99[r14]
+  69:../src/peripheral/ad.cpp **** 	MPC.PWPR.BIT.B0WI   = 1;
+ 120                             		.loc 1 69 0
+ 121 00d9 F1 EE 1F                		bclr #6, 31[r14].B
+  70:../src/peripheral/ad.cpp **** 
+ 122                             		.loc 1 70 0
+ 123 00dc CD E5 1F                		mov.B	31[r14], r5
+ 124 00df 75 35 80                		or	#0xffffff80, r5
+ 125 00e2 C7 E5 1F                		mov.B	r5, 31[r14]
+  73:../src/peripheral/ad.cpp **** 	PORT4.PMR.BIT.B4    = 0;
+ 126                             		.loc 1 73 0
+ 127 00e5 F0 4C                   		bclr #4, [r4].B
+  74:../src/peripheral/ad.cpp **** 	MPC.PWPR.BIT.B0WI   = 0;
+ 128                             		.loc 1 74 0
+ 129 00e7 F1 4C 60                		bclr #4, 96[r4].B
+  75:../src/peripheral/ad.cpp **** 	MPC.PWPR.BIT.PFSWE  = 1;
+ 130                             		.loc 1 75 0
+ 131 00ea CD E5 1F                		mov.B	31[r14], r5
+ 132 00ed 75 25 7F                		and #0x7f, r5
+ 133 00f0 C7 E5 1F                		mov.B	r5, 31[r14]
+  76:../src/peripheral/ad.cpp **** 	MPC.P44PFS.BIT.ASEL = 1;
+ 134                             		.loc 1 76 0
+ 135 00f3 F1 E6 1F                		bset #6, 31[r14].B
+  77:../src/peripheral/ad.cpp **** 	MPC.PWPR.BIT.PFSWE  = 0;
+ 136                             		.loc 1 77 0
+ 137 00f6 CD E5 64                		mov.B	100[r14], r5
+ 138 00f9 75 35 80                		or	#0xffffff80, r5
+ 139 00fc C7 E5 64                		mov.B	r5, 100[r14]
+  78:../src/peripheral/ad.cpp **** 	MPC.PWPR.BIT.B0WI   = 1;
+ 140                             		.loc 1 78 0
+ 141 00ff F1 EE 1F                		bclr #6, 31[r14].B
+  79:../src/peripheral/ad.cpp **** 
+ 142                             		.loc 1 79 0
+ 143 0102 CD E5 1F                		mov.B	31[r14], r5
+ 144 0105 75 35 80                		or	#0xffffff80, r5
+ 145 0108 C7 E5 1F                		mov.B	r5, 31[r14]
+  82:../src/peripheral/ad.cpp **** 	PORT4.PMR.BIT.B5    = 0;
+ 146                             		.loc 1 82 0
+ 147 010b F0 4D                   		bclr #5, [r4].B
+  83:../src/peripheral/ad.cpp **** 	MPC.PWPR.BIT.B0WI   = 0;
+ 148                             		.loc 1 83 0
+ 149 010d F1 4D 60                		bclr #5, 96[r4].B
+  84:../src/peripheral/ad.cpp **** 	MPC.PWPR.BIT.PFSWE  = 1;
+ 150                             		.loc 1 84 0
+ 151 0110 CD E5 1F                		mov.B	31[r14], r5
+ 152 0113 75 25 7F                		and #0x7f, r5
+ 153 0116 C7 E5 1F                		mov.B	r5, 31[r14]
+  85:../src/peripheral/ad.cpp **** 	MPC.P45PFS.BIT.ASEL = 1;
+ 154                             		.loc 1 85 0
+ 155 0119 F1 E6 1F                		bset #6, 31[r14].B
+  86:../src/peripheral/ad.cpp **** 	MPC.PWPR.BIT.PFSWE  = 0;
+ 156                             		.loc 1 86 0
+ 157 011c CD E5 65                		mov.B	101[r14], r5
+ 158 011f 75 35 80                		or	#0xffffff80, r5
+ 159 0122 C7 E5 65                		mov.B	r5, 101[r14]
+  87:../src/peripheral/ad.cpp **** 	MPC.PWPR.BIT.B0WI   = 1;
+ 160                             		.loc 1 87 0
+ 161 0125 F1 EE 1F                		bclr #6, 31[r14].B
+  88:../src/peripheral/ad.cpp **** 
+ 162                             		.loc 1 88 0
+ 163 0128 CD E5 1F                		mov.B	31[r14], r5
+ 164 012b 75 35 80                		or	#0xffffff80, r5
+ 165 012e C7 E5 1F                		mov.B	r5, 31[r14]
+  91:../src/peripheral/ad.cpp **** 	PORT4.PMR.BIT.B6    = 0;
+ 166                             		.loc 1 91 0
+ 167 0131 F0 4E                   		bclr #6, [r4].B
+  92:../src/peripheral/ad.cpp **** 	MPC.PWPR.BIT.B0WI   = 0;
+ 168                             		.loc 1 92 0
+ 169 0133 F1 4E 60                		bclr #6, 96[r4].B
+  93:../src/peripheral/ad.cpp **** 	MPC.PWPR.BIT.PFSWE  = 1;
+ 170                             		.loc 1 93 0
+ 171 0136 CD E5 1F                		mov.B	31[r14], r5
+ 172 0139 75 25 7F                		and #0x7f, r5
+ 173 013c C7 E5 1F                		mov.B	r5, 31[r14]
+  94:../src/peripheral/ad.cpp **** 	MPC.P46PFS.BIT.ASEL = 1;
+ 174                             		.loc 1 94 0
+ 175 013f F1 E6 1F                		bset #6, 31[r14].B
+  95:../src/peripheral/ad.cpp **** 	MPC.PWPR.BIT.PFSWE  = 0;
+ 176                             		.loc 1 95 0
+ 177 0142 CD E5 66                		mov.B	102[r14], r5
+ 178 0145 75 35 80                		or	#0xffffff80, r5
+ 179 0148 C7 E5 66                		mov.B	r5, 102[r14]
+  96:../src/peripheral/ad.cpp **** 	MPC.PWPR.BIT.B0WI   = 1;
+ 180                             		.loc 1 96 0
+ 181 014b F1 EE 1F                		bclr #6, 31[r14].B
+  97:../src/peripheral/ad.cpp **** 
+ 182                             		.loc 1 97 0
+ 183 014e CD E5 1F                		mov.B	31[r14], r5
+ 184 0151 75 35 80                		or	#0xffffff80, r5
+ 185 0154 C7 E5 1F                		mov.B	r5, 31[r14]
+ 100:../src/peripheral/ad.cpp **** 	PORT4.PMR.BIT.B7    = 0;
+ 186                             		.loc 1 100 0
+ 187 0157 CC 45                   		mov.B	[r4], r5
+ 188 0159 75 25 7F                		and #0x7f, r5
+ 189 015c C3 45                   		mov.B	r5, [r4]
+ 101:../src/peripheral/ad.cpp **** 	MPC.PWPR.BIT.B0WI   = 0;
+ 190                             		.loc 1 101 0
+ 191 015e CD 45 60                		mov.B	96[r4], r5
+ 192 0161 75 25 7F                		and #0x7f, r5
+ 193 0164 C7 45 60                		mov.B	r5, 96[r4]
+ 102:../src/peripheral/ad.cpp **** 	MPC.PWPR.BIT.PFSWE  = 1;
+ 194                             		.loc 1 102 0
+ 195 0167 CD E4 1F                		mov.B	31[r14], r4
+ 196 016a 75 24 7F                		and #0x7f, r4
+ 197 016d C7 E4 1F                		mov.B	r4, 31[r14]
+ 103:../src/peripheral/ad.cpp **** 	MPC.P47PFS.BIT.ASEL = 1;
+ 198                             		.loc 1 103 0
+ 199 0170 F1 E6 1F                		bset #6, 31[r14].B
+ 104:../src/peripheral/ad.cpp **** 	MPC.PWPR.BIT.PFSWE  = 0;
+ 200                             		.loc 1 104 0
+ 201 0173 CD E4 67                		mov.B	103[r14], r4
+ 202 0176 75 34 80                		or	#0xffffff80, r4
+ 203 0179 C7 E4 67                		mov.B	r4, 103[r14]
+ 105:../src/peripheral/ad.cpp **** 	MPC.PWPR.BIT.B0WI   = 1;
+ 204                             		.loc 1 105 0
+ 205 017c F1 EE 1F                		bclr #6, 31[r14].B
+ 106:../src/peripheral/ad.cpp **** 
+ 206                             		.loc 1 106 0
+ 207 017f CD E4 1F                		mov.B	31[r14], r4
+ 208 0182 75 34 80                		or	#0xffffff80, r4
+ 209 0185 C7 E4 1F                		mov.B	r4, 31[r14]
+ 109:../src/peripheral/ad.cpp **** 	PORTD.PMR.BIT.B0    = 0;
+ 210                             		.loc 1 109 0
+ 211 0188 F0 38                   		bclr #0, [r3].B
+ 110:../src/peripheral/ad.cpp **** 	MPC.PWPR.BIT.B0WI   = 0;
+ 212                             		.loc 1 110 0
+ 213 018a F1 38 60                		bclr #0, 96[r3].B
+ 111:../src/peripheral/ad.cpp **** 	MPC.PWPR.BIT.PFSWE  = 1;
+ 214                             		.loc 1 111 0
+ 215 018d CD E4 1F                		mov.B	31[r14], r4
+ 216 0190 75 24 7F                		and #0x7f, r4
+ 217 0193 C7 E4 1F                		mov.B	r4, 31[r14]
+ 112:../src/peripheral/ad.cpp **** 	MPC.PD0PFS.BIT.ASEL = 1;
+ 218                             		.loc 1 112 0
+ 219 0196 F1 E6 1F                		bset #6, 31[r14].B
+ 113:../src/peripheral/ad.cpp **** 	MPC.PWPR.BIT.PFSWE  = 0;
+ 220                             		.loc 1 113 0
+ 221 0199 CD E4 A8                		mov.B	168[r14], r4
+ 222 019c 75 34 80                		or	#0xffffff80, r4
+ 223 019f C7 E4 A8                		mov.B	r4, 168[r14]
+ 114:../src/peripheral/ad.cpp **** 	MPC.PWPR.BIT.B0WI   = 1;
+ 224                             		.loc 1 114 0
+ 225 01a2 F1 EE 1F                		bclr #6, 31[r14].B
+ 115:../src/peripheral/ad.cpp **** 
+ 226                             		.loc 1 115 0
+ 227 01a5 CD E4 1F                		mov.B	31[r14], r4
+ 228 01a8 75 34 80                		or	#0xffffff80, r4
+ 229 01ab C7 E4 1F                		mov.B	r4, 31[r14]
+ 118:../src/peripheral/ad.cpp **** 	PORTD.PMR.BIT.B1    = 0;
+ 230                             		.loc 1 118 0
+ 231 01ae F0 39                   		bclr #1, [r3].B
+ 119:../src/peripheral/ad.cpp **** 	MPC.PWPR.BIT.B0WI   = 0;
+ 232                             		.loc 1 119 0
+ 233 01b0 F1 39 60                		bclr #1, 96[r3].B
+ 120:../src/peripheral/ad.cpp **** 	MPC.PWPR.BIT.PFSWE  = 1;
+ 234                             		.loc 1 120 0
+ 235 01b3 CD E4 1F                		mov.B	31[r14], r4
+ 236 01b6 75 24 7F                		and #0x7f, r4
+ 237 01b9 C7 E4 1F                		mov.B	r4, 31[r14]
+ 121:../src/peripheral/ad.cpp **** 	MPC.PD1PFS.BIT.ASEL = 1;
+ 238                             		.loc 1 121 0
+ 239 01bc F1 E6 1F                		bset #6, 31[r14].B
+ 122:../src/peripheral/ad.cpp **** 	MPC.PWPR.BIT.PFSWE  = 0;
+ 240                             		.loc 1 122 0
+ 241 01bf CD E4 A9                		mov.B	169[r14], r4
+ 242 01c2 75 34 80                		or	#0xffffff80, r4
+ 243 01c5 C7 E4 A9                		mov.B	r4, 169[r14]
+ 123:../src/peripheral/ad.cpp **** 	MPC.PWPR.BIT.B0WI   = 1;
+ 244                             		.loc 1 123 0
+ 245 01c8 F1 EE 1F                		bclr #6, 31[r14].B
+ 124:../src/peripheral/ad.cpp **** 
+ 246                             		.loc 1 124 0
+ 247 01cb CD E4 1F                		mov.B	31[r14], r4
+ 248 01ce 75 34 80                		or	#0xffffff80, r4
+ 249 01d1 C7 E4 1F                		mov.B	r4, 31[r14]
+ 127:../src/peripheral/ad.cpp **** 	PORTD.PMR.BIT.B2    = 0;
+ 250                             		.loc 1 127 0
+ 251 01d4 F0 3A                   		bclr #2, [r3].B
+ 128:../src/peripheral/ad.cpp **** 	MPC.PWPR.BIT.B0WI   = 0;
+ 252                             		.loc 1 128 0
+ 253 01d6 F1 3A 60                		bclr #2, 96[r3].B
+ 129:../src/peripheral/ad.cpp **** 	MPC.PWPR.BIT.PFSWE  = 1;
+ 254                             		.loc 1 129 0
+ 255 01d9 CD E4 1F                		mov.B	31[r14], r4
+ 256 01dc 75 24 7F                		and #0x7f, r4
+ 257 01df C7 E4 1F                		mov.B	r4, 31[r14]
+ 130:../src/peripheral/ad.cpp **** 	MPC.PD2PFS.BIT.ASEL = 1;
+ 258                             		.loc 1 130 0
+ 259 01e2 F1 E6 1F                		bset #6, 31[r14].B
+ 131:../src/peripheral/ad.cpp **** 	MPC.PWPR.BIT.PFSWE  = 0;
+ 260                             		.loc 1 131 0
+ 261 01e5 CD E4 AA                		mov.B	170[r14], r4
+ 262 01e8 75 34 80                		or	#0xffffff80, r4
+ 263 01eb C7 E4 AA                		mov.B	r4, 170[r14]
+ 132:../src/peripheral/ad.cpp **** 	MPC.PWPR.BIT.B0WI   = 1;
+ 264                             		.loc 1 132 0
+ 265 01ee F1 EE 1F                		bclr #6, 31[r14].B
+ 133:../src/peripheral/ad.cpp **** 
+ 266                             		.loc 1 133 0
+ 267 01f1 CD E4 1F                		mov.B	31[r14], r4
+ 268 01f4 75 34 80                		or	#0xffffff80, r4
+ 269 01f7 C7 E4 1F                		mov.B	r4, 31[r14]
+ 136:../src/peripheral/ad.cpp **** 	S12AD.ADCSR.BIT.TRGE = 1;
+ 270                             		.loc 1 136 0
+ 271 01fa DC 1E                   		mov.W	[r1], r14
+ 272 01fc 78 8E                   		bset #8, r14
+ 273 01fe D3 1E                   		mov.W	r14, [r1]
+ 137:../src/peripheral/ad.cpp **** 	S12AD.ADCSR.BIT.ADCS = 0;
+ 274                             		.loc 1 137 0
+ 275 0200 DC 1E                   		mov.W	[r1], r14
+ 276 0202 78 9E                   		bset #9, r14
+ 277 0204 D3 1E                   		mov.W	r14, [r1]
+ 138:../src/peripheral/ad.cpp **** 
+ 278                             		.loc 1 138 0
+ 279 0206 DC 1E                   		mov.W	[r1], r14
+ 280 0208 76 2E FF 9F             		and #0xffff9fff, r14
+ 281 020c D3 1E                   		mov.W	r14, [r1]
+ 282                             		.loc 1 140 0
+ 283 020e DC 2E                   		mov.W	[r2], r14
+ 284 0210 78 8E                   		bset #8, r14
+ 285 0212 D3 2E                   		mov.W	r14, [r2]
+ 141:../src/peripheral/ad.cpp **** 	S12AD1.ADCSR.BIT.TRGE = 1;
+ 286                             		.loc 1 141 0
+ 287 0214 DC 2E                   		mov.W	[r2], r14
+ 288 0216 78 9E                   		bset #9, r14
+ 289 0218 D3 2E                   		mov.W	r14, [r2]
+ 142:../src/peripheral/ad.cpp **** 	S12AD1.ADCSR.BIT.ADCS = 0;
+ 290                             		.loc 1 142 0
+ 291 021a DC 2E                   		mov.W	[r2], r14
+ 292 021c 76 2E FF 9F             		and #0xffff9fff, r14
+ 293 0220 D3 2E                   		mov.W	r14, [r2]
+ 294 0222 02                      		rts
+ 295                             	.LFE0:
+ 297                             		.global	__Z13startAD_AN000v
+ 299                             	__Z13startAD_AN000v:
+ 300                             	.LFB1:
+ 143:../src/peripheral/ad.cpp **** 
+ 144:../src/peripheral/ad.cpp **** }
+ 145:../src/peripheral/ad.cpp **** /***********AD変換開始関数****************/
+ 146:../src/peripheral/ad.cpp **** uint16_t startAD_AN000(void){
+ 301                             		.loc 1 146 0
+ 147:../src/peripheral/ad.cpp **** 	S12AD.ADANSA0.WORD = 0x0001;
+ 302                             		.loc 1 147 0
+ 303 0223 FB EE 00 90 08          		mov.L	#0x89000, r14
+ 304 0228 F9 E5 02 01             		mov.W	#1, 4[r14]
+ 148:../src/peripheral/ad.cpp **** 	S12AD.ADADS0.BIT.ADS0 = 0x0000; //1:変換値加算モード選択 0：非選択
+ 305                             		.loc 1 148 0
+ 306 022c F9 E5 04 00             		mov.W	#0, 8[r14]
+ 149:../src/peripheral/ad.cpp **** 	//S12AD.ADADC.BIT.ADC   = 3; //加算回数の選択 4times変換 3times加算
+ 150:../src/peripheral/ad.cpp **** 	S12AD.ADCER.BIT.ADRFMT = 0; //右詰めフォーマット
+ 307                             		.loc 1 150 0
+ 308 0230 DD E3 07                		mov.W	14[r14], r3
+ 151:../src/peripheral/ad.cpp **** 
+ 152:../src/peripheral/ad.cpp **** 	S12AD.ADCSR.BIT.ADST = 1;
+ 153:../src/peripheral/ad.cpp **** 	//S12AD.ADSTRGR.BIT.ADSTRS = 0;
+ 154:../src/peripheral/ad.cpp **** 	while(S12AD.ADCSR.BIT.ADST == 1);
+ 309                             		.loc 1 154 0
+ 310 0233 EF E4                   		mov.L	r14, r4
+ 150:../src/peripheral/ad.cpp **** 
+ 311                             		.loc 1 150 0
+ 312 0235 76 23 FF 7F             		and #0x7fff, r3
+ 313 0239 D7 E3 07                		mov.W	r3, 14[r14]
+ 152:../src/peripheral/ad.cpp **** 	//S12AD.ADSTRGR.BIT.ADSTRS = 0;
+ 314                             		.loc 1 152 0
+ 315 023c DC E3                   		mov.W	[r14], r3
+ 316 023e 76 33 00 80             		or	#0xffff8000, r3
+ 317 0242 D3 E3                   		mov.W	r3, [r14]
+ 318 0244 76 10 01 00             		.balign 8,3,5
+ 319                             	.L4:
+ 320                             		.loc 1 154 0 discriminator 1
+ 321 0248 DC 4E                   		mov.W	[r4], r14
+ 322 024a 7C FE                   		btst	#15, r14
+ 323 024c 21 FC                   		bne	.L4
+ 155:../src/peripheral/ad.cpp **** 	return S12AD.ADDR0;
+ 324                             		.loc 1 155 0
+ 325 024e FB EE 00 90 08          		mov.L	#0x89000, r14
+ 156:../src/peripheral/ad.cpp **** }
+ 326                             		.loc 1 156 0
+ 327 0253 5D E1 10                		movu.W	32[r14], r1
+ 328 0256 02                      		rts
+ 329                             	.LFE1:
+ 331                             		.global	__Z13startAD_AN001v
+ 333                             	__Z13startAD_AN001v:
+ 334                             	.LFB2:
+ 157:../src/peripheral/ad.cpp **** 
+ 158:../src/peripheral/ad.cpp **** uint16_t startAD_AN001(void){
+ 335                             		.loc 1 158 0
+ 159:../src/peripheral/ad.cpp **** 	S12AD.ADANSA0.WORD = 0x0002;
+ 336                             		.loc 1 159 0
+ 337 0257 FB EE 00 90 08          		mov.L	#0x89000, r14
+ 338 025c F9 E5 02 02             		mov.W	#2, 4[r14]
+ 160:../src/peripheral/ad.cpp **** 	S12AD.ADADS0.BIT.ADS0 = 0x0000; //1:変換値加算モード選択 0：非選択
+ 339                             		.loc 1 160 0
+ 340 0260 F9 E5 04 00             		mov.W	#0, 8[r14]
+ 161:../src/peripheral/ad.cpp **** 	//S12AD.ADADC.BIT.ADC   = 3; //加算回数の選択 4times変換 3times加算
+ 162:../src/peripheral/ad.cpp **** 	S12AD.ADCER.BIT.ADRFMT = 0; //右詰めフォーマット
+ 341                             		.loc 1 162 0
+ 342 0264 DD E3 07                		mov.W	14[r14], r3
+ 163:../src/peripheral/ad.cpp **** 
+ 164:../src/peripheral/ad.cpp **** 	S12AD.ADCSR.BIT.ADST = 1;
+ 165:../src/peripheral/ad.cpp **** 	//S12AD.ADSTRGR.BIT.ADSTRS = 0;
+ 166:../src/peripheral/ad.cpp **** 	while(S12AD.ADCSR.BIT.ADST == 1);
+ 343                             		.loc 1 166 0
+ 344 0267 EF E4                   		mov.L	r14, r4
+ 162:../src/peripheral/ad.cpp **** 
+ 345                             		.loc 1 162 0
+ 346 0269 76 23 FF 7F             		and #0x7fff, r3
+ 347 026d D7 E3 07                		mov.W	r3, 14[r14]
+ 164:../src/peripheral/ad.cpp **** 	//S12AD.ADSTRGR.BIT.ADSTRS = 0;
+ 348                             		.loc 1 164 0
+ 349 0270 DC E3                   		mov.W	[r14], r3
+ 350 0272 76 33 00 80             		or	#0xffff8000, r3
+ 351 0276 D3 E3                   		mov.W	r3, [r14]
+ 352                             		.balign 8,3,5
+ 353                             	.L8:
+ 354                             		.loc 1 166 0 discriminator 1
+ 355 0278 DC 4E                   		mov.W	[r4], r14
+ 356 027a 7C FE                   		btst	#15, r14
+ 357 027c 21 FC                   		bne	.L8
+ 167:../src/peripheral/ad.cpp **** 	return S12AD.ADDR1;
+ 358                             		.loc 1 167 0
+ 359 027e FB EE 00 90 08          		mov.L	#0x89000, r14
+ 168:../src/peripheral/ad.cpp **** }
+ 360                             		.loc 1 168 0
+ 361 0283 5D E1 11                		movu.W	34[r14], r1
+ 362 0286 02                      		rts
+ 363                             	.LFE2:
+ 365                             		.global	__Z13startAD_AN002v
+ 367                             	__Z13startAD_AN002v:
+ 368                             	.LFB3:
+ 169:../src/peripheral/ad.cpp **** 
+ 170:../src/peripheral/ad.cpp **** uint16_t startAD_AN002(void){
+ 369                             		.loc 1 170 0
+ 171:../src/peripheral/ad.cpp **** 	S12AD.ADANSA0.WORD = 0x0004;
+ 370                             		.loc 1 171 0
+ 371 0287 FB EE 00 90 08          		mov.L	#0x89000, r14
+ 372 028c F9 E5 02 04             		mov.W	#4, 4[r14]
+ 172:../src/peripheral/ad.cpp **** 	S12AD.ADADS0.BIT.ADS0 = 0x0000; //1:変換値加算モード選択 0：非選択
+ 373                             		.loc 1 172 0
+ 374 0290 F9 E5 04 00             		mov.W	#0, 8[r14]
+ 173:../src/peripheral/ad.cpp **** 	//S12AD.ADADC.BIT.ADC   = 3; //加算回数の選択 4times変換 3times加算
+ 174:../src/peripheral/ad.cpp **** 	S12AD.ADCER.BIT.ADRFMT = 0; //右詰めフォーマット
+ 375                             		.loc 1 174 0
+ 376 0294 DD E3 07                		mov.W	14[r14], r3
+ 175:../src/peripheral/ad.cpp **** 
+ 176:../src/peripheral/ad.cpp **** 	S12AD.ADCSR.BIT.ADST = 1;
+ 177:../src/peripheral/ad.cpp **** 	//S12AD.ADSTRGR.BIT.ADSTRS = 0;
+ 178:../src/peripheral/ad.cpp **** 	while(S12AD.ADCSR.BIT.ADST == 1);
+ 377                             		.loc 1 178 0
+ 378 0297 EF E4                   		mov.L	r14, r4
+ 174:../src/peripheral/ad.cpp **** 
+ 379                             		.loc 1 174 0
+ 380 0299 76 23 FF 7F             		and #0x7fff, r3
+ 381 029d D7 E3 07                		mov.W	r3, 14[r14]
+ 176:../src/peripheral/ad.cpp **** 	//S12AD.ADSTRGR.BIT.ADSTRS = 0;
+ 382                             		.loc 1 176 0
+ 383 02a0 DC E3                   		mov.W	[r14], r3
+ 384 02a2 76 33 00 80             		or	#0xffff8000, r3
+ 385 02a6 D3 E3                   		mov.W	r3, [r14]
+ 386                             		.balign 8,3,5
+ 387                             	.L11:
+ 388                             		.loc 1 178 0 discriminator 1
+ 389 02a8 DC 4E                   		mov.W	[r4], r14
+ 390 02aa 7C FE                   		btst	#15, r14
+ 391 02ac 21 FC                   		bne	.L11
+ 179:../src/peripheral/ad.cpp **** 	return S12AD.ADDR2;
+ 392                             		.loc 1 179 0
+ 393 02ae FB EE 00 90 08          		mov.L	#0x89000, r14
+ 180:../src/peripheral/ad.cpp **** }
+ 394                             		.loc 1 180 0
+ 395 02b3 5D E1 12                		movu.W	36[r14], r1
+ 396 02b6 02                      		rts
+ 397                             	.LFE3:
+ 399                             		.global	__Z13startAD_AN003v
+ 401                             	__Z13startAD_AN003v:
+ 402                             	.LFB4:
+ 181:../src/peripheral/ad.cpp **** 
+ 182:../src/peripheral/ad.cpp **** uint16_t startAD_AN003(void){
+ 403                             		.loc 1 182 0
+ 183:../src/peripheral/ad.cpp **** 	S12AD.ADANSA0.WORD = 0x0008;
+ 404                             		.loc 1 183 0
+ 405 02b7 FB EE 00 90 08          		mov.L	#0x89000, r14
+ 406 02bc F9 E5 02 08             		mov.W	#8, 4[r14]
+ 184:../src/peripheral/ad.cpp **** 	S12AD.ADADS0.BIT.ADS0 = 0x0000; //1:変換値加算モード選択 0：非選択
+ 407                             		.loc 1 184 0
+ 408 02c0 F9 E5 04 00             		mov.W	#0, 8[r14]
+ 185:../src/peripheral/ad.cpp **** 	//S12AD.ADADC.BIT.ADC   = 3; //加算回数の選択 4times変換 3times加算
+ 186:../src/peripheral/ad.cpp **** 	S12AD.ADCER.BIT.ADRFMT = 0; //右詰めフォーマット
+ 409                             		.loc 1 186 0
+ 410 02c4 DD E3 07                		mov.W	14[r14], r3
+ 187:../src/peripheral/ad.cpp **** 
+ 188:../src/peripheral/ad.cpp **** 	S12AD.ADCSR.BIT.ADST = 1;
+ 189:../src/peripheral/ad.cpp **** 	//S12AD.ADSTRGR.BIT.ADSTRS = 0;
+ 190:../src/peripheral/ad.cpp **** 	while(S12AD.ADCSR.BIT.ADST == 1);
+ 411                             		.loc 1 190 0
+ 412 02c7 EF E4                   		mov.L	r14, r4
+ 186:../src/peripheral/ad.cpp **** 
+ 413                             		.loc 1 186 0
+ 414 02c9 76 23 FF 7F             		and #0x7fff, r3
+ 415 02cd D7 E3 07                		mov.W	r3, 14[r14]
+ 188:../src/peripheral/ad.cpp **** 	//S12AD.ADSTRGR.BIT.ADSTRS = 0;
+ 416                             		.loc 1 188 0
+ 417 02d0 DC E3                   		mov.W	[r14], r3
+ 418 02d2 76 33 00 80             		or	#0xffff8000, r3
+ 419 02d6 D3 E3                   		mov.W	r3, [r14]
+ 420                             		.balign 8,3,5
+ 421                             	.L14:
+ 422                             		.loc 1 190 0 discriminator 1
+ 423 02d8 DC 4E                   		mov.W	[r4], r14
+ 424 02da 7C FE                   		btst	#15, r14
+ 425 02dc 21 FC                   		bne	.L14
+ 191:../src/peripheral/ad.cpp **** 	return S12AD.ADDR3;
+ 426                             		.loc 1 191 0
+ 427 02de FB EE 00 90 08          		mov.L	#0x89000, r14
+ 192:../src/peripheral/ad.cpp **** }
+ 428                             		.loc 1 192 0
+ 429 02e3 5D E1 13                		movu.W	38[r14], r1
+ 430 02e6 02                      		rts
+ 431                             	.LFE4:
+ 433                             		.global	__Z13startAD_AN004v
+ 435                             	__Z13startAD_AN004v:
+ 436                             	.LFB5:
+ 193:../src/peripheral/ad.cpp **** 
+ 194:../src/peripheral/ad.cpp **** uint16_t startAD_AN004(void){
+ 437                             		.loc 1 194 0
+ 195:../src/peripheral/ad.cpp **** 	S12AD.ADANSA0.WORD = 0x0010;
+ 438                             		.loc 1 195 0
+ 439 02e7 FB EE 00 90 08          		mov.L	#0x89000, r14
+ 440 02ec F9 E5 02 10             		mov.W	#16, 4[r14]
+ 196:../src/peripheral/ad.cpp **** 	S12AD.ADADS0.BIT.ADS0 = 0x0000; //1:変換値加算モード選択 0：非選択
+ 441                             		.loc 1 196 0
+ 442 02f0 F9 E5 04 00             		mov.W	#0, 8[r14]
+ 197:../src/peripheral/ad.cpp **** 	//S12AD.ADADC.BIT.ADC   = 3; //加算回数の選択 4times変換 3times加算
+ 198:../src/peripheral/ad.cpp **** 	S12AD.ADCER.BIT.ADRFMT = 0; //右詰めフォーマット
+ 443                             		.loc 1 198 0
+ 444 02f4 DD E3 07                		mov.W	14[r14], r3
+ 199:../src/peripheral/ad.cpp **** 
+ 200:../src/peripheral/ad.cpp **** 	S12AD.ADCSR.BIT.ADST = 1;
+ 201:../src/peripheral/ad.cpp **** 	//S12AD.ADSTRGR.BIT.ADSTRS = 0;
+ 202:../src/peripheral/ad.cpp **** 	while(S12AD.ADCSR.BIT.ADST == 1);
+ 445                             		.loc 1 202 0
+ 446 02f7 EF E4                   		mov.L	r14, r4
+ 198:../src/peripheral/ad.cpp **** 
+ 447                             		.loc 1 198 0
+ 448 02f9 76 23 FF 7F             		and #0x7fff, r3
+ 449 02fd D7 E3 07                		mov.W	r3, 14[r14]
+ 200:../src/peripheral/ad.cpp **** 	//S12AD.ADSTRGR.BIT.ADSTRS = 0;
+ 450                             		.loc 1 200 0
+ 451 0300 DC E3                   		mov.W	[r14], r3
+ 452 0302 76 33 00 80             		or	#0xffff8000, r3
+ 453 0306 D3 E3                   		mov.W	r3, [r14]
+ 454                             		.balign 8,3,5
+ 455                             	.L17:
+ 456                             		.loc 1 202 0 discriminator 1
+ 457 0308 DC 4E                   		mov.W	[r4], r14
+ 458 030a 7C FE                   		btst	#15, r14
+ 459 030c 21 FC                   		bne	.L17
+ 203:../src/peripheral/ad.cpp **** 	return S12AD.ADDR4;
+ 460                             		.loc 1 203 0
+ 461 030e FB EE 00 90 08          		mov.L	#0x89000, r14
+ 204:../src/peripheral/ad.cpp **** }
+ 462                             		.loc 1 204 0
+ 463 0313 5D E1 14                		movu.W	40[r14], r1
+ 464 0316 02                      		rts
+ 465                             	.LFE5:
+ 467                             		.global	__Z13startAD_AN005v
+ 469                             	__Z13startAD_AN005v:
+ 470                             	.LFB6:
+ 205:../src/peripheral/ad.cpp **** 
+ 206:../src/peripheral/ad.cpp **** uint16_t startAD_AN005(void){
+ 471                             		.loc 1 206 0
+ 207:../src/peripheral/ad.cpp **** 	S12AD.ADANSA0.WORD = 0x0020;
+ 472                             		.loc 1 207 0
+ 473 0317 FB EE 00 90 08          		mov.L	#0x89000, r14
+ 474 031c F9 E5 02 20             		mov.W	#32, 4[r14]
+ 208:../src/peripheral/ad.cpp **** 	S12AD.ADADS0.BIT.ADS0 = 0x0000; //1:変換値加算モード選択 0：非選択
+ 475                             		.loc 1 208 0
+ 476 0320 F9 E5 04 00             		mov.W	#0, 8[r14]
+ 209:../src/peripheral/ad.cpp **** 	//S12AD.ADADC.BIT.ADC   = 3; //加算回数の選択 4times変換 3times加算
+ 210:../src/peripheral/ad.cpp **** 	S12AD.ADCER.BIT.ADRFMT = 0; //右詰めフォーマット
+ 477                             		.loc 1 210 0
+ 478 0324 DD E3 07                		mov.W	14[r14], r3
+ 211:../src/peripheral/ad.cpp **** 
+ 212:../src/peripheral/ad.cpp **** 	S12AD.ADCSR.BIT.ADST = 1;
+ 213:../src/peripheral/ad.cpp **** 	//S12AD.ADSTRGR.BIT.ADSTRS = 0;
+ 214:../src/peripheral/ad.cpp **** 	while(S12AD.ADCSR.BIT.ADST == 1);
+ 479                             		.loc 1 214 0
+ 480 0327 EF E4                   		mov.L	r14, r4
+ 210:../src/peripheral/ad.cpp **** 
+ 481                             		.loc 1 210 0
+ 482 0329 76 23 FF 7F             		and #0x7fff, r3
+ 483 032d D7 E3 07                		mov.W	r3, 14[r14]
+ 212:../src/peripheral/ad.cpp **** 	//S12AD.ADSTRGR.BIT.ADSTRS = 0;
+ 484                             		.loc 1 212 0
+ 485 0330 DC E3                   		mov.W	[r14], r3
+ 486 0332 76 33 00 80             		or	#0xffff8000, r3
+ 487 0336 D3 E3                   		mov.W	r3, [r14]
+ 488                             		.balign 8,3,5
+ 489                             	.L20:
+ 490                             		.loc 1 214 0 discriminator 1
+ 491 0338 DC 4E                   		mov.W	[r4], r14
+ 492 033a 7C FE                   		btst	#15, r14
+ 493 033c 21 FC                   		bne	.L20
+ 215:../src/peripheral/ad.cpp **** 	return S12AD.ADDR5;
+ 494                             		.loc 1 215 0
+ 495 033e FB EE 00 90 08          		mov.L	#0x89000, r14
+ 216:../src/peripheral/ad.cpp **** }
+ 496                             		.loc 1 216 0
+ 497 0343 5D E1 15                		movu.W	42[r14], r1
+ 498 0346 02                      		rts
+ 499                             	.LFE6:
+ 501                             		.global	__Z13startAD_AN006v
+ 503                             	__Z13startAD_AN006v:
+ 504                             	.LFB7:
+ 217:../src/peripheral/ad.cpp **** 
+ 218:../src/peripheral/ad.cpp **** uint16_t startAD_AN006(void){
+ 505                             		.loc 1 218 0
+ 219:../src/peripheral/ad.cpp **** 	S12AD.ADANSA0.WORD = 0x0040;
+ 506                             		.loc 1 219 0
+ 507 0347 FB EE 00 90 08          		mov.L	#0x89000, r14
+ 508 034c F9 E5 02 40             		mov.W	#64, 4[r14]
+ 220:../src/peripheral/ad.cpp **** 	S12AD.ADADS0.BIT.ADS0 = 0x0000; //1:変換値加算モード選択 0：非選択
+ 509                             		.loc 1 220 0
+ 510 0350 F9 E5 04 00             		mov.W	#0, 8[r14]
+ 221:../src/peripheral/ad.cpp **** 	//S12AD.ADADC.BIT.ADC   = 3; //加算回数の選択 4times変換 3times加算
+ 222:../src/peripheral/ad.cpp **** 	S12AD.ADCER.BIT.ADRFMT = 0; //右詰めフォーマット
+ 511                             		.loc 1 222 0
+ 512 0354 DD E3 07                		mov.W	14[r14], r3
+ 223:../src/peripheral/ad.cpp **** 
+ 224:../src/peripheral/ad.cpp **** 	S12AD.ADCSR.BIT.ADST = 1;
+ 225:../src/peripheral/ad.cpp **** 	//S12AD.ADSTRGR.BIT.ADSTRS = 0;
+ 226:../src/peripheral/ad.cpp **** 	while(S12AD.ADCSR.BIT.ADST == 1);
+ 513                             		.loc 1 226 0
+ 514 0357 EF E4                   		mov.L	r14, r4
+ 222:../src/peripheral/ad.cpp **** 
+ 515                             		.loc 1 222 0
+ 516 0359 76 23 FF 7F             		and #0x7fff, r3
+ 517 035d D7 E3 07                		mov.W	r3, 14[r14]
+ 224:../src/peripheral/ad.cpp **** 	//S12AD.ADSTRGR.BIT.ADSTRS = 0;
+ 518                             		.loc 1 224 0
+ 519 0360 DC E3                   		mov.W	[r14], r3
+ 520 0362 76 33 00 80             		or	#0xffff8000, r3
+ 521 0366 D3 E3                   		mov.W	r3, [r14]
+ 522                             		.balign 8,3,5
+ 523                             	.L23:
+ 524                             		.loc 1 226 0 discriminator 1
+ 525 0368 DC 4E                   		mov.W	[r4], r14
+ 526 036a 7C FE                   		btst	#15, r14
+ 527 036c 21 FC                   		bne	.L23
+ 227:../src/peripheral/ad.cpp **** 	return S12AD.ADDR6;
+ 528                             		.loc 1 227 0
+ 529 036e FB EE 00 90 08          		mov.L	#0x89000, r14
+ 228:../src/peripheral/ad.cpp **** }
+ 530                             		.loc 1 228 0
+ 531 0373 5D E1 16                		movu.W	44[r14], r1
+ 532 0376 02                      		rts
+ 533                             	.LFE7:
+ 535                             		.global	__Z13startAD_AN007v
+ 537                             	__Z13startAD_AN007v:
+ 538                             	.LFB8:
+ 229:../src/peripheral/ad.cpp **** 
+ 230:../src/peripheral/ad.cpp **** uint16_t startAD_AN007(void){
+ 539                             		.loc 1 230 0
+ 231:../src/peripheral/ad.cpp **** 	S12AD.ADANSA0.WORD = 0x0080;
+ 540                             		.loc 1 231 0
+ 541 0377 FB EE 00 90 08          		mov.L	#0x89000, r14
+ 542 037c F9 E9 02 80 00          		mov.W	#0x80, 4[r14]
+ 232:../src/peripheral/ad.cpp **** 	S12AD.ADADS0.BIT.ADS0 = 0x0000; //1:変換値加算モード選択 0：非選択
+ 543                             		.loc 1 232 0
+ 544 0381 F9 E5 04 00             		mov.W	#0, 8[r14]
+ 233:../src/peripheral/ad.cpp **** 	//S12AD.ADADC.BIT.ADC   = 3; //加算回数の選択 4times変換 3times加算
+ 234:../src/peripheral/ad.cpp **** 	S12AD.ADCER.BIT.ADRFMT = 0; //右詰めフォーマット
+ 545                             		.loc 1 234 0
+ 546 0385 DD E3 07                		mov.W	14[r14], r3
+ 235:../src/peripheral/ad.cpp **** 
+ 236:../src/peripheral/ad.cpp **** 	S12AD.ADCSR.BIT.ADST = 1;
+ 237:../src/peripheral/ad.cpp **** 	//S12AD.ADSTRGR.BIT.ADSTRS = 0;
+ 238:../src/peripheral/ad.cpp **** 	while(S12AD.ADCSR.BIT.ADST == 1);
+ 547                             		.loc 1 238 0
+ 548 0388 EF E4                   		mov.L	r14, r4
+ 234:../src/peripheral/ad.cpp **** 
+ 549                             		.loc 1 234 0
+ 550 038a 76 23 FF 7F             		and #0x7fff, r3
+ 551 038e D7 E3 07                		mov.W	r3, 14[r14]
+ 236:../src/peripheral/ad.cpp **** 	//S12AD.ADSTRGR.BIT.ADSTRS = 0;
+ 552                             		.loc 1 236 0
+ 553 0391 DC E3                   		mov.W	[r14], r3
+ 554 0393 76 33 00 80             		or	#0xffff8000, r3
+ 555 0397 D3 E3                   		mov.W	r3, [r14]
+ 556                             		.balign 8,3,5
+ 557                             	.L26:
+ 558                             		.loc 1 238 0 discriminator 1
+ 559 0399 DC 4E                   		mov.W	[r4], r14
+ 560 039b 7C FE                   		btst	#15, r14
+ 561 039d 21 FC                   		bne	.L26
+ 239:../src/peripheral/ad.cpp **** 	return S12AD.ADDR7;
+ 562                             		.loc 1 239 0
+ 563 039f FB EE 00 90 08          		mov.L	#0x89000, r14
+ 240:../src/peripheral/ad.cpp **** }
+ 564                             		.loc 1 240 0
+ 565 03a4 5D E1 17                		movu.W	46[r14], r1
+ 566 03a7 02                      		rts
+ 567                             	.LFE8:
+ 569                             		.global	__Z13startAD_AN108v
+ 571                             	__Z13startAD_AN108v:
+ 572                             	.LFB9:
+ 241:../src/peripheral/ad.cpp **** 
+ 242:../src/peripheral/ad.cpp **** 
+ 243:../src/peripheral/ad.cpp **** uint16_t startAD_AN108(void){
+ 573                             		.loc 1 243 0
+ 244:../src/peripheral/ad.cpp **** 	S12AD1.ADANSA0.WORD = 0x0100;
+ 574                             		.loc 1 244 0
+ 575 03a8 FB EE 00 91 08          		mov.L	#0x89100, r14
+ 576 03ad F9 E9 02 00 01          		mov.W	#0x100, 4[r14]
+ 245:../src/peripheral/ad.cpp **** 	S12AD1.ADADS1.BIT.ADS1 = 0x0000; //1:変換値加算モード選択 0：非選択
+ 577                             		.loc 1 245 0
+ 578 03b2 DD E3 05                		mov.W	10[r14], r3
+ 246:../src/peripheral/ad.cpp **** 	//S12AD.ADADC.BIT.ADC   = 3; //加算回数の選択 4times変換 3times加算
+ 247:../src/peripheral/ad.cpp **** 	S12AD1.ADCER.BIT.ADRFMT = 0; //右詰めフォーマット
+ 248:../src/peripheral/ad.cpp **** 
+ 249:../src/peripheral/ad.cpp **** 	S12AD1.ADCSR.BIT.ADST = 1;
+ 250:../src/peripheral/ad.cpp **** 	//S12AD.ADSTRGR.BIT.ADSTRS = 0;
+ 251:../src/peripheral/ad.cpp **** 	while(S12AD1.ADCSR.BIT.ADST == 1);
+ 579                             		.loc 1 251 0
+ 580 03b5 EF E4                   		mov.L	r14, r4
+ 245:../src/peripheral/ad.cpp **** 	S12AD1.ADADS1.BIT.ADS1 = 0x0000; //1:変換値加算モード選択 0：非選択
+ 581                             		.loc 1 245 0
+ 582 03b7 75 23 E0                		and #-32, r3
+ 583 03ba D7 E3 05                		mov.W	r3, 10[r14]
+ 247:../src/peripheral/ad.cpp **** 
+ 584                             		.loc 1 247 0
+ 585 03bd DD E3 07                		mov.W	14[r14], r3
+ 586 03c0 76 23 FF 7F             		and #0x7fff, r3
+ 587 03c4 D7 E3 07                		mov.W	r3, 14[r14]
+ 249:../src/peripheral/ad.cpp **** 	//S12AD.ADSTRGR.BIT.ADSTRS = 0;
+ 588                             		.loc 1 249 0
+ 589 03c7 DC E3                   		mov.W	[r14], r3
+ 590 03c9 76 33 00 80             		or	#0xffff8000, r3
+ 591 03cd D3 E3                   		mov.W	r3, [r14]
+ 592 03cf 03                      		.balign 8,3,5
+ 593                             	.L29:
+ 594                             		.loc 1 251 0 discriminator 1
+ 595 03d0 DC 4E                   		mov.W	[r4], r14
+ 596 03d2 7C FE                   		btst	#15, r14
+ 597 03d4 21 FC                   		bne	.L29
+ 252:../src/peripheral/ad.cpp **** 	return S12AD1.ADDR8;
+ 598                             		.loc 1 252 0
+ 599 03d6 FB EE 00 91 08          		mov.L	#0x89100, r14
+ 253:../src/peripheral/ad.cpp **** }
+ 600                             		.loc 1 253 0
+ 601 03db 5D E1 18                		movu.W	48[r14], r1
+ 602 03de 02                      		rts
+ 603                             	.LFE9:
+ 605                             		.global	__Z13startAD_AN109v
+ 607                             	__Z13startAD_AN109v:
+ 608                             	.LFB10:
+ 254:../src/peripheral/ad.cpp **** 
+ 255:../src/peripheral/ad.cpp **** uint16_t startAD_AN109(void){
+ 609                             		.loc 1 255 0
+ 256:../src/peripheral/ad.cpp **** 	S12AD1.ADANSA0.WORD = 0x0200;
+ 610                             		.loc 1 256 0
+ 611 03df FB EE 00 91 08          		mov.L	#0x89100, r14
+ 612 03e4 F9 E9 02 00 02          		mov.W	#0x200, 4[r14]
+ 257:../src/peripheral/ad.cpp **** 	S12AD1.ADADS1.BIT.ADS1 = 0x0000; //1:変換値加算モード選択 0：非選択
+ 613                             		.loc 1 257 0
+ 614 03e9 DD E3 05                		mov.W	10[r14], r3
+ 258:../src/peripheral/ad.cpp **** 	//S12AD.ADADC.BIT.ADC   = 3; //加算回数の選択 4times変換 3times加算
+ 259:../src/peripheral/ad.cpp **** 	S12AD1.ADCER.BIT.ADRFMT = 0; //右詰めフォーマット
+ 260:../src/peripheral/ad.cpp **** 
+ 261:../src/peripheral/ad.cpp **** 	S12AD1.ADCSR.BIT.ADST = 1;
+ 262:../src/peripheral/ad.cpp **** 	//S12AD.ADSTRGR.BIT.ADSTRS = 0;
+ 263:../src/peripheral/ad.cpp **** 	while(S12AD1.ADCSR.BIT.ADST == 1);
+ 615                             		.loc 1 263 0
+ 616 03ec EF E4                   		mov.L	r14, r4
+ 257:../src/peripheral/ad.cpp **** 	S12AD1.ADADS1.BIT.ADS1 = 0x0000; //1:変換値加算モード選択 0：非選択
+ 617                             		.loc 1 257 0
+ 618 03ee 75 23 E0                		and #-32, r3
+ 619 03f1 D7 E3 05                		mov.W	r3, 10[r14]
+ 259:../src/peripheral/ad.cpp **** 
+ 620                             		.loc 1 259 0
+ 621 03f4 DD E3 07                		mov.W	14[r14], r3
+ 622 03f7 76 23 FF 7F             		and #0x7fff, r3
+ 623 03fb D7 E3 07                		mov.W	r3, 14[r14]
+ 261:../src/peripheral/ad.cpp **** 	//S12AD.ADSTRGR.BIT.ADSTRS = 0;
+ 624                             		.loc 1 261 0
+ 625 03fe DC E3                   		mov.W	[r14], r3
+ 626 0400 76 33 00 80             		or	#0xffff8000, r3
+ 627 0404 D3 E3                   		mov.W	r3, [r14]
+ 628 0406 EF 00                   		.balign 8,3,5
+ 629                             	.L32:
+ 630                             		.loc 1 263 0 discriminator 1
+ 631 0408 DC 4E                   		mov.W	[r4], r14
+ 632 040a 7C FE                   		btst	#15, r14
+ 633 040c 21 FC                   		bne	.L32
+ 264:../src/peripheral/ad.cpp **** 	return S12AD1.ADDR9;
+ 634                             		.loc 1 264 0
+ 635 040e FB EE 00 91 08          		mov.L	#0x89100, r14
+ 265:../src/peripheral/ad.cpp **** }
+ 636                             		.loc 1 265 0
+ 637 0413 5D E1 19                		movu.W	50[r14], r1
+ 638 0416 02                      		rts
+ 639                             	.LFE10:
+ 641                             		.global	__Z13startAD_AN110v
+ 643                             	__Z13startAD_AN110v:
+ 644                             	.LFB11:
+ 266:../src/peripheral/ad.cpp **** 
+ 267:../src/peripheral/ad.cpp **** uint16_t startAD_AN110(void){
+ 645                             		.loc 1 267 0
+ 268:../src/peripheral/ad.cpp **** 	S12AD1.ADANSA0.WORD = 0x0400;
+ 646                             		.loc 1 268 0
+ 647 0417 FB EE 00 91 08          		mov.L	#0x89100, r14
+ 648 041c F9 E9 02 00 04          		mov.W	#0x400, 4[r14]
+ 269:../src/peripheral/ad.cpp **** 	S12AD1.ADADS1.BIT.ADS1 = 0x0000; //1:変換値加算モード選択 0：非選択
+ 649                             		.loc 1 269 0
+ 650 0421 DD E3 05                		mov.W	10[r14], r3
+ 270:../src/peripheral/ad.cpp **** 	//S12AD.ADADC.BIT.ADC   = 3; //加算回数の選択 4times変換 3times加算
+ 271:../src/peripheral/ad.cpp **** 	S12AD1.ADCER.BIT.ADRFMT = 0; //右詰めフォーマット
+ 272:../src/peripheral/ad.cpp **** 
+ 273:../src/peripheral/ad.cpp **** 	S12AD1.ADCSR.BIT.ADST = 1;
+ 274:../src/peripheral/ad.cpp **** 	//S12AD.ADSTRGR.BIT.ADSTRS = 0;
+ 275:../src/peripheral/ad.cpp **** 	while(S12AD1.ADCSR.BIT.ADST == 1);
+ 651                             		.loc 1 275 0
+ 652 0424 EF E4                   		mov.L	r14, r4
+ 269:../src/peripheral/ad.cpp **** 	S12AD1.ADADS1.BIT.ADS1 = 0x0000; //1:変換値加算モード選択 0：非選択
+ 653                             		.loc 1 269 0
+ 654 0426 75 23 E0                		and #-32, r3
+ 655 0429 D7 E3 05                		mov.W	r3, 10[r14]
+ 271:../src/peripheral/ad.cpp **** 
+ 656                             		.loc 1 271 0
+ 657 042c DD E3 07                		mov.W	14[r14], r3
+ 658 042f 76 23 FF 7F             		and #0x7fff, r3
+ 659 0433 D7 E3 07                		mov.W	r3, 14[r14]
+ 273:../src/peripheral/ad.cpp **** 	//S12AD.ADSTRGR.BIT.ADSTRS = 0;
+ 660                             		.loc 1 273 0
+ 661 0436 DC E3                   		mov.W	[r14], r3
+ 662 0438 76 33 00 80             		or	#0xffff8000, r3
+ 663 043c D3 E3                   		mov.W	r3, [r14]
+ 664 043e EF 00                   		.balign 8,3,5
+ 665                             	.L35:
+ 666                             		.loc 1 275 0 discriminator 1
+ 667 0440 DC 4E                   		mov.W	[r4], r14
+ 668 0442 7C FE                   		btst	#15, r14
+ 669 0444 21 FC                   		bne	.L35
+ 276:../src/peripheral/ad.cpp **** 	return S12AD1.ADDR10;
+ 670                             		.loc 1 276 0
+ 671 0446 FB EE 00 91 08          		mov.L	#0x89100, r14
+ 277:../src/peripheral/ad.cpp **** }
+ 672                             		.loc 1 277 0
+ 673 044b 5D E1 1A                		movu.W	52[r14], r1
+ 674 044e 02                      		rts
+ 675                             	.LFE11:
+ 677                             		.global	__Z11startAD_Allv
+ 679                             	__Z11startAD_Allv:
+ 680                             	.LFB12:
+ 278:../src/peripheral/ad.cpp **** 
+ 279:../src/peripheral/ad.cpp **** void startAD_All(void){
+ 681                             		.loc 1 279 0
+ 682                             	.LBB24:
+ 683                             	.LBB25:
+ 147:../src/peripheral/ad.cpp **** 	S12AD.ADADS0.BIT.ADS0 = 0x0000; //1:変換値加算モード選択 0：非選択
+ 684                             		.loc 1 147 0
+ 685 044f FB EE 00 90 08          		mov.L	#0x89000, r14
+ 686 0454 F9 E5 02 01             		mov.W	#1, 4[r14]
+ 148:../src/peripheral/ad.cpp **** 	//S12AD.ADADC.BIT.ADC   = 3; //加算回数の選択 4times変換 3times加算
+ 687                             		.loc 1 148 0
+ 688 0458 F9 E5 04 00             		mov.W	#0, 8[r14]
+ 150:../src/peripheral/ad.cpp **** 
+ 689                             		.loc 1 150 0
+ 690 045c DD E4 07                		mov.W	14[r14], r4
+ 154:../src/peripheral/ad.cpp **** 	return S12AD.ADDR0;
+ 691                             		.loc 1 154 0
+ 692 045f EF E3                   		mov.L	r14, r3
+ 150:../src/peripheral/ad.cpp **** 
+ 693                             		.loc 1 150 0
+ 694 0461 76 24 FF 7F             		and #0x7fff, r4
+ 695 0465 D7 E4 07                		mov.W	r4, 14[r14]
+ 152:../src/peripheral/ad.cpp **** 	//S12AD.ADSTRGR.BIT.ADSTRS = 0;
+ 696                             		.loc 1 152 0
+ 697 0468 DC E4                   		mov.W	[r14], r4
+ 698 046a 76 34 00 80             		or	#0xffff8000, r4
+ 699 046e D3 E4                   		mov.W	r4, [r14]
+ 700                             		.balign 8,3,5
+ 701                             	.L38:
+ 154:../src/peripheral/ad.cpp **** 	return S12AD.ADDR0;
+ 702                             		.loc 1 154 0
+ 703 0470 DC 3E                   		mov.W	[r3], r14
+ 704 0472 FB 4E 00 90 08          		mov.L	#0x89000, r4
+ 705 0477 5F EE                   		movu.W	r14, r14
+ 706 0479 68 FE                   		shlr	#15, r14
+ 707 047b 21 F5                   		bne	.L38
+ 155:../src/peripheral/ad.cpp **** }
+ 708                             		.loc 1 155 0
+ 709 047d 9C 43                   		mov.W	32[r4], r3
+ 710                             	.LBE25:
+ 711                             	.LBE24:
+ 712                             	.LBB26:
+ 713                             	.LBB27:
+ 159:../src/peripheral/ad.cpp **** 	S12AD.ADADS0.BIT.ADS0 = 0x0000; //1:変換値加算モード選択 0：非選択
+ 714                             		.loc 1 159 0
+ 715 047f 3D 42 02                		mov.W	#2, 4[r4]
+ 160:../src/peripheral/ad.cpp **** 	//S12AD.ADADC.BIT.ADC   = 3; //加算回数の選択 4times変換 3times加算
+ 716                             		.loc 1 160 0
+ 717 0482 D7 4E 04                		mov.W	r14, 8[r4]
+ 162:../src/peripheral/ad.cpp **** 
+ 718                             		.loc 1 162 0
+ 719 0485 DD 4E 07                		mov.W	14[r4], r14
+ 166:../src/peripheral/ad.cpp **** 	return S12AD.ADDR1;
+ 720                             		.loc 1 166 0
+ 721 0488 EF 43                   		mov.L	r4, r3
+ 162:../src/peripheral/ad.cpp **** 
+ 722                             		.loc 1 162 0
+ 723 048a 76 2E FF 7F             		and #0x7fff, r14
+ 724 048e D7 4E 07                		mov.W	r14, 14[r4]
+ 164:../src/peripheral/ad.cpp **** 	//S12AD.ADSTRGR.BIT.ADSTRS = 0;
+ 725                             		.loc 1 164 0
+ 726 0491 DC 4E                   		mov.W	[r4], r14
+ 727 0493 76 3E 00 80             		or	#0xffff8000, r14
+ 728 0497 D3 4E                   		mov.W	r14, [r4]
+ 729                             		.balign 8,3,5
+ 730                             	.L40:
+ 166:../src/peripheral/ad.cpp **** 	return S12AD.ADDR1;
+ 731                             		.loc 1 166 0
+ 732 0499 DC 3E                   		mov.W	[r3], r14
+ 733 049b FB 4E 00 90 08          		mov.L	#0x89000, r4
+ 734 04a0 5F EE                   		movu.W	r14, r14
+ 735 04a2 68 FE                   		shlr	#15, r14
+ 736 04a4 21 F5                   		bne	.L40
+ 167:../src/peripheral/ad.cpp **** }
+ 737                             		.loc 1 167 0
+ 738 04a6 9C 4B                   		mov.W	34[r4], r3
+ 739                             	.LBE27:
+ 740                             	.LBE26:
+ 741                             	.LBB28:
+ 742                             	.LBB29:
+ 171:../src/peripheral/ad.cpp **** 	S12AD.ADADS0.BIT.ADS0 = 0x0000; //1:変換値加算モード選択 0：非選択
+ 743                             		.loc 1 171 0
+ 744 04a8 3D 42 04                		mov.W	#4, 4[r4]
+ 172:../src/peripheral/ad.cpp **** 	//S12AD.ADADC.BIT.ADC   = 3; //加算回数の選択 4times変換 3times加算
+ 745                             		.loc 1 172 0
+ 746 04ab D7 4E 04                		mov.W	r14, 8[r4]
+ 174:../src/peripheral/ad.cpp **** 
+ 747                             		.loc 1 174 0
+ 748 04ae DD 4E 07                		mov.W	14[r4], r14
+ 178:../src/peripheral/ad.cpp **** 	return S12AD.ADDR2;
+ 749                             		.loc 1 178 0
+ 750 04b1 EF 43                   		mov.L	r4, r3
+ 174:../src/peripheral/ad.cpp **** 
+ 751                             		.loc 1 174 0
+ 752 04b3 76 2E FF 7F             		and #0x7fff, r14
+ 753 04b7 D7 4E 07                		mov.W	r14, 14[r4]
+ 176:../src/peripheral/ad.cpp **** 	//S12AD.ADSTRGR.BIT.ADSTRS = 0;
+ 754                             		.loc 1 176 0
+ 755 04ba DC 4E                   		mov.W	[r4], r14
+ 756 04bc 76 3E 00 80             		or	#0xffff8000, r14
+ 757 04c0 D3 4E                   		mov.W	r14, [r4]
+ 758                             		.balign 8,3,5
+ 759                             	.L42:
+ 178:../src/peripheral/ad.cpp **** 	return S12AD.ADDR2;
+ 760                             		.loc 1 178 0
+ 761 04c2 DC 3E                   		mov.W	[r3], r14
+ 762 04c4 FB 4E 00 90 08          		mov.L	#0x89000, r4
+ 763 04c9 5F EE                   		movu.W	r14, r14
+ 764 04cb 68 FE                   		shlr	#15, r14
+ 765 04cd 21 F5                   		bne	.L42
+ 179:../src/peripheral/ad.cpp **** }
+ 766                             		.loc 1 179 0
+ 767 04cf 9C C3                   		mov.W	36[r4], r3
+ 768                             	.LBE29:
+ 769                             	.LBE28:
+ 770                             	.LBB30:
+ 771                             	.LBB31:
+ 183:../src/peripheral/ad.cpp **** 	S12AD.ADADS0.BIT.ADS0 = 0x0000; //1:変換値加算モード選択 0：非選択
+ 772                             		.loc 1 183 0
+ 773 04d1 3D 42 08                		mov.W	#8, 4[r4]
+ 184:../src/peripheral/ad.cpp **** 	//S12AD.ADADC.BIT.ADC   = 3; //加算回数の選択 4times変換 3times加算
+ 774                             		.loc 1 184 0
+ 775 04d4 D7 4E 04                		mov.W	r14, 8[r4]
+ 186:../src/peripheral/ad.cpp **** 
+ 776                             		.loc 1 186 0
+ 777 04d7 DD 4E 07                		mov.W	14[r4], r14
+ 190:../src/peripheral/ad.cpp **** 	return S12AD.ADDR3;
+ 778                             		.loc 1 190 0
+ 779 04da EF 43                   		mov.L	r4, r3
+ 186:../src/peripheral/ad.cpp **** 
+ 780                             		.loc 1 186 0
+ 781 04dc 76 2E FF 7F             		and #0x7fff, r14
+ 782 04e0 D7 4E 07                		mov.W	r14, 14[r4]
+ 188:../src/peripheral/ad.cpp **** 	//S12AD.ADSTRGR.BIT.ADSTRS = 0;
+ 783                             		.loc 1 188 0
+ 784 04e3 DC 4E                   		mov.W	[r4], r14
+ 785 04e5 76 3E 00 80             		or	#0xffff8000, r14
+ 786 04e9 D3 4E                   		mov.W	r14, [r4]
+ 787 04eb 77 10 01 00 00          		.balign 8,3,5
+ 788                             	.L44:
+ 190:../src/peripheral/ad.cpp **** 	return S12AD.ADDR3;
+ 789                             		.loc 1 190 0
+ 790 04f0 DC 3E                   		mov.W	[r3], r14
+ 791 04f2 FB 4E 00 90 08          		mov.L	#0x89000, r4
+ 792 04f7 5F EE                   		movu.W	r14, r14
+ 793 04f9 68 FE                   		shlr	#15, r14
+ 794 04fb 21 F5                   		bne	.L44
+ 191:../src/peripheral/ad.cpp **** }
+ 795                             		.loc 1 191 0
+ 796 04fd 9C CB                   		mov.W	38[r4], r3
+ 797                             	.LBE31:
+ 798                             	.LBE30:
+ 799                             	.LBB32:
+ 800                             	.LBB33:
+ 195:../src/peripheral/ad.cpp **** 	S12AD.ADADS0.BIT.ADS0 = 0x0000; //1:変換値加算モード選択 0：非選択
+ 801                             		.loc 1 195 0
+ 802 04ff 3D 42 10                		mov.W	#16, 4[r4]
+ 196:../src/peripheral/ad.cpp **** 	//S12AD.ADADC.BIT.ADC   = 3; //加算回数の選択 4times変換 3times加算
+ 803                             		.loc 1 196 0
+ 804 0502 D7 4E 04                		mov.W	r14, 8[r4]
+ 198:../src/peripheral/ad.cpp **** 
+ 805                             		.loc 1 198 0
+ 806 0505 DD 4E 07                		mov.W	14[r4], r14
+ 202:../src/peripheral/ad.cpp **** 	return S12AD.ADDR4;
+ 807                             		.loc 1 202 0
+ 808 0508 EF 43                   		mov.L	r4, r3
+ 198:../src/peripheral/ad.cpp **** 
+ 809                             		.loc 1 198 0
+ 810 050a 76 2E FF 7F             		and #0x7fff, r14
+ 811 050e D7 4E 07                		mov.W	r14, 14[r4]
+ 200:../src/peripheral/ad.cpp **** 	//S12AD.ADSTRGR.BIT.ADSTRS = 0;
+ 812                             		.loc 1 200 0
+ 813 0511 DC 4E                   		mov.W	[r4], r14
+ 814 0513 76 3E 00 80             		or	#0xffff8000, r14
+ 815 0517 D3 4E                   		mov.W	r14, [r4]
+ 816                             		.balign 8,3,5
+ 817                             	.L46:
+ 202:../src/peripheral/ad.cpp **** 	return S12AD.ADDR4;
+ 818                             		.loc 1 202 0
+ 819 0519 DC 3E                   		mov.W	[r3], r14
+ 820 051b FB 4E 00 90 08          		mov.L	#0x89000, r4
+ 821 0520 5F EE                   		movu.W	r14, r14
+ 822 0522 68 FE                   		shlr	#15, r14
+ 823 0524 21 F5                   		bne	.L46
+ 203:../src/peripheral/ad.cpp **** }
+ 824                             		.loc 1 203 0
+ 825 0526 9D 43                   		mov.W	40[r4], r3
+ 826                             	.LBE33:
+ 827                             	.LBE32:
+ 828                             	.LBB34:
+ 829                             	.LBB35:
+ 207:../src/peripheral/ad.cpp **** 	S12AD.ADADS0.BIT.ADS0 = 0x0000; //1:変換値加算モード選択 0：非選択
+ 830                             		.loc 1 207 0
+ 831 0528 3D 42 20                		mov.W	#32, 4[r4]
+ 208:../src/peripheral/ad.cpp **** 	//S12AD.ADADC.BIT.ADC   = 3; //加算回数の選択 4times変換 3times加算
+ 832                             		.loc 1 208 0
+ 833 052b D7 4E 04                		mov.W	r14, 8[r4]
+ 210:../src/peripheral/ad.cpp **** 
+ 834                             		.loc 1 210 0
+ 835 052e DD 4E 07                		mov.W	14[r4], r14
+ 214:../src/peripheral/ad.cpp **** 	return S12AD.ADDR5;
+ 836                             		.loc 1 214 0
+ 837 0531 EF 43                   		mov.L	r4, r3
+ 210:../src/peripheral/ad.cpp **** 
+ 838                             		.loc 1 210 0
+ 839 0533 76 2E FF 7F             		and #0x7fff, r14
+ 840 0537 D7 4E 07                		mov.W	r14, 14[r4]
+ 212:../src/peripheral/ad.cpp **** 	//S12AD.ADSTRGR.BIT.ADSTRS = 0;
+ 841                             		.loc 1 212 0
+ 842 053a DC 4E                   		mov.W	[r4], r14
+ 843 053c 76 3E 00 80             		or	#0xffff8000, r14
+ 844 0540 D3 4E                   		mov.W	r14, [r4]
+ 845                             		.balign 8,3,5
+ 846                             	.L48:
+ 214:../src/peripheral/ad.cpp **** 	return S12AD.ADDR5;
+ 847                             		.loc 1 214 0
+ 848 0542 DC 3E                   		mov.W	[r3], r14
+ 849 0544 FB 4E 00 90 08          		mov.L	#0x89000, r4
+ 850 0549 5F EE                   		movu.W	r14, r14
+ 851 054b 68 FE                   		shlr	#15, r14
+ 852 054d 21 F5                   		bne	.L48
+ 215:../src/peripheral/ad.cpp **** }
+ 853                             		.loc 1 215 0
+ 854 054f 9D 4B                   		mov.W	42[r4], r3
+ 855                             	.LBE35:
+ 856                             	.LBE34:
+ 857                             	.LBB36:
+ 858                             	.LBB37:
+ 219:../src/peripheral/ad.cpp **** 	S12AD.ADADS0.BIT.ADS0 = 0x0000; //1:変換値加算モード選択 0：非選択
+ 859                             		.loc 1 219 0
+ 860 0551 3D 42 40                		mov.W	#64, 4[r4]
+ 220:../src/peripheral/ad.cpp **** 	//S12AD.ADADC.BIT.ADC   = 3; //加算回数の選択 4times変換 3times加算
+ 861                             		.loc 1 220 0
+ 862 0554 D7 4E 04                		mov.W	r14, 8[r4]
+ 222:../src/peripheral/ad.cpp **** 
+ 863                             		.loc 1 222 0
+ 864 0557 DD 4E 07                		mov.W	14[r4], r14
+ 226:../src/peripheral/ad.cpp **** 	return S12AD.ADDR6;
+ 865                             		.loc 1 226 0
+ 866 055a EF 43                   		mov.L	r4, r3
+ 222:../src/peripheral/ad.cpp **** 
+ 867                             		.loc 1 222 0
+ 868 055c 76 2E FF 7F             		and #0x7fff, r14
+ 869 0560 D7 4E 07                		mov.W	r14, 14[r4]
+ 224:../src/peripheral/ad.cpp **** 	//S12AD.ADSTRGR.BIT.ADSTRS = 0;
+ 870                             		.loc 1 224 0
+ 871 0563 DC 4E                   		mov.W	[r4], r14
+ 872 0565 76 3E 00 80             		or	#0xffff8000, r14
+ 873 0569 D3 4E                   		mov.W	r14, [r4]
+ 874 056b 77 10 01 00 00          		.balign 8,3,5
+ 875                             	.L50:
+ 226:../src/peripheral/ad.cpp **** 	return S12AD.ADDR6;
+ 876                             		.loc 1 226 0
+ 877 0570 DC 3E                   		mov.W	[r3], r14
+ 878 0572 FB 4E 00 90 08          		mov.L	#0x89000, r4
+ 879 0577 5F EE                   		movu.W	r14, r14
+ 880 0579 68 FE                   		shlr	#15, r14
+ 881 057b 21 F5                   		bne	.L50
+ 227:../src/peripheral/ad.cpp **** }
+ 882                             		.loc 1 227 0
+ 883 057d 9D C3                   		mov.W	44[r4], r3
+ 884                             	.LBE37:
+ 885                             	.LBE36:
+ 886                             	.LBB38:
+ 887                             	.LBB39:
+ 231:../src/peripheral/ad.cpp **** 	S12AD.ADADS0.BIT.ADS0 = 0x0000; //1:変換値加算モード選択 0：非選択
+ 888                             		.loc 1 231 0
+ 889 057f 3D 42 80                		mov.W	#0x80, 4[r4]
+ 232:../src/peripheral/ad.cpp **** 	//S12AD.ADADC.BIT.ADC   = 3; //加算回数の選択 4times変換 3times加算
+ 890                             		.loc 1 232 0
+ 891 0582 D7 4E 04                		mov.W	r14, 8[r4]
+ 234:../src/peripheral/ad.cpp **** 
+ 892                             		.loc 1 234 0
+ 893 0585 DD 4E 07                		mov.W	14[r4], r14
+ 238:../src/peripheral/ad.cpp **** 	return S12AD.ADDR7;
+ 894                             		.loc 1 238 0
+ 895 0588 EF 43                   		mov.L	r4, r3
+ 234:../src/peripheral/ad.cpp **** 
+ 896                             		.loc 1 234 0
+ 897 058a 76 2E FF 7F             		and #0x7fff, r14
+ 898 058e D7 4E 07                		mov.W	r14, 14[r4]
+ 236:../src/peripheral/ad.cpp **** 	//S12AD.ADSTRGR.BIT.ADSTRS = 0;
+ 899                             		.loc 1 236 0
+ 900 0591 DC 4E                   		mov.W	[r4], r14
+ 901 0593 76 3E 00 80             		or	#0xffff8000, r14
+ 902 0597 D3 4E                   		mov.W	r14, [r4]
+ 903                             		.balign 8,3,5
+ 904                             	.L52:
+ 238:../src/peripheral/ad.cpp **** 	return S12AD.ADDR7;
+ 905                             		.loc 1 238 0
+ 906 0599 DC 3E                   		mov.W	[r3], r14
+ 907 059b 7C FE                   		btst	#15, r14
+ 908 059d 21 FC                   		bne	.L52
+ 909                             	.LBE39:
+ 910                             	.LBE38:
+ 911                             	.LBB41:
+ 912                             	.LBB42:
+ 244:../src/peripheral/ad.cpp **** 	S12AD1.ADADS1.BIT.ADS1 = 0x0000; //1:変換値加算モード選択 0：非選択
+ 913                             		.loc 1 244 0
+ 914 059f FB EE 00 91 08          		mov.L	#0x89100, r14
+ 915                             	.LBE42:
+ 916                             	.LBE41:
+ 917                             	.LBB44:
+ 918                             	.LBB40:
+ 239:../src/peripheral/ad.cpp **** }
+ 919                             		.loc 1 239 0
+ 920 05a4 FB 4E 00 90 08          		mov.L	#0x89000, r4
+ 921 05a9 9D CC                   		mov.W	46[r4], r4
+ 922                             	.LBE40:
+ 923                             	.LBE44:
+ 924                             	.LBB45:
+ 925                             	.LBB43:
+ 244:../src/peripheral/ad.cpp **** 	S12AD1.ADADS1.BIT.ADS1 = 0x0000; //1:変換値加算モード選択 0：非選択
+ 926                             		.loc 1 244 0
+ 927 05ab F9 E9 02 00 01          		mov.W	#0x100, 4[r14]
+ 245:../src/peripheral/ad.cpp **** 	//S12AD.ADADC.BIT.ADC   = 3; //加算回数の選択 4times変換 3times加算
+ 928                             		.loc 1 245 0
+ 929 05b0 DD E4 05                		mov.W	10[r14], r4
+ 251:../src/peripheral/ad.cpp **** 	return S12AD1.ADDR8;
+ 930                             		.loc 1 251 0
+ 931 05b3 EF E3                   		mov.L	r14, r3
+ 245:../src/peripheral/ad.cpp **** 	//S12AD.ADADC.BIT.ADC   = 3; //加算回数の選択 4times変換 3times加算
+ 932                             		.loc 1 245 0
+ 933 05b5 75 24 E0                		and #-32, r4
+ 934 05b8 D7 E4 05                		mov.W	r4, 10[r14]
+ 247:../src/peripheral/ad.cpp **** 
+ 935                             		.loc 1 247 0
+ 936 05bb DD E4 07                		mov.W	14[r14], r4
+ 937 05be 76 24 FF 7F             		and #0x7fff, r4
+ 938 05c2 D7 E4 07                		mov.W	r4, 14[r14]
+ 249:../src/peripheral/ad.cpp **** 	//S12AD.ADSTRGR.BIT.ADSTRS = 0;
+ 939                             		.loc 1 249 0
+ 940 05c5 DC E4                   		mov.W	[r14], r4
+ 941 05c7 76 34 00 80             		or	#0xffff8000, r4
+ 942 05cb D3 E4                   		mov.W	r4, [r14]
+ 943 05cd FC 13 00                		.balign 8,3,5
+ 944                             	.L54:
+ 251:../src/peripheral/ad.cpp **** 	return S12AD1.ADDR8;
+ 945                             		.loc 1 251 0
+ 946 05d0 DC 3E                   		mov.W	[r3], r14
+ 947 05d2 FB 4E 00 91 08          		mov.L	#0x89100, r4
+ 948 05d7 7C FE                   		btst	#15, r14
+ 949 05d9 21 F7                   		bne	.L54
+ 252:../src/peripheral/ad.cpp **** }
+ 950                             		.loc 1 252 0
+ 951 05db DD 4E 18                		mov.W	48[r4], r14
+ 952                             	.LBE43:
+ 953                             	.LBE45:
+ 954                             	.LBB46:
+ 955                             	.LBB47:
+ 256:../src/peripheral/ad.cpp **** 	S12AD1.ADADS1.BIT.ADS1 = 0x0000; //1:変換値加算モード選択 0：非選択
+ 956                             		.loc 1 256 0
+ 957 05de F9 49 02 00 02          		mov.W	#0x200, 4[r4]
+ 257:../src/peripheral/ad.cpp **** 	//S12AD.ADADC.BIT.ADC   = 3; //加算回数の選択 4times変換 3times加算
+ 958                             		.loc 1 257 0
+ 959 05e3 DD 4E 05                		mov.W	10[r4], r14
+ 263:../src/peripheral/ad.cpp **** 	return S12AD1.ADDR9;
+ 960                             		.loc 1 263 0
+ 961 05e6 EF 43                   		mov.L	r4, r3
+ 257:../src/peripheral/ad.cpp **** 	//S12AD.ADADC.BIT.ADC   = 3; //加算回数の選択 4times変換 3times加算
+ 962                             		.loc 1 257 0
+ 963 05e8 75 2E E0                		and #-32, r14
+ 964 05eb D7 4E 05                		mov.W	r14, 10[r4]
+ 259:../src/peripheral/ad.cpp **** 
+ 965                             		.loc 1 259 0
+ 966 05ee DD 4E 07                		mov.W	14[r4], r14
+ 967 05f1 76 2E FF 7F             		and #0x7fff, r14
+ 968 05f5 D7 4E 07                		mov.W	r14, 14[r4]
+ 261:../src/peripheral/ad.cpp **** 	//S12AD.ADSTRGR.BIT.ADSTRS = 0;
+ 969                             		.loc 1 261 0
+ 970 05f8 DC 4E                   		mov.W	[r4], r14
+ 971 05fa 76 3E 00 80             		or	#0xffff8000, r14
+ 972 05fe D3 4E                   		mov.W	r14, [r4]
+ 973                             		.balign 8,3,5
+ 974                             	.L56:
+ 263:../src/peripheral/ad.cpp **** 	return S12AD1.ADDR9;
+ 975                             		.loc 1 263 0
+ 976 0600 DC 3E                   		mov.W	[r3], r14
+ 977 0602 FB 4E 00 91 08          		mov.L	#0x89100, r4
+ 978 0607 7C FE                   		btst	#15, r14
+ 979 0609 21 F7                   		bne	.L56
+ 264:../src/peripheral/ad.cpp **** }
+ 980                             		.loc 1 264 0
+ 981 060b DD 4E 19                		mov.W	50[r4], r14
+ 982                             	.LBE47:
+ 983                             	.LBE46:
+ 984                             	.LBB48:
+ 985                             	.LBB49:
+ 268:../src/peripheral/ad.cpp **** 	S12AD1.ADADS1.BIT.ADS1 = 0x0000; //1:変換値加算モード選択 0：非選択
+ 986                             		.loc 1 268 0
+ 987 060e F9 49 02 00 04          		mov.W	#0x400, 4[r4]
+ 269:../src/peripheral/ad.cpp **** 	//S12AD.ADADC.BIT.ADC   = 3; //加算回数の選択 4times変換 3times加算
+ 988                             		.loc 1 269 0
+ 989 0613 DD 4E 05                		mov.W	10[r4], r14
+ 275:../src/peripheral/ad.cpp **** 	return S12AD1.ADDR10;
+ 990                             		.loc 1 275 0
+ 991 0616 EF 43                   		mov.L	r4, r3
+ 269:../src/peripheral/ad.cpp **** 	//S12AD.ADADC.BIT.ADC   = 3; //加算回数の選択 4times変換 3times加算
+ 992                             		.loc 1 269 0
+ 993 0618 75 2E E0                		and #-32, r14
+ 994 061b D7 4E 05                		mov.W	r14, 10[r4]
+ 271:../src/peripheral/ad.cpp **** 
+ 995                             		.loc 1 271 0
+ 996 061e DD 4E 07                		mov.W	14[r4], r14
+ 997 0621 76 2E FF 7F             		and #0x7fff, r14
+ 998 0625 D7 4E 07                		mov.W	r14, 14[r4]
+ 273:../src/peripheral/ad.cpp **** 	//S12AD.ADSTRGR.BIT.ADSTRS = 0;
+ 999                             		.loc 1 273 0
+ 1000 0628 DC 4E                   		mov.W	[r4], r14
+ 1001 062a 76 3E 00 80             		or	#0xffff8000, r14
+ 1002 062e D3 4E                   		mov.W	r14, [r4]
+ 1003                             		.balign 8,3,5
+ 1004                             	.L58:
+ 275:../src/peripheral/ad.cpp **** 	return S12AD1.ADDR10;
+ 1005                             		.loc 1 275 0
+ 1006 0630 DC 3E                   		mov.W	[r3], r14
+ 1007 0632 7C FE                   		btst	#15, r14
+ 1008 0634 21 FC                   		bne	.L58
+ 276:../src/peripheral/ad.cpp **** }
+ 1009                             		.loc 1 276 0
+ 1010 0636 FB EE 00 91 08          		mov.L	#0x89100, r14
+ 1011 063b DD EE 1A                		mov.W	52[r14], r14
+ 1012 063e 02                      		rts
+ 1013                             	.LBE49:
+ 1014                             	.LBE48:
+ 1015                             	.LFE12:
+ 1139                             	.Letext0:
+ 1140                             		.file 2 "c:\\progra~2\\gccfor~2.201\\rx-elf\\rx-elf\\rx-elf\\include\\machine\\_default_types.h"
+ 1141                             		.file 3 "c:\\progra~2\\gccfor~2.201\\rx-elf\\rx-elf\\rx-elf\\include\\stdint.h"
+ 1142                             		.file 4 "../src/peripheral/iodefine.h"

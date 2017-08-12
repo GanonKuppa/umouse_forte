@@ -1,0 +1,44 @@
+   1                             		.file	"mode_RB.cpp"
+   2                             		.section P,"ax"
+   3                             	.Ltext0:
+   4                             		.section	.rodata.str1.1,"aMS",@progbits,1
+   5                             	.LC0:
+   6 0000 52 42 20 6D 6F 64 65 0A 		.string	"RB mode\n"
+   6      00 
+   7                             		.section P,"ax"
+   8                             		.global	__Z7mode_RBv
+  10                             	__Z7mode_RBv:
+  11                             	.LFB37:
+  12                             		.file 1 "../src/mode/mode_RB.cpp"
+   1:../src/mode/mode_RB.cpp **** /*
+   2:../src/mode/mode_RB.cpp ****  * mode_RB.cpp
+   3:../src/mode/mode_RB.cpp ****  *
+   4:../src/mode/mode_RB.cpp ****  *  Created on: 2017/02/25
+   5:../src/mode/mode_RB.cpp ****  *      Author: ryota
+   6:../src/mode/mode_RB.cpp ****  */
+   7:../src/mode/mode_RB.cpp **** 
+   8:../src/mode/mode_RB.cpp **** 
+   9:../src/mode/mode_RB.cpp **** #include <stdint.h>
+  10:../src/mode/mode_RB.cpp **** #include "mode_B.h"
+  11:../src/mode/mode_RB.cpp **** #include "tactsw.h"
+  12:../src/mode/mode_RB.cpp **** #include "timer.h"
+  13:../src/mode/mode_RB.cpp **** #include "fcled.h"
+  14:../src/mode/mode_RB.cpp **** #include "sound.h"
+  15:../src/mode/mode_RB.cpp **** #include "uart.hpp"
+  16:../src/mode/mode_RB.cpp **** 
+  17:../src/mode/mode_RB.cpp **** void mode_RB(){
+  13                             		.loc 1 17 0
+  14 0000 60 40                   		sub	#4, r0
+  15                             	.LCFI0:
+  18:../src/mode/mode_RB.cpp **** 	myprintf3("RB mode\n");
+  16                             		.loc 1 18 0
+  17 0002 F8 02 00 00 00 00       		mov.L	#.LC0, [r0]
+  18 0008 05 00 00 00             		bsr	__Z9myprintf3PKcz
+  19                             	.LVL0:
+  19:../src/mode/mode_RB.cpp **** }
+  20                             		.loc 1 19 0
+  21 000c 67 01                   		rtsd	#4
+  22                             	.LFE37:
+  54                             	.Letext0:
+  55                             		.file 2 "C:\\Users\\ryota\\e2_studio\\workspace\\umouse\\src\\umouse_object/sound.h"
+  56                             		.file 3 "C:\\Users\\ryota\\e2_studio\\workspace\\umouse\\src\\peripheral/uart.hpp"

@@ -1,0 +1,560 @@
+   1                             		.file	"mode_N.cpp"
+   2                             		.section P,"ax"
+   3                             	.Ltext0:
+   4                             		.section	.text._ZN9Icm20608GD2Ev,"axG",@progbits,_ZN9Icm20608GD5Ev,comdat
+   5                             		.weak	__ZN9Icm20608GD2Ev
+   7                             	__ZN9Icm20608GD2Ev:
+   8                             	.LFB42:
+   9                             		.file 1 "C:\\Users\\ryota\\e2_studio\\workspace\\umouse\\src\\umouse_object/imu.hpp"
+   1:C:\Users\ryota\e2_studio\workspace\umouse\src\umouse_object\imu.hpp **** #ifndef IMU_H
+   2:C:\Users\ryota\e2_studio\workspace\umouse\src\umouse_object\imu.hpp **** #define IMU_H
+   3:C:\Users\ryota\e2_studio\workspace\umouse\src\umouse_object\imu.hpp **** 
+   4:C:\Users\ryota\e2_studio\workspace\umouse\src\umouse_object\imu.hpp **** #include <stdint.h>
+   5:C:\Users\ryota\e2_studio\workspace\umouse\src\umouse_object\imu.hpp **** 
+   6:C:\Users\ryota\e2_studio\workspace\umouse\src\umouse_object\imu.hpp **** class Icm20608G{
+   7:C:\Users\ryota\e2_studio\workspace\umouse\src\umouse_object\imu.hpp **** 
+   8:C:\Users\ryota\e2_studio\workspace\umouse\src\umouse_object\imu.hpp **** public:
+   9:C:\Users\ryota\e2_studio\workspace\umouse\src\umouse_object\imu.hpp **** 	volatile int16_t omega_raw[3];
+  10:C:\Users\ryota\e2_studio\workspace\umouse\src\umouse_object\imu.hpp **** 	volatile int16_t acc_raw[3];
+  11:C:\Users\ryota\e2_studio\workspace\umouse\src\umouse_object\imu.hpp **** 	volatile int16_t temp_raw;
+  12:C:\Users\ryota\e2_studio\workspace\umouse\src\umouse_object\imu.hpp **** 
+  13:C:\Users\ryota\e2_studio\workspace\umouse\src\umouse_object\imu.hpp **** 	volatile int16_t omega_ref[3];
+  14:C:\Users\ryota\e2_studio\workspace\umouse\src\umouse_object\imu.hpp **** 	volatile int16_t acc_ref[3];
+  15:C:\Users\ryota\e2_studio\workspace\umouse\src\umouse_object\imu.hpp **** 
+  16:C:\Users\ryota\e2_studio\workspace\umouse\src\umouse_object\imu.hpp **** 	volatile int16_t omega_c[3];
+  17:C:\Users\ryota\e2_studio\workspace\umouse\src\umouse_object\imu.hpp **** 	volatile int16_t acc_c[3];
+  18:C:\Users\ryota\e2_studio\workspace\umouse\src\umouse_object\imu.hpp **** 	volatile int16_t mag_c[3];
+  19:C:\Users\ryota\e2_studio\workspace\umouse\src\umouse_object\imu.hpp **** 
+  20:C:\Users\ryota\e2_studio\workspace\umouse\src\umouse_object\imu.hpp **** 	volatile float omega_f[3];
+  21:C:\Users\ryota\e2_studio\workspace\umouse\src\umouse_object\imu.hpp **** 	volatile float acc_f[3];
+  22:C:\Users\ryota\e2_studio\workspace\umouse\src\umouse_object\imu.hpp **** 	volatile float mag_f[3];
+  23:C:\Users\ryota\e2_studio\workspace\umouse\src\umouse_object\imu.hpp **** 	volatile float temp_f;
+  24:C:\Users\ryota\e2_studio\workspace\umouse\src\umouse_object\imu.hpp **** 
+  25:C:\Users\ryota\e2_studio\workspace\umouse\src\umouse_object\imu.hpp **** 	static Icm20608G& getInstance(){
+  26:C:\Users\ryota\e2_studio\workspace\umouse\src\umouse_object\imu.hpp **** 		static Icm20608G instance;
+  27:C:\Users\ryota\e2_studio\workspace\umouse\src\umouse_object\imu.hpp **** 		return instance;
+  28:C:\Users\ryota\e2_studio\workspace\umouse\src\umouse_object\imu.hpp **** 	}
+  29:C:\Users\ryota\e2_studio\workspace\umouse\src\umouse_object\imu.hpp **** 
+  30:C:\Users\ryota\e2_studio\workspace\umouse\src\umouse_object\imu.hpp **** 
+  31:C:\Users\ryota\e2_studio\workspace\umouse\src\umouse_object\imu.hpp **** 	uint8_t whoAmI(void);
+  32:C:\Users\ryota\e2_studio\workspace\umouse\src\umouse_object\imu.hpp **** 	void init();
+  33:C:\Users\ryota\e2_studio\workspace\umouse\src\umouse_object\imu.hpp ****     void update();
+  34:C:\Users\ryota\e2_studio\workspace\umouse\src\umouse_object\imu.hpp **** 	void calibOmegaOffset();
+  35:C:\Users\ryota\e2_studio\workspace\umouse\src\umouse_object\imu.hpp ****     void writeReg(uint8_t adress, uint8_t data);
+  36:C:\Users\ryota\e2_studio\workspace\umouse\src\umouse_object\imu.hpp ****     uint8_t readReg(uint8_t adress);
+  37:C:\Users\ryota\e2_studio\workspace\umouse\src\umouse_object\imu.hpp **** 
+  38:C:\Users\ryota\e2_studio\workspace\umouse\src\umouse_object\imu.hpp **** private:
+  39:C:\Users\ryota\e2_studio\workspace\umouse\src\umouse_object\imu.hpp **** 	Icm20608G(void){};
+  40:C:\Users\ryota\e2_studio\workspace\umouse\src\umouse_object\imu.hpp **** 	~Icm20608G(void){};
+  10                             		.loc 1 40 0
+  11                             	.LVL0:
+  12 0000 02                      		rts
+  13                             	.LFE42:
+  15                             		.weak	__ZN9Icm20608GD1Ev
+  16                             		.set	__ZN9Icm20608GD1Ev,__ZN9Icm20608GD2Ev
+  17                             		.section	.text._ZN7GamepadD2Ev,"axG",@progbits,_ZN7GamepadD5Ev,comdat
+  18                             		.weak	__ZN7GamepadD2Ev
+  20                             	__ZN7GamepadD2Ev:
+  21                             	.LFB65:
+  22                             		.file 2 "C:\\Users\\ryota\\e2_studio\\workspace\\umouse\\src\\robot_object/gamepad.h"
+   1:C:\Users\ryota\e2_studio\workspace\umouse\src\robot_object\gamepad.h **** 
+   2:C:\Users\ryota\e2_studio\workspace\umouse\src\robot_object\gamepad.h **** #ifndef GAMEPAD_H
+   3:C:\Users\ryota\e2_studio\workspace\umouse\src\robot_object\gamepad.h **** #define GAMEPAD_H
+   4:C:\Users\ryota\e2_studio\workspace\umouse\src\robot_object\gamepad.h **** 
+   5:C:\Users\ryota\e2_studio\workspace\umouse\src\robot_object\gamepad.h **** #include <stdint.h>
+   6:C:\Users\ryota\e2_studio\workspace\umouse\src\robot_object\gamepad.h **** #include "timer.h"
+   7:C:\Users\ryota\e2_studio\workspace\umouse\src\robot_object\gamepad.h **** 
+   8:C:\Users\ryota\e2_studio\workspace\umouse\src\robot_object\gamepad.h **** class Gamepad{
+   9:C:\Users\ryota\e2_studio\workspace\umouse\src\robot_object\gamepad.h **** public:
+  10:C:\Users\ryota\e2_studio\workspace\umouse\src\robot_object\gamepad.h ****     volatile int8_t cross_x;
+  11:C:\Users\ryota\e2_studio\workspace\umouse\src\robot_object\gamepad.h ****     volatile int8_t cross_y;
+  12:C:\Users\ryota\e2_studio\workspace\umouse\src\robot_object\gamepad.h ****     volatile int8_t L3D_x;
+  13:C:\Users\ryota\e2_studio\workspace\umouse\src\robot_object\gamepad.h ****     volatile int8_t L3D_y;
+  14:C:\Users\ryota\e2_studio\workspace\umouse\src\robot_object\gamepad.h ****     volatile int8_t R3D_x;
+  15:C:\Users\ryota\e2_studio\workspace\umouse\src\robot_object\gamepad.h ****     volatile int8_t R3D_y;
+  16:C:\Users\ryota\e2_studio\workspace\umouse\src\robot_object\gamepad.h ****     volatile uint8_t RT;
+  17:C:\Users\ryota\e2_studio\workspace\umouse\src\robot_object\gamepad.h ****     volatile uint8_t LT;
+  18:C:\Users\ryota\e2_studio\workspace\umouse\src\robot_object\gamepad.h ****     volatile uint32_t A;
+  19:C:\Users\ryota\e2_studio\workspace\umouse\src\robot_object\gamepad.h ****     volatile uint32_t B;
+  20:C:\Users\ryota\e2_studio\workspace\umouse\src\robot_object\gamepad.h ****     volatile uint32_t Y;
+  21:C:\Users\ryota\e2_studio\workspace\umouse\src\robot_object\gamepad.h ****     volatile uint32_t X;
+  22:C:\Users\ryota\e2_studio\workspace\umouse\src\robot_object\gamepad.h ****     volatile uint32_t RB;
+  23:C:\Users\ryota\e2_studio\workspace\umouse\src\robot_object\gamepad.h ****     volatile uint32_t LB;
+  24:C:\Users\ryota\e2_studio\workspace\umouse\src\robot_object\gamepad.h ****     volatile uint32_t BACK;
+  25:C:\Users\ryota\e2_studio\workspace\umouse\src\robot_object\gamepad.h ****     volatile uint32_t START;
+  26:C:\Users\ryota\e2_studio\workspace\umouse\src\robot_object\gamepad.h ****     volatile uint8_t receiveCommand[16];
+  27:C:\Users\ryota\e2_studio\workspace\umouse\src\robot_object\gamepad.h **** 
+  28:C:\Users\ryota\e2_studio\workspace\umouse\src\robot_object\gamepad.h ****     static Gamepad& getInstance(){
+  29:C:\Users\ryota\e2_studio\workspace\umouse\src\robot_object\gamepad.h ****         static Gamepad instance;
+  30:C:\Users\ryota\e2_studio\workspace\umouse\src\robot_object\gamepad.h ****         return instance;
+  31:C:\Users\ryota\e2_studio\workspace\umouse\src\robot_object\gamepad.h ****     }
+  32:C:\Users\ryota\e2_studio\workspace\umouse\src\robot_object\gamepad.h **** 
+  33:C:\Users\ryota\e2_studio\workspace\umouse\src\robot_object\gamepad.h ****     bool isConnecting(){
+  34:C:\Users\ryota\e2_studio\workspace\umouse\src\robot_object\gamepad.h ****         if(getElapsedMsec() - preRecieveTime < 200){
+  35:C:\Users\ryota\e2_studio\workspace\umouse\src\robot_object\gamepad.h ****             return true;
+  36:C:\Users\ryota\e2_studio\workspace\umouse\src\robot_object\gamepad.h ****         }
+  37:C:\Users\ryota\e2_studio\workspace\umouse\src\robot_object\gamepad.h ****         else{
+  38:C:\Users\ryota\e2_studio\workspace\umouse\src\robot_object\gamepad.h ****             return false;
+  39:C:\Users\ryota\e2_studio\workspace\umouse\src\robot_object\gamepad.h ****         }
+  40:C:\Users\ryota\e2_studio\workspace\umouse\src\robot_object\gamepad.h **** 
+  41:C:\Users\ryota\e2_studio\workspace\umouse\src\robot_object\gamepad.h ****     };
+  42:C:\Users\ryota\e2_studio\workspace\umouse\src\robot_object\gamepad.h **** 
+  43:C:\Users\ryota\e2_studio\workspace\umouse\src\robot_object\gamepad.h ****     void updateCommand(uint8_t *command){
+  44:C:\Users\ryota\e2_studio\workspace\umouse\src\robot_object\gamepad.h ****         if(command[3] == 254 && command[4] == 253){
+  45:C:\Users\ryota\e2_studio\workspace\umouse\src\robot_object\gamepad.h ****             preRecieveTime = getElapsedMsec();
+  46:C:\Users\ryota\e2_studio\workspace\umouse\src\robot_object\gamepad.h ****             for(uint8_t i=0;i<16; i++){
+  47:C:\Users\ryota\e2_studio\workspace\umouse\src\robot_object\gamepad.h ****                 receiveCommand[i] = command[i];
+  48:C:\Users\ryota\e2_studio\workspace\umouse\src\robot_object\gamepad.h ****             }
+  49:C:\Users\ryota\e2_studio\workspace\umouse\src\robot_object\gamepad.h ****         }
+  50:C:\Users\ryota\e2_studio\workspace\umouse\src\robot_object\gamepad.h ****     };
+  51:C:\Users\ryota\e2_studio\workspace\umouse\src\robot_object\gamepad.h **** 
+  52:C:\Users\ryota\e2_studio\workspace\umouse\src\robot_object\gamepad.h ****     //1msec毎に呼ぶこと
+  53:C:\Users\ryota\e2_studio\workspace\umouse\src\robot_object\gamepad.h ****     void update(){
+  54:C:\Users\ryota\e2_studio\workspace\umouse\src\robot_object\gamepad.h ****        volatile uint8_t *command = receiveCommand;
+  55:C:\Users\ryota\e2_studio\workspace\umouse\src\robot_object\gamepad.h ****        if((command[6] & 0x01) == 1) A++;
+  56:C:\Users\ryota\e2_studio\workspace\umouse\src\robot_object\gamepad.h ****        else A = 0;
+  57:C:\Users\ryota\e2_studio\workspace\umouse\src\robot_object\gamepad.h ****        if(((command[6] & 0x02) >> 1) == 1) B++;
+  58:C:\Users\ryota\e2_studio\workspace\umouse\src\robot_object\gamepad.h ****        else B = 0;
+  59:C:\Users\ryota\e2_studio\workspace\umouse\src\robot_object\gamepad.h ****        if(((command[6] & 0x04) >> 2) == 1) X++;
+  60:C:\Users\ryota\e2_studio\workspace\umouse\src\robot_object\gamepad.h ****        else X= 0;
+  61:C:\Users\ryota\e2_studio\workspace\umouse\src\robot_object\gamepad.h ****        if(((command[6] & 0x08) >> 3) == 1) Y++;
+  62:C:\Users\ryota\e2_studio\workspace\umouse\src\robot_object\gamepad.h ****        else Y = 0;
+  63:C:\Users\ryota\e2_studio\workspace\umouse\src\robot_object\gamepad.h ****        if(((command[6] & 0x10) >> 4) == 1) RB++;
+  64:C:\Users\ryota\e2_studio\workspace\umouse\src\robot_object\gamepad.h ****        else RB = 0;
+  65:C:\Users\ryota\e2_studio\workspace\umouse\src\robot_object\gamepad.h ****        if(((command[6] & 0x20) >> 5) == 1) LB++;
+  66:C:\Users\ryota\e2_studio\workspace\umouse\src\robot_object\gamepad.h ****        else LB = 0;
+  67:C:\Users\ryota\e2_studio\workspace\umouse\src\robot_object\gamepad.h ****        if(((command[6] & 0x40) >> 6) == 1) BACK++;
+  68:C:\Users\ryota\e2_studio\workspace\umouse\src\robot_object\gamepad.h ****        else BACK = 0;
+  69:C:\Users\ryota\e2_studio\workspace\umouse\src\robot_object\gamepad.h ****        if(((command[6] & 0x80) >> 7) == 1) START++;
+  70:C:\Users\ryota\e2_studio\workspace\umouse\src\robot_object\gamepad.h ****        else START = 0;
+  71:C:\Users\ryota\e2_studio\workspace\umouse\src\robot_object\gamepad.h ****        RT = command[7];
+  72:C:\Users\ryota\e2_studio\workspace\umouse\src\robot_object\gamepad.h ****        LT = command[8];
+  73:C:\Users\ryota\e2_studio\workspace\umouse\src\robot_object\gamepad.h ****        cross_x = command[9]  - 128;
+  74:C:\Users\ryota\e2_studio\workspace\umouse\src\robot_object\gamepad.h ****        cross_y = command[10] - 128;
+  75:C:\Users\ryota\e2_studio\workspace\umouse\src\robot_object\gamepad.h ****        R3D_x = command[11] - 128;
+  76:C:\Users\ryota\e2_studio\workspace\umouse\src\robot_object\gamepad.h ****        R3D_y = command[12] - 128;
+  77:C:\Users\ryota\e2_studio\workspace\umouse\src\robot_object\gamepad.h ****        L3D_x = command[13] - 128;
+  78:C:\Users\ryota\e2_studio\workspace\umouse\src\robot_object\gamepad.h ****        L3D_y = command[14] - 128;
+  79:C:\Users\ryota\e2_studio\workspace\umouse\src\robot_object\gamepad.h **** 
+  80:C:\Users\ryota\e2_studio\workspace\umouse\src\robot_object\gamepad.h ****        if(isConnecting() == false){
+  81:C:\Users\ryota\e2_studio\workspace\umouse\src\robot_object\gamepad.h ****            A = 0;
+  82:C:\Users\ryota\e2_studio\workspace\umouse\src\robot_object\gamepad.h ****            B = 0;
+  83:C:\Users\ryota\e2_studio\workspace\umouse\src\robot_object\gamepad.h ****            X = 0;
+  84:C:\Users\ryota\e2_studio\workspace\umouse\src\robot_object\gamepad.h ****            Y = 0;
+  85:C:\Users\ryota\e2_studio\workspace\umouse\src\robot_object\gamepad.h ****            RB = 0;
+  86:C:\Users\ryota\e2_studio\workspace\umouse\src\robot_object\gamepad.h ****            LB = 0;
+  87:C:\Users\ryota\e2_studio\workspace\umouse\src\robot_object\gamepad.h ****            BACK = 0;
+  88:C:\Users\ryota\e2_studio\workspace\umouse\src\robot_object\gamepad.h ****            START = 0;
+  89:C:\Users\ryota\e2_studio\workspace\umouse\src\robot_object\gamepad.h ****            RT = 0;
+  90:C:\Users\ryota\e2_studio\workspace\umouse\src\robot_object\gamepad.h ****            LT = 0;
+  91:C:\Users\ryota\e2_studio\workspace\umouse\src\robot_object\gamepad.h ****            cross_x = 0;
+  92:C:\Users\ryota\e2_studio\workspace\umouse\src\robot_object\gamepad.h ****            cross_y = 0;
+  93:C:\Users\ryota\e2_studio\workspace\umouse\src\robot_object\gamepad.h ****            R3D_x = 0;
+  94:C:\Users\ryota\e2_studio\workspace\umouse\src\robot_object\gamepad.h ****            R3D_y = 0;
+  95:C:\Users\ryota\e2_studio\workspace\umouse\src\robot_object\gamepad.h ****            L3D_x = 0;
+  96:C:\Users\ryota\e2_studio\workspace\umouse\src\robot_object\gamepad.h ****            L3D_y = 0;
+  97:C:\Users\ryota\e2_studio\workspace\umouse\src\robot_object\gamepad.h ****        }
+  98:C:\Users\ryota\e2_studio\workspace\umouse\src\robot_object\gamepad.h **** 
+  99:C:\Users\ryota\e2_studio\workspace\umouse\src\robot_object\gamepad.h ****     };
+ 100:C:\Users\ryota\e2_studio\workspace\umouse\src\robot_object\gamepad.h **** private:
+ 101:C:\Users\ryota\e2_studio\workspace\umouse\src\robot_object\gamepad.h ****     bool conStatus;
+ 102:C:\Users\ryota\e2_studio\workspace\umouse\src\robot_object\gamepad.h ****     uint64_t preRecieveTime;
+ 103:C:\Users\ryota\e2_studio\workspace\umouse\src\robot_object\gamepad.h ****     Gamepad(){
+ 104:C:\Users\ryota\e2_studio\workspace\umouse\src\robot_object\gamepad.h ****         cross_x = 0;
+ 105:C:\Users\ryota\e2_studio\workspace\umouse\src\robot_object\gamepad.h ****         cross_y = 0;
+ 106:C:\Users\ryota\e2_studio\workspace\umouse\src\robot_object\gamepad.h ****         L3D_x = 0;
+ 107:C:\Users\ryota\e2_studio\workspace\umouse\src\robot_object\gamepad.h ****         R3D_x = 0;
+ 108:C:\Users\ryota\e2_studio\workspace\umouse\src\robot_object\gamepad.h ****         R3D_y = 0;
+ 109:C:\Users\ryota\e2_studio\workspace\umouse\src\robot_object\gamepad.h ****         RT = 0;
+ 110:C:\Users\ryota\e2_studio\workspace\umouse\src\robot_object\gamepad.h ****         LT = 0;
+ 111:C:\Users\ryota\e2_studio\workspace\umouse\src\robot_object\gamepad.h ****         A  = 0;
+ 112:C:\Users\ryota\e2_studio\workspace\umouse\src\robot_object\gamepad.h ****         B  = 0;
+ 113:C:\Users\ryota\e2_studio\workspace\umouse\src\robot_object\gamepad.h ****         Y  = 0;
+ 114:C:\Users\ryota\e2_studio\workspace\umouse\src\robot_object\gamepad.h ****         X  = 0;
+ 115:C:\Users\ryota\e2_studio\workspace\umouse\src\robot_object\gamepad.h ****         RB = 0;
+ 116:C:\Users\ryota\e2_studio\workspace\umouse\src\robot_object\gamepad.h ****         LB = 0;
+ 117:C:\Users\ryota\e2_studio\workspace\umouse\src\robot_object\gamepad.h ****         BACK = 0;
+ 118:C:\Users\ryota\e2_studio\workspace\umouse\src\robot_object\gamepad.h ****         START = 0;
+ 119:C:\Users\ryota\e2_studio\workspace\umouse\src\robot_object\gamepad.h ****         conStatus = false;
+ 120:C:\Users\ryota\e2_studio\workspace\umouse\src\robot_object\gamepad.h ****         preRecieveTime = 0;
+ 121:C:\Users\ryota\e2_studio\workspace\umouse\src\robot_object\gamepad.h ****     };
+ 122:C:\Users\ryota\e2_studio\workspace\umouse\src\robot_object\gamepad.h ****     ~Gamepad(){};
+  23                             		.loc 2 122 0
+  24                             	.LVL1:
+  25 0000 02                      		rts
+  26                             	.LFE65:
+  28                             		.weak	__ZN7GamepadD1Ev
+  29                             		.set	__ZN7GamepadD1Ev,__ZN7GamepadD2Ev
+  30                             		.section	.rodata.str1.1,"aMS",@progbits,1
+  31                             	.LC0:
+  32 0000 4E 20 6D 6F 64 65 0A 00 		.string	"N mode\n"
+  33                             	.LC1:
+  34 0008 E3 82 B8 E3 83 A3 E3 82 		.string	"\343\202\270\343\203\243\343\202\244\343\203\255\343\202\222\343\202\255\343\203\243\343\
+  34      A4 E3 83 AD E3 82 92 E3 
+  34      82 AD E3 83 A3 E3 83 AA 
+  34      E3 83 96 E3 83 AC E3 83 
+  34      BC E3 82 B7 E3 83 A7 E3 
+  35                             	.LC2:
+  36 0040 E3 82 B8 E3 83 A3 E3 82 		.string	"\343\202\270\343\203\243\343\202\244\343\203\255\343\201\256\343\202\255\343\203\243\343\
+  36      A4 E3 83 AD E3 81 AE E3 
+  36      82 AD E3 83 A3 E3 83 AA 
+  36      E3 83 96 E3 83 AC E3 83 
+  36      BC E3 82 B7 E3 83 A7 E3 
+  37                             	.LC3:
+  38 0084 73 65 6C 65 63 74 21 20 		.string	"select! \n"
+  38      0A 00 
+  39                             	.LC4:
+  40 008e 25 66 2C 20 25 66 2C 20 		.string	"%f, %f, %f, %d, %d, %d\n"
+  40      25 66 2C 20 25 64 2C 20 
+  40      25 64 2C 20 25 64 0A 00 
+  41                             		.section P,"ax"
+  42                             		.global	__Z6mode_Nv
+  44                             	__Z6mode_Nv:
+  45                             	.LFB70:
+  46                             		.file 3 "../src/mode/mode_N.cpp"
+   1:../src/mode/mode_N.cpp **** /*
+   2:../src/mode/mode_N.cpp ****  * mode_N.cpp
+   3:../src/mode/mode_N.cpp ****  *
+   4:../src/mode/mode_N.cpp ****  *  Created on: 2017/02/25
+   5:../src/mode/mode_N.cpp ****  *      Author: ryota
+   6:../src/mode/mode_N.cpp ****  */
+   7:../src/mode/mode_N.cpp **** 
+   8:../src/mode/mode_N.cpp **** #include <stdint.h>
+   9:../src/mode/mode_N.cpp **** #include "mode_N.h"
+  10:../src/mode/mode_N.cpp **** #include "tactsw.h"
+  11:../src/mode/mode_N.cpp **** #include "timer.h"
+  12:../src/mode/mode_N.cpp **** #include "fcled.h"
+  13:../src/mode/mode_N.cpp **** #include "sound.h"
+  14:../src/mode/mode_N.cpp **** #include "uart.hpp"
+  15:../src/mode/mode_N.cpp **** #include "imu.hpp"
+  16:../src/mode/mode_N.cpp **** 
+  17:../src/mode/mode_N.cpp **** #include "gamepad.h"
+  18:../src/mode/mode_N.cpp **** 
+  19:../src/mode/mode_N.cpp **** void mode_N() {
+  47                             		.loc 3 19 0
+  48                             		.loc 3 19 0
+  49 0000 6E 7C                   		pushm	r7-r12
+  50                             	.LCFI0:
+  51 0002 71 00 E4                		add	#-28, r0
+  52                             	.LCFI1:
+  53                             	.LBB18:
+  54                             	.LBB19:
+  55                             	.LBB20:
+  29:C:\Users\ryota\e2_studio\workspace\umouse\src\robot_object\gamepad.h ****         return instance;
+  56                             		.loc 2 29 0
+  57 0005 FB B2 00 00 00 00       		mov.L	#__ZGVZN7Gamepad11getInstanceEvE8instance, r11
+  58 000b 58 B7                   		movu.B	[r11], r7
+  59 000d 61 07                   		cmp	#0, r7
+  60 000f 3A CE 00                		beq	.L6
+  61 0012 FB A2 00 00 00 00       		mov.L	#__ZZN7Gamepad11getInstanceEvE8instance, r10
+  62                             	.L7:
+  63                             	.LBE20:
+  64                             	.LBE19:
+  20:../src/mode/mode_N.cpp ****     Gamepad &gamepad = Gamepad::getInstance();
+  21:../src/mode/mode_N.cpp ****     myprintf3("N mode\n");
+  65                             		.loc 3 21 0
+  66 0018 F8 02 00 00 00 00       		mov.L	#.LC0, [r0]
+  67 001e 05 00 00 00             		bsr	__Z9myprintf3PKcz
+  68                             	.LVL2:
+  69                             		.balign 8,3,2
+  70                             	.L10:
+  22:../src/mode/mode_N.cpp **** 
+  23:../src/mode/mode_N.cpp ****     while(1) {
+  24:../src/mode/mode_N.cpp ****            waitmsec(100);
+  71                             		.loc 3 24 0
+  72 0022 75 41 64                		mov.L	#0x64, r1
+  73 0025 05 00 00 00             		bsr	__Z8waitmsecm
+  74                             	.LVL3:
+  25:../src/mode/mode_N.cpp ****            if (gamepad.B < 1000 ) break;
+  75                             		.loc 3 25 0
+  76 0029 ED A7 03                		mov.L	12[r10], r7
+  77 002c 76 07 E7 03             		cmp	#0x3e7, r7
+  78 0030 24 F2                   		bgtu	.L10
+  26:../src/mode/mode_N.cpp ****        }
+  27:../src/mode/mode_N.cpp ****     myprintf3("ジャイロをキャリブレーションします。\n");
+  79                             		.loc 3 27 0
+  80 0032 F8 02 08 00 00 00       		mov.L	#.LC1, [r0]
+  81                             	.LBB28:
+  82                             	.LBB29:
+  26:C:\Users\ryota\e2_studio\workspace\umouse\src\umouse_object\imu.hpp **** 		return instance;
+  83                             		.loc 1 26 0
+  84 0038 FB 72 00 00 00 00       		mov.L	#__ZGVZN9Icm20608G11getInstanceEvE8instance, r7
+  85                             	.LBE29:
+  86                             	.LBE28:
+  87                             		.loc 3 27 0
+  88 003e 05 00 00 00             		bsr	__Z9myprintf3PKcz
+  89                             	.LVL4:
+  90                             	.LBB32:
+  91                             	.LBB30:
+  26:C:\Users\ryota\e2_studio\workspace\umouse\src\umouse_object\imu.hpp **** 		return instance;
+  92                             		.loc 1 26 0
+  93 0042 58 7B                   		movu.B	[r7], r11
+  94 0044 61 0B                   		cmp	#0, r11
+  95 0046 3A F8 00                		beq	.L26
+  96                             		.balign 8,3,5
+  97                             	.L12:
+  98                             	.LBE30:
+  99                             	.LBE32:
+  28:../src/mode/mode_N.cpp ****     Icm20608G &imu2 = Icm20608G::getInstance();
+  29:../src/mode/mode_N.cpp ****     imu2.calibOmegaOffset();
+ 100                             		.loc 3 29 0
+ 101 0049 FB 12 00 00 00 00       		mov.L	#__ZZN9Icm20608G11getInstanceEvE8instance, r1
+ 102 004f 05 00 00 00             		bsr	__ZN9Icm20608G16calibOmegaOffsetEv
+ 103                             	.LVL5:
+  30:../src/mode/mode_N.cpp ****     myprintf3("ジャイロのキャリブレーションが終わりました。\n");
+ 104                             		.loc 3 30 0
+ 105 0053 F8 02 40 00 00 00       		mov.L	#.LC2, [r0]
+ 106 0059 05 00 00 00             		bsr	__Z9myprintf3PKcz
+ 107                             	.LVL6:
+ 108                             		.balign 8,3,1
+ 109                             	.L15:
+  31:../src/mode/mode_N.cpp **** 
+  32:../src/mode/mode_N.cpp ****     while (1) {
+  33:../src/mode/mode_N.cpp ****            waitmsec(10);
+ 110                             		.loc 3 33 0
+ 111 005d 66 A1                   		mov.L	#10, r1
+ 112 005f 05 00 00 00             		bsr	__Z8waitmsecm
+ 113                             	.LVL7:
+  34:../src/mode/mode_N.cpp **** 
+  35:../src/mode/mode_N.cpp ****            if (gamepad.B > 10 ) {
+ 114                             		.loc 3 35 0
+ 115 0063 ED A7 03                		mov.L	12[r10], r7
+ 116 0066 61 A7                   		cmp	#10, r7
+ 117 0068 25 F5                   		bleu	.L15
+  36:../src/mode/mode_N.cpp ****                SEB();
+ 118                             		.loc 3 36 0
+ 119 006a 05 00 00 00             		bsr	__Z3SEBv
+ 120                             	.LVL8:
+  37:../src/mode/mode_N.cpp ****                myprintf3("select! \n");
+ 121                             		.loc 3 37 0
+ 122 006e F8 02 84 00 00 00       		mov.L	#.LC3, [r0]
+ 123 0074 05 00 00 00             		bsr	__Z9myprintf3PKcz
+ 124                             	.LVL9:
+  38:../src/mode/mode_N.cpp ****                waitmsec(1000);
+ 125                             		.loc 3 38 0
+ 126 0078 FB 1A E8 03             		mov.L	#0x3e8, r1
+ 127 007c 05 00 00 00             		bsr	__Z8waitmsecm
+ 128                             	.LVL10:
+ 129 0080 FB 72 00 00 00 00       		mov.L	#__ZZN9Icm20608G11getInstanceEvE8instance, r7
+ 130 0086 EF 00                   		.balign 8,3,2
+ 131                             	.L17:
+  39:../src/mode/mode_N.cpp ****                break;
+  40:../src/mode/mode_N.cpp ****            }
+  41:../src/mode/mode_N.cpp ****        }
+  42:../src/mode/mode_N.cpp **** 
+  43:../src/mode/mode_N.cpp ****     while (1) {
+  44:../src/mode/mode_N.cpp ****         waitmsec(100);
+ 132                             		.loc 3 44 0
+ 133 0088 75 41 64                		mov.L	#0x64, r1
+ 134 008b 05 00 00 00             		bsr	__Z8waitmsecm
+ 135                             	.LVL11:
+  45:../src/mode/mode_N.cpp ****         myprintf3("%f, %f, %f, %d, %d, %d\n",
+  46:../src/mode/mode_N.cpp ****                 imu2.omega_f[0],imu2.omega_f[1],imu2.omega_f[2],
+ 136                             		.loc 3 46 0
+ 137 008f AA FD                   		mov.L	44[r7], r5
+ 138 0091 AB 71                   		mov.L	48[r7], r1
+ 139 0093 AB 7A                   		mov.L	52[r7], r2
+  47:../src/mode/mode_N.cpp ****                 imu2.omega_c[0],imu2.omega_c[1],imu2.omega_c[2]
+ 140                             		.loc 3 47 0
+ 141 0095 9B 7B                   		mov.W	26[r7], r3
+ 142 0097 9B F4                   		mov.W	28[r7], r4
+ 143 0099 DD 7E 0F                		mov.W	30[r7], r14
+  48:../src/mode/mode_N.cpp ****         );
+ 144                             		.loc 3 48 0
+ 145 009c DF 33                   		mov.W	r3, r3
+ 146 009e DF 44                   		mov.W	r4, r4
+ 147 00a0 DF EE                   		mov.W	r14, r14
+ 148 00a2 F8 02 8E 00 00 00       		mov.L	#.LC4, [r0]
+ 149 00a8 A0 0D                   		mov.L	r5, 4[r0]
+ 150 00aa A0 81                   		mov.L	r1, 8[r0]
+ 151 00ac A0 8A                   		mov.L	r2, 12[r0]
+ 152 00ae A1 03                   		mov.L	r3, 16[r0]
+ 153 00b0 A1 0C                   		mov.L	r4, 20[r0]
+ 154 00b2 E7 0E 06                		mov.L	r14, 24[r0]
+ 155 00b5 05 00 00 00             		bsr	__Z9myprintf3PKcz
+ 156                             	.LVL12:
+  49:../src/mode/mode_N.cpp **** 
+  50:../src/mode/mode_N.cpp ****         if (gamepad.B > 1000 ) {
+ 157                             		.loc 3 50 0
+ 158 00b9 ED AE 03                		mov.L	12[r10], r14
+ 159 00bc 76 0E E8 03             		cmp	#0x3e8, r14
+ 160 00c0 25 C8                   		bleu	.L17
+  51:../src/mode/mode_N.cpp ****             SEB();
+ 161                             		.loc 3 51 0
+ 162 00c2 05 00 00 00             		bsr	__Z3SEBv
+ 163                             	.LVL13:
+  52:../src/mode/mode_N.cpp ****             myprintf3("select! \n");
+ 164                             		.loc 3 52 0
+ 165 00c6 F8 02 84 00 00 00       		mov.L	#.LC3, [r0]
+ 166 00cc 05 00 00 00             		bsr	__Z9myprintf3PKcz
+ 167                             	.LVL14:
+  53:../src/mode/mode_N.cpp ****             waitmsec(1000);
+ 168                             		.loc 3 53 0
+ 169 00d0 FB 1A E8 03             		mov.L	#0x3e8, r1
+ 170                             	.LBE18:
+  54:../src/mode/mode_N.cpp ****             return;
+  55:../src/mode/mode_N.cpp ****         }
+  56:../src/mode/mode_N.cpp ****     }
+  57:../src/mode/mode_N.cpp **** }
+ 171                             		.loc 3 57 0
+ 172 00d4 71 00 1C                		add	#28, r0
+ 173 00d7 6F 7C                   		popm	r7-r12
+ 174                             	.LBB35:
+  53:../src/mode/mode_N.cpp ****             waitmsec(1000);
+ 175                             		.loc 3 53 0
+ 176 00d9 04 00 00 00             		bra	__Z8waitmsecm
+ 177                             	.LVL15:
+ 178                             	.L6:
+ 179                             	.LBB33:
+ 180                             	.LBB27:
+  29:C:\Users\ryota\e2_studio\workspace\umouse\src\robot_object\gamepad.h ****         return instance;
+ 181                             		.loc 2 29 0
+ 182 00dd EF B1                   		mov.L	r11, r1
+ 183 00df 05 00 00 00             		bsr	___cxa_guard_acquire
+ 184                             	.LVL16:
+ 185                             	.LBB21:
+ 186                             	.LBB22:
+ 104:C:\Users\ryota\e2_studio\workspace\umouse\src\robot_object\gamepad.h ****         cross_y = 0;
+ 187                             		.loc 2 104 0
+ 188 00e3 FB A2 00 00 00 00       		mov.L	#__ZZN7Gamepad11getInstanceEvE8instance, r10
+ 189                             	.LBE22:
+ 190                             	.LBE21:
+  29:C:\Users\ryota\e2_studio\workspace\umouse\src\robot_object\gamepad.h ****         return instance;
+ 191                             		.loc 2 29 0
+ 192 00e9 61 01                   		cmp	#0, r1
+ 193 00eb 3A 2D FF                		beq	.L7
+ 194                             	.LVL17:
+ 195                             	.LBB25:
+ 196                             	.LBB23:
+ 104:C:\Users\ryota\e2_studio\workspace\umouse\src\robot_object\gamepad.h ****         cross_y = 0;
+ 197                             		.loc 2 104 0
+ 198 00ee C3 A7                   		mov.B	r7, [r10]
+ 105:C:\Users\ryota\e2_studio\workspace\umouse\src\robot_object\gamepad.h ****         L3D_x = 0;
+ 199                             		.loc 2 105 0
+ 200 00f0 C7 A7 01                		mov.B	r7, 1[r10]
+ 106:C:\Users\ryota\e2_studio\workspace\umouse\src\robot_object\gamepad.h ****         R3D_x = 0;
+ 201                             		.loc 2 106 0
+ 202 00f3 C7 A7 02                		mov.B	r7, 2[r10]
+ 107:C:\Users\ryota\e2_studio\workspace\umouse\src\robot_object\gamepad.h ****         R3D_y = 0;
+ 203                             		.loc 2 107 0
+ 204 00f6 C7 A7 04                		mov.B	r7, 4[r10]
+ 108:C:\Users\ryota\e2_studio\workspace\umouse\src\robot_object\gamepad.h ****         RT = 0;
+ 205                             		.loc 2 108 0
+ 206 00f9 C7 A7 05                		mov.B	r7, 5[r10]
+ 109:C:\Users\ryota\e2_studio\workspace\umouse\src\robot_object\gamepad.h ****         LT = 0;
+ 207                             		.loc 2 109 0
+ 208 00fc C7 A7 06                		mov.B	r7, 6[r10]
+ 110:C:\Users\ryota\e2_studio\workspace\umouse\src\robot_object\gamepad.h ****         A  = 0;
+ 209                             		.loc 2 110 0
+ 210 00ff C7 A7 07                		mov.B	r7, 7[r10]
+ 111:C:\Users\ryota\e2_studio\workspace\umouse\src\robot_object\gamepad.h ****         B  = 0;
+ 211                             		.loc 2 111 0
+ 212 0102 E7 A7 02                		mov.L	r7, 8[r10]
+ 112:C:\Users\ryota\e2_studio\workspace\umouse\src\robot_object\gamepad.h ****         Y  = 0;
+ 213                             		.loc 2 112 0
+ 214 0105 E7 A7 03                		mov.L	r7, 12[r10]
+ 113:C:\Users\ryota\e2_studio\workspace\umouse\src\robot_object\gamepad.h ****         X  = 0;
+ 215                             		.loc 2 113 0
+ 216 0108 E7 A7 04                		mov.L	r7, 16[r10]
+ 114:C:\Users\ryota\e2_studio\workspace\umouse\src\robot_object\gamepad.h ****         RB = 0;
+ 217                             		.loc 2 114 0
+ 218 010b E7 A7 05                		mov.L	r7, 20[r10]
+ 115:C:\Users\ryota\e2_studio\workspace\umouse\src\robot_object\gamepad.h ****         LB = 0;
+ 219                             		.loc 2 115 0
+ 220 010e E7 A7 06                		mov.L	r7, 24[r10]
+ 116:C:\Users\ryota\e2_studio\workspace\umouse\src\robot_object\gamepad.h ****         BACK = 0;
+ 221                             		.loc 2 116 0
+ 222 0111 E7 A7 07                		mov.L	r7, 28[r10]
+ 117:C:\Users\ryota\e2_studio\workspace\umouse\src\robot_object\gamepad.h ****         START = 0;
+ 223                             		.loc 2 117 0
+ 224 0114 E7 A7 08                		mov.L	r7, 32[r10]
+ 225                             	.LBE23:
+ 226                             	.LBE25:
+  29:C:\Users\ryota\e2_studio\workspace\umouse\src\robot_object\gamepad.h ****         return instance;
+ 227                             		.loc 2 29 0
+ 228 0117 EF B1                   		mov.L	r11, r1
+ 229                             	.LBB26:
+ 230                             	.LBB24:
+ 118:C:\Users\ryota\e2_studio\workspace\umouse\src\robot_object\gamepad.h ****         conStatus = false;
+ 231                             		.loc 2 118 0
+ 232 0119 E7 A7 09                		mov.L	r7, 36[r10]
+ 119:C:\Users\ryota\e2_studio\workspace\umouse\src\robot_object\gamepad.h ****         preRecieveTime = 0;
+ 233                             		.loc 2 119 0
+ 234 011c C7 A7 38                		mov.B	r7, 56[r10]
+ 120:C:\Users\ryota\e2_studio\workspace\umouse\src\robot_object\gamepad.h ****     };
+ 235                             		.loc 2 120 0
+ 236 011f E7 A7 0F                		mov.L	r7, 60[r10]
+ 237 0122 E7 A7 10                		mov.L	r7, 64[r10]
+ 238                             	.LBE24:
+ 239                             	.LBE26:
+  29:C:\Users\ryota\e2_studio\workspace\umouse\src\robot_object\gamepad.h ****         return instance;
+ 240                             		.loc 2 29 0
+ 241 0125 05 00 00 00             		bsr	___cxa_guard_release
+ 242                             	.LVL18:
+ 243 0129 FB 12 00 00 00 00       		mov.L	#__ZN7GamepadD1Ev, r1
+ 244 012f EF A2                   		mov.L	r10, r2
+ 245 0131 FB 32 00 00 00 00       		mov.L	#___dso_handle, r3
+ 246 0137 05 00 00 00             		bsr	___cxa_atexit
+ 247                             	.LVL19:
+ 248 013b 38 DD FE                		bra	.L7
+ 249                             	.LVL20:
+ 250                             	.L26:
+ 251                             	.LBE27:
+ 252                             	.LBE33:
+ 253                             	.LBB34:
+ 254                             	.LBB31:
+  26:C:\Users\ryota\e2_studio\workspace\umouse\src\umouse_object\imu.hpp **** 		return instance;
+ 255                             		.loc 1 26 0
+ 256 013e EF 71                   		mov.L	r7, r1
+ 257 0140 05 00 00 00             		bsr	___cxa_guard_acquire
+ 258                             	.LVL21:
+ 259 0144 61 01                   		cmp	#0, r1
+ 260 0146 3A 03 FF                		beq	.L12
+ 261                             	.LVL22:
+ 262 0149 EF 71                   		mov.L	r7, r1
+ 263 014b 05 00 00 00             		bsr	___cxa_guard_release
+ 264                             	.LVL23:
+ 265 014f FB 12 00 00 00 00       		mov.L	#__ZN9Icm20608GD1Ev, r1
+ 266 0155 FB 22 00 00 00 00       		mov.L	#__ZZN9Icm20608G11getInstanceEvE8instance, r2
+ 267 015b FB 32 00 00 00 00       		mov.L	#___dso_handle, r3
+ 268 0161 05 00 00 00             		bsr	___cxa_atexit
+ 269                             	.LVL24:
+ 270 0165 38 E4 FE                		bra	.L12
+ 271                             	.LBE31:
+ 272                             	.LBE34:
+ 273                             	.LBE35:
+ 274                             	.LFE70:
+ 276                             		.weak	__ZZN9Icm20608G11getInstanceEvE8instance
+ 277                             		.section	.bss._ZZN9Icm20608G11getInstanceEvE8instance,"awG",@nobits,_ZZN9Icm20608G11getInstanceEvE
+ 278                             		.balign 4
+ 281                             	__ZZN9Icm20608G11getInstanceEvE8instance:
+ 282 0000 00 00 00 00 00 00 00 00 		.zero	84
+ 282      00 00 00 00 00 00 00 00 
+ 282      00 00 00 00 00 00 00 00 
+ 282      00 00 00 00 00 00 00 00 
+ 282      00 00 00 00 00 00 00 00 
+ 283                             		.weak	__ZZN7Gamepad11getInstanceEvE8instance
+ 284                             		.section	.bss._ZZN7Gamepad11getInstanceEvE8instance,"awG",@nobits,_ZZN7Gamepad11getInstanceEvE8ins
+ 285                             		.balign 4
+ 288                             	__ZZN7Gamepad11getInstanceEvE8instance:
+ 289 0000 00 00 00 00 00 00 00 00 		.zero	68
+ 289      00 00 00 00 00 00 00 00 
+ 289      00 00 00 00 00 00 00 00 
+ 289      00 00 00 00 00 00 00 00 
+ 289      00 00 00 00 00 00 00 00 
+ 290                             		.weak	__ZGVZN7Gamepad11getInstanceEvE8instance
+ 291                             		.section	.bss._ZGVZN7Gamepad11getInstanceEvE8instance,"awG",@nobits,_ZGVZN7Gamepad11getInstanceEvE
+ 292                             		.balign 4
+ 295                             	__ZGVZN7Gamepad11getInstanceEvE8instance:
+ 296 0000 00 00 00 00 00 00 00 00 		.zero	8
+ 297                             		.weak	__ZGVZN9Icm20608G11getInstanceEvE8instance
+ 298                             		.section	.bss._ZGVZN9Icm20608G11getInstanceEvE8instance,"awG",@nobits,_ZGVZN9Icm20608G11getInstanc
+ 299                             		.balign 4
+ 302                             	__ZGVZN9Icm20608G11getInstanceEvE8instance:
+ 303 0000 00 00 00 00 00 00 00 00 		.zero	8
+ 366                             	.Letext0:
+ 367                             		.file 4 "c:\\progra~2\\gccfor~2.201\\rx-elf\\rx-elf\\rx-elf\\include\\machine\\_default_types.h"
+ 368                             		.file 5 "c:\\progra~2\\gccfor~2.201\\rx-elf\\rx-elf\\rx-elf\\include\\stdint.h"
+ 369                             		.file 6 "C:\\Users\\ryota\\e2_studio\\workspace\\umouse\\src\\umouse_object/sound.h"
+ 370                             		.file 7 "C:\\Users\\ryota\\e2_studio\\workspace\\umouse\\src\\peripheral/timer.h"
+ 371                             		.file 8 "C:\\Users\\ryota\\e2_studio\\workspace\\umouse\\src\\peripheral/uart.hpp"

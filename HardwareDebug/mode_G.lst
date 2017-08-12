@@ -1,0 +1,35 @@
+   1                             		.file	"mode_G.cpp"
+   2                             		.section P,"ax"
+   3                             	.Ltext0:
+   4                             		.section	.rodata.str1.1,"aMS",@progbits,1
+   5                             	.LC0:
+   6 0000 47 20 6D 6F 64 65 0A 00 		.string	"G mode\n"
+   7                             		.section P,"ax"
+   8                             		.global	__Z6mode_Gv
+  10                             	__Z6mode_Gv:
+  11                             	.LFB37:
+  12                             		.file 1 "../src/mode/mode_G.cpp"
+   1:../src/mode/mode_G.cpp **** #include <stdint.h>
+   2:../src/mode/mode_G.cpp **** #include "mode_G.h"
+   3:../src/mode/mode_G.cpp **** #include "tactsw.h"
+   4:../src/mode/mode_G.cpp **** #include "timer.h"
+   5:../src/mode/mode_G.cpp **** #include "fcled.h"
+   6:../src/mode/mode_G.cpp **** #include "sound.h"
+   7:../src/mode/mode_G.cpp **** #include "uart.hpp"
+   8:../src/mode/mode_G.cpp **** 
+   9:../src/mode/mode_G.cpp **** void mode_G(){
+  13                             		.loc 1 9 0
+  14 0000 60 40                   		sub	#4, r0
+  15                             	.LCFI0:
+  10:../src/mode/mode_G.cpp **** 	myprintf3("G mode\n");
+  16                             		.loc 1 10 0
+  17 0002 F8 02 00 00 00 00       		mov.L	#.LC0, [r0]
+  18 0008 05 00 00 00             		bsr	__Z9myprintf3PKcz
+  19                             	.LVL0:
+  11:../src/mode/mode_G.cpp **** }
+  20                             		.loc 1 11 0
+  21 000c 67 01                   		rtsd	#4
+  22                             	.LFE37:
+  54                             	.Letext0:
+  55                             		.file 2 "C:\\Users\\ryota\\e2_studio\\workspace\\umouse\\src\\umouse_object/sound.h"
+  56                             		.file 3 "C:\\Users\\ryota\\e2_studio\\workspace\\umouse\\src\\peripheral/uart.hpp"

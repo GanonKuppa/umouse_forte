@@ -1,0 +1,409 @@
+   1                             		.file	"pwm.cpp"
+   2                             		.section P,"ax"
+   3                             	.Ltext0:
+   4                             		.global	__Z8initMTU3v
+   6                             	__Z8initMTU3v:
+   7                             	.LFB0:
+   8                             		.file 1 "../src/peripheral/pwm.cpp"
+   1:../src/peripheral/pwm.cpp **** /*
+   2:../src/peripheral/pwm.cpp ****  * pwm.cpp
+   3:../src/peripheral/pwm.cpp ****  *
+   4:../src/peripheral/pwm.cpp ****  *  Created on: 2016/11/06
+   5:../src/peripheral/pwm.cpp ****  *      Author: ryota
+   6:../src/peripheral/pwm.cpp ****  */
+   7:../src/peripheral/pwm.cpp **** 
+   8:../src/peripheral/pwm.cpp **** #include <myUtil.h>
+   9:../src/peripheral/pwm.cpp **** #include "iodefine.h"
+  10:../src/peripheral/pwm.cpp **** 
+  11:../src/peripheral/pwm.cpp **** #include <stdint.h>
+  12:../src/peripheral/pwm.cpp **** 
+  13:../src/peripheral/pwm.cpp **** #include "pwm.h"
+  14:../src/peripheral/pwm.cpp **** #include "clock.h"
+  15:../src/peripheral/pwm.cpp **** 
+  16:../src/peripheral/pwm.cpp **** static float dutyMTU3;
+  17:../src/peripheral/pwm.cpp **** static float dutyMTU4;
+  18:../src/peripheral/pwm.cpp **** 
+  19:../src/peripheral/pwm.cpp **** 
+  20:../src/peripheral/pwm.cpp **** /////////////////////////////////////////////////////////////
+  21:../src/peripheral/pwm.cpp **** void initMTU3(){
+   9                             		.loc 1 21 0
+  22:../src/peripheral/pwm.cpp **** 	SYSTEM.PRCR.WORD = 0xA502;
+  10                             		.loc 1 22 0
+  11 0000 FB EE 00 00 08          		mov.L	#0x80000, r14
+  12 0005 FA E9 FF 01 02 A5       		mov.W	#0xffffa502, 1022[r14]
+  23:../src/peripheral/pwm.cpp **** 	SYSTEM.MSTPCRA.BIT.MSTPA9  = 0;//MTUモジュールON
+  13                             		.loc 1 23 0
+  14 000b ED E3 04                		mov.L	16[r14], r3
+  24:../src/peripheral/pwm.cpp ****     SYSTEM.PRCR.WORD = 0xA500;
+  25:../src/peripheral/pwm.cpp **** 
+  26:../src/peripheral/pwm.cpp **** 	MPC.PWPR.BIT.B0WI=0;
+  15                             		.loc 1 26 0
+  16 000e FB 4E 00 C1 08          		mov.L	#0x8c100, r4
+  23:../src/peripheral/pwm.cpp **** 	SYSTEM.MSTPCRA.BIT.MSTPA9  = 0;//MTUモジュールON
+  17                             		.loc 1 23 0
+  18 0013 7A 93                   		bclr #9, r3
+  19 0015 E7 E3 04                		mov.L	r3, 16[r14]
+  24:../src/peripheral/pwm.cpp ****     SYSTEM.PRCR.WORD = 0xA500;
+  20                             		.loc 1 24 0
+  21 0018 FA E9 FF 01 00 A5       		mov.W	#0xffffa500, 1022[r14]
+  22                             		.loc 1 26 0
+  23 001e CD 4E 1F                		mov.B	31[r4], r14
+  27:../src/peripheral/pwm.cpp **** 	MPC.PWPR.BIT.PFSWE=1;
+  28:../src/peripheral/pwm.cpp **** 	MPC.P14PFS.BIT.PSEL=1;//MTIOC3A
+  29:../src/peripheral/pwm.cpp **** 	MPC.PWPR.BYTE=0x80;
+  30:../src/peripheral/pwm.cpp **** 
+  31:../src/peripheral/pwm.cpp **** 	PORT1.PMR.BIT.B4=1;
+  24                             		.loc 1 31 0
+  25 0021 FB 2E 01 C0 08          		mov.L	#0x8c001, r2
+  26:../src/peripheral/pwm.cpp **** 	MPC.PWPR.BIT.PFSWE=1;
+  26                             		.loc 1 26 0
+  27 0026 75 2E 7F                		and #0x7f, r14
+  28 0029 C7 4E 1F                		mov.B	r14, 31[r4]
+  27:../src/peripheral/pwm.cpp **** 	MPC.PWPR.BIT.PFSWE=1;
+  29                             		.loc 1 27 0
+  30 002c 8F CB                   		mov.B	31[r4], r3
+  32:../src/peripheral/pwm.cpp **** 
+  33:../src/peripheral/pwm.cpp **** 	MTU3.TCR.BIT.TPSC=0;//PCLKA/1
+  31                             		.loc 1 33 0
+  32 002e FB EE 00 12 0C          		mov.L	#0xc1200, r14
+  27:../src/peripheral/pwm.cpp **** 	MPC.P14PFS.BIT.PSEL=1;//MTIOC3A
+  33                             		.loc 1 27 0
+  34 0033 78 63                   		bset #6, r3
+  35 0035 87 CB                   		mov.B	r3, 31[r4]
+  28:../src/peripheral/pwm.cpp **** 	MPC.PWPR.BYTE=0x80;
+  36                             		.loc 1 28 0
+  37 0037 CD 43 4C                		mov.B	76[r4], r3
+  38 003a 75 23 C0                		and #-64, r3
+  39 003d 78 03                   		bset #0, r3
+  40 003f C7 43 4C                		mov.B	r3, 76[r4]
+  29:../src/peripheral/pwm.cpp **** 
+  41                             		.loc 1 29 0
+  42 0042 F9 44 1F 80             		mov.B	#0xffffff80, 31[r4]
+  31:../src/peripheral/pwm.cpp **** 
+  43                             		.loc 1 31 0
+  44 0046 F1 24 60                		bset #4, 96[r2].B
+  45                             		.loc 1 33 0
+  46 0049 CC E4                   		mov.B	[r14], r4
+  47 004b 75 24 F8                		and #-8, r4
+  48 004e C3 E4                   		mov.B	r4, [r14]
+  34:../src/peripheral/pwm.cpp **** 	MTU3.TCR.BIT.CCLR=1;//PWM TGRAのコンペアマッチでTCNTクリア TGRDは6
+  49                             		.loc 1 34 0
+  50 0050 CC E4                   		mov.B	[r14], r4
+  51 0052 75 24 1F                		and #31, r4
+  52 0055 78 54                   		bset #5, r4
+  53 0057 C3 E4                   		mov.B	r4, [r14]
+  35:../src/peripheral/pwm.cpp **** 	MTU3.TIORH.BIT.IOA=1;//初期出力0ンペアマッチ0出力
+  54                             		.loc 1 35 0
+  55 0059 CD E4 04                		mov.B	4[r14], r4
+  56 005c 75 24 F0                		and #-16, r4
+  57 005f 78 04                   		bset #0, r4
+  58 0061 C7 E4 04                		mov.B	r4, 4[r14]
+  36:../src/peripheral/pwm.cpp **** 	MTU3.TIORH.BIT.IOB=2;//初期出力0コンペアマッチ1出力
+  59                             		.loc 1 36 0
+  60 0064 CD E4 04                		mov.B	4[r14], r4
+  61 0067 64 F4                   		and #15, r4
+  62 0069 78 54                   		bset #5, r4
+  63 006b C7 E4 04                		mov.B	r4, 4[r14]
+  37:../src/peripheral/pwm.cpp **** 	MTU3.TGRA = 4800;
+  64                             		.loc 1 37 0
+  65 006e F9 E9 0C C0 12          		mov.W	#0x12c0, 24[r14]
+  38:../src/peripheral/pwm.cpp **** 	MTU3.TGRB = 1000;
+  66                             		.loc 1 38 0
+  67 0073 F9 E9 0D E8 03          		mov.W	#0x3e8, 26[r14]
+  39:../src/peripheral/pwm.cpp **** 	MTU3.TGRC = 4800;
+  68                             		.loc 1 39 0
+  69 0078 F9 E9 12 C0 12          		mov.W	#0x12c0, 36[r14]
+  40:../src/peripheral/pwm.cpp **** 	MTU3.TGRD = 1000;
+  70                             		.loc 1 40 0
+  71 007d F9 E9 13 E8 03          		mov.W	#0x3e8, 38[r14]
+  41:../src/peripheral/pwm.cpp **** 	MTU3.TMDR1.BIT.MD=2;//PWM1
+  72                             		.loc 1 41 0
+  73 0082 CD E4 02                		mov.B	2[r14], r4
+  74 0085 75 24 F0                		and #-16, r4
+  75 0088 78 14                   		bset #1, r4
+  76 008a C7 E4 02                		mov.B	r4, 2[r14]
+  42:../src/peripheral/pwm.cpp **** 	//MTU3.TMDR1.BIT.BFA = 1;	//バッファーモードに設定
+  43:../src/peripheral/pwm.cpp **** 	MTU3.TMDR1.BIT.BFB = 1;
+  77                             		.loc 1 43 0
+  78 008d F1 E5 02                		bset #5, 2[r14].B
+  79 0090 02                      		rts
+  80                             	.LFE0:
+  82                             		.global	__Z8initMTU4v
+  84                             	__Z8initMTU4v:
+  85                             	.LFB1:
+  44:../src/peripheral/pwm.cpp **** }
+  45:../src/peripheral/pwm.cpp **** 
+  46:../src/peripheral/pwm.cpp **** /////////////////////////////////////////////////////////////
+  47:../src/peripheral/pwm.cpp **** void initMTU4(){
+  86                             		.loc 1 47 0
+  48:../src/peripheral/pwm.cpp **** 	SYSTEM.PRCR.WORD = 0xA502;
+  87                             		.loc 1 48 0
+  88 0091 FB EE 00 00 08          		mov.L	#0x80000, r14
+  89 0096 FA E9 FF 01 02 A5       		mov.W	#0xffffa502, 1022[r14]
+  49:../src/peripheral/pwm.cpp **** 	SYSTEM.MSTPCRA.BIT.MSTPA9  = 0;//MTUモジュールON
+  90                             		.loc 1 49 0
+  91 009c ED E3 04                		mov.L	16[r14], r3
+  50:../src/peripheral/pwm.cpp ****     SYSTEM.PRCR.WORD = 0xA500;
+  51:../src/peripheral/pwm.cpp **** 
+  52:../src/peripheral/pwm.cpp **** 	MPC.PWPR.BIT.B0WI=0;
+  92                             		.loc 1 52 0
+  93 009f FB 4E 00 C1 08          		mov.L	#0x8c100, r4
+  49:../src/peripheral/pwm.cpp **** 	SYSTEM.MSTPCRA.BIT.MSTPA9  = 0;//MTUモジュールON
+  94                             		.loc 1 49 0
+  95 00a4 7A 93                   		bclr #9, r3
+  96 00a6 E7 E3 04                		mov.L	r3, 16[r14]
+  50:../src/peripheral/pwm.cpp ****     SYSTEM.PRCR.WORD = 0xA500;
+  97                             		.loc 1 50 0
+  98 00a9 FA E9 FF 01 00 A5       		mov.W	#0xffffa500, 1022[r14]
+  99                             		.loc 1 52 0
+ 100 00af CD 4E 1F                		mov.B	31[r4], r14
+  53:../src/peripheral/pwm.cpp **** 	MPC.PWPR.BIT.PFSWE=1;
+  54:../src/peripheral/pwm.cpp **** 	MPC.P21PFS.BIT.PSEL=0b001000;//MTIOC4A
+  55:../src/peripheral/pwm.cpp **** 	MPC.PWPR.BYTE=0x80;
+  56:../src/peripheral/pwm.cpp **** 
+  57:../src/peripheral/pwm.cpp **** 	PORT2.PMR.BIT.B1=1;//左PWM
+ 101                             		.loc 1 57 0
+ 102 00b2 FB 1E 02 C0 08          		mov.L	#0x8c002, r1
+  52:../src/peripheral/pwm.cpp **** 	MPC.PWPR.BIT.PFSWE=1;
+ 103                             		.loc 1 52 0
+ 104 00b7 75 2E 7F                		and #0x7f, r14
+ 105 00ba C7 4E 1F                		mov.B	r14, 31[r4]
+  53:../src/peripheral/pwm.cpp **** 	MPC.PWPR.BIT.PFSWE=1;
+ 106                             		.loc 1 53 0
+ 107 00bd CD 4E 1F                		mov.B	31[r4], r14
+  58:../src/peripheral/pwm.cpp **** 	MTU.TSTRA.BIT.CST4 = 1;
+ 108                             		.loc 1 58 0
+ 109 00c0 FB 3E 0A 12 0C          		mov.L	#0xc120a, r3
+  53:../src/peripheral/pwm.cpp **** 	MPC.PWPR.BIT.PFSWE=1;
+ 110                             		.loc 1 53 0
+ 111 00c5 78 6E                   		bset #6, r14
+ 112 00c7 C7 4E 1F                		mov.B	r14, 31[r4]
+  54:../src/peripheral/pwm.cpp **** 	MPC.PWPR.BYTE=0x80;
+ 113                             		.loc 1 54 0
+ 114 00ca CD 42 51                		mov.B	81[r4], r2
+  59:../src/peripheral/pwm.cpp **** 	MTU.TOERA.BIT.OE4A=1;//MTU出力端子を出力許可する
+  60:../src/peripheral/pwm.cpp **** 
+  61:../src/peripheral/pwm.cpp **** 	MTU4.TCR.BIT.TPSC=0;//PCLKA/1
+ 115                             		.loc 1 61 0
+ 116 00cd FB EE 00 12 0C          		mov.L	#0xc1200, r14
+  54:../src/peripheral/pwm.cpp **** 	MPC.PWPR.BYTE=0x80;
+ 117                             		.loc 1 54 0
+ 118 00d2 75 22 C0                		and #-64, r2
+ 119 00d5 78 32                   		bset #3, r2
+ 120 00d7 C7 42 51                		mov.B	r2, 81[r4]
+  55:../src/peripheral/pwm.cpp **** 
+ 121                             		.loc 1 55 0
+ 122 00da F9 44 1F 80             		mov.B	#0xffffff80, 31[r4]
+  57:../src/peripheral/pwm.cpp **** 	MTU.TSTRA.BIT.CST4 = 1;
+ 123                             		.loc 1 57 0
+ 124 00de F1 11 60                		bset #1, 96[r1].B
+  58:../src/peripheral/pwm.cpp **** 	MTU.TOERA.BIT.OE4A=1;//MTU出力端子を出力許可する
+ 125                             		.loc 1 58 0
+ 126 00e1 CD 34 76                		mov.B	118[r3], r4
+ 127 00e4 75 34 80                		or	#0xffffff80, r4
+ 128 00e7 C7 34 76                		mov.B	r4, 118[r3]
+  59:../src/peripheral/pwm.cpp **** 
+ 129                             		.loc 1 59 0
+ 130 00ea F0 31                   		bset #1, [r3].B
+ 131                             		.loc 1 61 0
+ 132 00ec CD E4 01                		mov.B	1[r14], r4
+ 133 00ef 75 24 F8                		and #-8, r4
+ 134 00f2 C7 E4 01                		mov.B	r4, 1[r14]
+  62:../src/peripheral/pwm.cpp **** 	MTU4.TCR.BIT.CCLR=1;//PWM TGRAのコンペアマッチでTCNTクリア TGRDは6
+ 135                             		.loc 1 62 0
+ 136 00f5 CD E4 01                		mov.B	1[r14], r4
+ 137 00f8 75 24 1F                		and #31, r4
+ 138 00fb 78 54                   		bset #5, r4
+ 139 00fd C7 E4 01                		mov.B	r4, 1[r14]
+  63:../src/peripheral/pwm.cpp **** 	MTU4.TIORH.BIT.IOA=1;//初期出力0ンペアマッチ0出力
+ 140                             		.loc 1 63 0
+ 141 0100 CD E4 06                		mov.B	6[r14], r4
+ 142 0103 75 24 F0                		and #-16, r4
+ 143 0106 78 04                   		bset #0, r4
+ 144 0108 C7 E4 06                		mov.B	r4, 6[r14]
+  64:../src/peripheral/pwm.cpp **** 	MTU4.TIORH.BIT.IOB=2;//初期出力0コンペアマッチ1出力
+ 145                             		.loc 1 64 0
+ 146 010b CD E4 06                		mov.B	6[r14], r4
+ 147 010e 64 F4                   		and #15, r4
+ 148 0110 78 54                   		bset #5, r4
+ 149 0112 C7 E4 06                		mov.B	r4, 6[r14]
+  65:../src/peripheral/pwm.cpp **** 	MTU4.TGRA = 4800;
+ 150                             		.loc 1 65 0
+ 151 0115 F9 E9 0E C0 12          		mov.W	#0x12c0, 28[r14]
+  66:../src/peripheral/pwm.cpp **** 	MTU4.TGRB = 1000;
+ 152                             		.loc 1 66 0
+ 153 011a F9 E9 0F E8 03          		mov.W	#0x3e8, 30[r14]
+  67:../src/peripheral/pwm.cpp **** 	MTU4.TGRC = 4800;
+ 154                             		.loc 1 67 0
+ 155 011f F9 E9 14 C0 12          		mov.W	#0x12c0, 40[r14]
+  68:../src/peripheral/pwm.cpp **** 	MTU4.TGRD = 1000;
+ 156                             		.loc 1 68 0
+ 157 0124 F9 E9 15 E8 03          		mov.W	#0x3e8, 42[r14]
+  69:../src/peripheral/pwm.cpp **** 	MTU4.TMDR1.BIT.MD=2;//PWM1
+ 158                             		.loc 1 69 0
+ 159 0129 CD E4 03                		mov.B	3[r14], r4
+ 160 012c 75 24 F0                		and #-16, r4
+ 161 012f 78 14                   		bset #1, r4
+ 162 0131 C7 E4 03                		mov.B	r4, 3[r14]
+  70:../src/peripheral/pwm.cpp **** 	//MTU4.TMDR1.BIT.BFA = 1;	//バッファーモードに設定
+  71:../src/peripheral/pwm.cpp **** 	MTU4.TMDR1.BIT.BFB = 1;	//バッファーモードに設定
+ 163                             		.loc 1 71 0
+ 164 0134 F1 E5 03                		bset #5, 3[r14].B
+ 165 0137 02                      		rts
+ 166                             	.LFE1:
+ 168                             		.global	__Z11setDutyMTU3f
+ 170                             	__Z11setDutyMTU3f:
+ 171                             	.LFB2:
+  72:../src/peripheral/pwm.cpp **** }
+  73:../src/peripheral/pwm.cpp **** /*
+  74:../src/peripheral/pwm.cpp **** void setFreq(uint16_t freq){
+  75:../src/peripheral/pwm.cpp ****     MTU4.TGRA = freq ;
+  76:../src/peripheral/pwm.cpp ****     MTU4.TGRC = freq ;
+  77:../src/peripheral/pwm.cpp ****     MTU3.TGRA = freq ;//
+  78:../src/peripheral/pwm.cpp ****     MTU3.TGRC = freq ;
+  79:../src/peripheral/pwm.cpp **** 
+  80:../src/peripheral/pwm.cpp **** 
+  81:../src/peripheral/pwm.cpp **** }*/
+  82:../src/peripheral/pwm.cpp **** 
+  83:../src/peripheral/pwm.cpp **** void setDutyMTU3(float duty){
+ 172                             		.loc 1 83 0
+ 173                             	.LVL0:
+  84:../src/peripheral/pwm.cpp ****     duty = constrain(duty, 0.0, 1.0);
+ 174                             		.loc 1 84 0
+ 175 0138 66 02                   		mov.L	#0x0, r2
+ 176 013a FB 32 00 00 80 3F       		mov.L	#0x3f800000, r3
+ 177 0140 05 00 00 00             		bsr	__Z9constrainfff
+ 178                             	.LVL1:
+  85:../src/peripheral/pwm.cpp ****     dutyMTU3 = duty;
+ 179                             		.loc 1 85 0
+ 180 0144 FB E2 04 00 00 00       		mov.L	#__ZL8dutyMTU3, r14
+ 181 014a E3 E1                   		mov.L	r1, [r14]
+  86:../src/peripheral/pwm.cpp ****     if(duty == 0.0){
+ 182                             		.loc 1 86 0
+ 183 014c FD 72 11 00 00 00 00    		fcmp	#0x0, r1
+ 184 0153 20 28                   		beq	.L7
+  87:../src/peripheral/pwm.cpp ****         MTU.TSTRA.BIT.CST3 = 0;
+  88:../src/peripheral/pwm.cpp ****         return;
+  89:../src/peripheral/pwm.cpp ****     }
+  90:../src/peripheral/pwm.cpp **** 	MTU3.TGRD = (uint16_t)(MTU3.TGRC * (1.0-duty));
+ 185                             		.loc 1 90 0
+ 186 0155 FB EE 00 12 0C          		mov.L	#0xc1200, r14
+ 187 015a 5D E4 12                		movu.W	36[r14], r4
+ 188 015d FC 47 44                		itof	r4, r4
+ 189 0160 FB 32 00 00 80 3F       		mov.L	#0x3f800000, r3
+ 190 0166 FF 81 13                		fsub	r1, r3, r1
+ 191                             	.LVL2:
+ 192 0169 FC 8F 41                		fmul	r4, r1
+ 193 016c FC A7 11                		ftou	r1, r1
+ 194 016f D7 E1 13                		mov.W	r1, 38[r14]
+ 195                             	.LVL3:
+  91:../src/peripheral/pwm.cpp **** 	MTU.TSTRA.BIT.CST3 = 1;
+ 196                             		.loc 1 91 0
+ 197 0172 FB EE 0A 12 0C          		mov.L	#0xc120a, r14
+ 198 0177 F1 E6 76                		bset #6, 118[r14].B
+ 199 017a 02                      		rts
+ 200                             	.LVL4:
+ 201                             	.L7:
+  87:../src/peripheral/pwm.cpp ****         MTU.TSTRA.BIT.CST3 = 0;
+ 202                             		.loc 1 87 0
+ 203 017b FB EE 0A 12 0C          		mov.L	#0xc120a, r14
+ 204 0180 F1 EE 76                		bclr #6, 118[r14].B
+  88:../src/peripheral/pwm.cpp ****     }
+ 205                             		.loc 1 88 0
+ 206 0183 02                      		rts
+ 207                             	.LFE2:
+ 209                             		.global	__Z11setDutyMTU4f
+ 211                             	__Z11setDutyMTU4f:
+ 212                             	.LFB3:
+  92:../src/peripheral/pwm.cpp **** }
+  93:../src/peripheral/pwm.cpp **** 
+  94:../src/peripheral/pwm.cpp **** void setDutyMTU4(float duty){
+ 213                             		.loc 1 94 0
+ 214                             	.LVL5:
+  95:../src/peripheral/pwm.cpp ****     duty = constrain(duty, 0.0, 1.0);
+ 215                             		.loc 1 95 0
+ 216 0184 66 02                   		mov.L	#0x0, r2
+ 217 0186 FB 32 00 00 80 3F       		mov.L	#0x3f800000, r3
+ 218 018c 05 00 00 00             		bsr	__Z9constrainfff
+ 219                             	.LVL6:
+  96:../src/peripheral/pwm.cpp ****     dutyMTU4 = duty;
+ 220                             		.loc 1 96 0
+ 221 0190 FB E2 00 00 00 00       		mov.L	#__ZL8dutyMTU4, r14
+ 222 0196 E3 E1                   		mov.L	r1, [r14]
+  97:../src/peripheral/pwm.cpp ****     if(duty == 0.0){
+ 223                             		.loc 1 97 0
+ 224 0198 FD 72 11 00 00 00 00    		fcmp	#0x0, r1
+ 225 019f 20 2E                   		beq	.L11
+  98:../src/peripheral/pwm.cpp **** 	    MTU.TSTRA.BIT.CST4 = 0;
+  99:../src/peripheral/pwm.cpp **** 	    return;
+ 100:../src/peripheral/pwm.cpp **** 	}
+ 101:../src/peripheral/pwm.cpp **** 	MTU4.TGRD = (uint16_t)(MTU4.TGRC * (1.0-duty));
+ 226                             		.loc 1 101 0
+ 227 01a1 FB EE 00 12 0C          		mov.L	#0xc1200, r14
+ 228 01a6 5D E4 14                		movu.W	40[r14], r4
+ 229 01a9 FC 47 44                		itof	r4, r4
+ 230 01ac FB 32 00 00 80 3F       		mov.L	#0x3f800000, r3
+ 231 01b2 FF 81 13                		fsub	r1, r3, r1
+ 232                             	.LVL7:
+ 233 01b5 FC 8F 41                		fmul	r4, r1
+ 234 01b8 FC A7 11                		ftou	r1, r1
+ 235 01bb D7 E1 15                		mov.W	r1, 42[r14]
+ 236                             	.LVL8:
+ 102:../src/peripheral/pwm.cpp **** 	MTU.TSTRA.BIT.CST4 = 1;
+ 237                             		.loc 1 102 0
+ 238 01be FB EE 0A 12 0C          		mov.L	#0xc120a, r14
+ 239 01c3 CD E4 76                		mov.B	118[r14], r4
+ 240 01c6 75 34 80                		or	#0xffffff80, r4
+ 241 01c9 C7 E4 76                		mov.B	r4, 118[r14]
+ 242 01cc 02                      		rts
+ 243                             	.LVL9:
+ 244                             	.L11:
+  98:../src/peripheral/pwm.cpp **** 	    MTU.TSTRA.BIT.CST4 = 0;
+ 245                             		.loc 1 98 0
+ 246 01cd FB EE 0A 12 0C          		mov.L	#0xc120a, r14
+ 247 01d2 CD E4 76                		mov.B	118[r14], r4
+ 248 01d5 75 24 7F                		and #0x7f, r4
+ 249 01d8 C7 E4 76                		mov.B	r4, 118[r14]
+  99:../src/peripheral/pwm.cpp **** 	}
+ 250                             		.loc 1 99 0
+ 251 01db 02                      		rts
+ 252                             	.LFE3:
+ 254                             		.global	__Z11getDutyMTU3v
+ 256                             	__Z11getDutyMTU3v:
+ 257                             	.LFB4:
+ 103:../src/peripheral/pwm.cpp **** }
+ 104:../src/peripheral/pwm.cpp **** 
+ 105:../src/peripheral/pwm.cpp **** float getDutyMTU3(){
+ 258                             		.loc 1 105 0
+ 106:../src/peripheral/pwm.cpp ****     return dutyMTU3;
+ 259                             		.loc 1 106 0
+ 260 01dc FB E2 04 00 00 00       		mov.L	#__ZL8dutyMTU3, r14
+ 107:../src/peripheral/pwm.cpp **** }
+ 261                             		.loc 1 107 0
+ 262 01e2 EC E1                   		mov.L	[r14], r1
+ 263 01e4 02                      		rts
+ 264                             	.LFE4:
+ 266                             		.global	__Z11getDutyMTU4v
+ 268                             	__Z11getDutyMTU4v:
+ 269                             	.LFB5:
+ 108:../src/peripheral/pwm.cpp **** 
+ 109:../src/peripheral/pwm.cpp **** float getDutyMTU4(){
+ 270                             		.loc 1 109 0
+ 110:../src/peripheral/pwm.cpp ****     return dutyMTU4;
+ 271                             		.loc 1 110 0
+ 272 01e5 FB E2 00 00 00 00       		mov.L	#__ZL8dutyMTU4, r14
+ 111:../src/peripheral/pwm.cpp **** }
+ 273                             		.loc 1 111 0
+ 274 01eb EC E1                   		mov.L	[r14], r1
+ 275 01ed 02                      		rts
+ 276                             	.LFE5:
+ 278                             		.local	__ZL8dutyMTU4
+ 279                             		.comm	__ZL8dutyMTU4,4,4
+ 280                             		.local	__ZL8dutyMTU3
+ 281                             		.comm	__ZL8dutyMTU3,4,4
+ 348                             	.Letext0:
+ 349                             		.file 2 "c:\\progra~2\\gccfor~2.201\\rx-elf\\rx-elf\\rx-elf\\include\\machine\\_default_types.h"
+ 350                             		.file 3 "c:\\progra~2\\gccfor~2.201\\rx-elf\\rx-elf\\rx-elf\\include\\stdint.h"
+ 351                             		.file 4 "../src/peripheral/iodefine.h"
+ 352                             		.file 5 "../src/peripheral/clock.h"
+ 353                             		.file 6 "C:\\Users\\ryota\\e2_studio\\workspace\\umouse\\src\\utility/myUtil.h"

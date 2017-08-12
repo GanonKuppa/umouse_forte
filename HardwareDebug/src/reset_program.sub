@@ -1,0 +1,1 @@
+ -Wa,-gdwarf2 -c -x assembler-with-cpp   -Wstack-usage=256 -D__RX_LITTLE_ENDIAN__=1 -DCPPAPP -g2 -g -mlittle-endian-data -mcpu=rx64m 
