@@ -232,7 +232,7 @@ void periperalInit() {
     initMTU4();
 
     //DA
-    initDA();
+    peri::initDA();
     myprintf3("-------各種ペリフェラル初期化完了-------\n");
 
 };

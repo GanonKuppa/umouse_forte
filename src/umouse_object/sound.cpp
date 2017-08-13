@@ -17,6 +17,7 @@
 
 using std::queue;
 using std::array;
+namespace peri = peripheral_RX71M;
 
 struct Note;
 class SoundManager;
@@ -218,7 +219,7 @@ void timeInterrupt_sub(){
 	uint16_t BGMM_wave_val = BGMM.calcWaveVal(num_count);
 	uint16_t da_val = SEM_wave_val+BGMM_wave_val;
 
-	setDA( (da_val<4000)? da_val:4000 );
+	peri::setDA( (da_val<4000)? da_val:4000 );
 
 	num_count ++;
 	endTimeuCountIntCMT1();

@@ -1,0 +1,196 @@
+title **ペリフェラル層**
+
+
+skinparam {
+  defaultFontName Consolas
+  NoteBackgroundColor #335533
+}
+
+
+/'色の定義'/
+!define blue(x) <font color="blue">x</font>
+!define green(x) <font color="green">x</font>
+!define white(x)   <font color="white">x</font>
+!define underline(x) <u>x</u>
+/'型名の定義'/
+!define uint32_t blue(uint32_t)
+!define uint16_t blue(uint16_t)
+!define uint8_t blue(uint8_t)
+!define int32_t blue(int32_t)
+!define int16_t blue(int16_t)
+!define int8_t blue(int8_t)
+!define void blue(void)
+!define int  blue(int)
+!define char blue(char)
+!define const blue(const)
+/'以下本文'/
+
+note as N1
+white(underline(プログラム各層))
+
+white(**ペリフェラル層**)
+white(ペリフェラルミドルウェア層)
+white(ロボットオブジェクト層)
+white(アプリケーション層)
+end note
+
+
+object spi.cpp{
+  -void initTMR0()
+  green(//RSPI0)
+  +void initRSPI0()
+  +uint8_t communicate8bitRSPI0(uint8_t transmit)
+  +void communicateNbyteRSPI0(uint8_t *send, uint8_t *recv, uint8_t num)
+  +void setEnableRSPI0(uint8_t en)
+  green(//RSPI1)
+  +void initRSPI1()
+  +uint8_t communicate8bitRSPI1(uint8_t transmit)
+  +void communicateNbyteRSPI1(uint8_t *send, uint8_t *recv, uint8_t num)
+  +void setEnableRSPI1(uint8_t en)
+}
+
+
+
+object da.cpp{
+  +void initDA()
+  +void setDA()
+  +uint16_t  getDA()
+}
+
+object clock.cpp{
+  +void initClock()
+}
+
+object ad.cpp_OK{
+  +void initAD()
+  green(//start AD transform )
+  +uint16_t startAD_AN000()
+  +uint16_t startAD_AN001()
+  +uint16_t startAD_AN002()
+  +uint16_t startAD_AN003()
+  +uint16_t startAD_AN004()
+  +uint16_t startAD_AN005()
+  +uint16_t startAD_AN006()
+  +uint16_t startAD_AN007()
+  +uint16_t startAD_AN108()
+  +uint16_t startAD_AN109()
+  +uint16_t startAD_AN110()
+  +void startAD_All()
+  green(//get value )
+  uint16_t getAD_AN000(void);
+  uint16_t getAD_AN001(void);
+  uint16_t getAD_AN002(void);
+  uint16_t getAD_AN003(void);
+  uint16_t getAD_AN004(void);
+  uint16_t getAD_AN005(void);
+  uint16_t getAD_AN006(void);
+  uint16_t getAD_AN007(void);
+  uint16_t getAD_AN108(void);
+  uint16_t getAD_AN109(void);
+  uint16_t getAD_AN110(void);
+  +void getAD_All(uint16_t *array)
+}
+
+
+object uart.cpp{
+  green(//SCI1 blocking)
+  +void initSCI1()
+  +void put1byte(char c)
+  +void putnbyte(char *buf,int len)
+  +int myprintf(const char *fmt, ...)
+  green(//SCI2 blocking)
+  +void initSCI2()
+  +void put1byte2(char c)
+  +void putnbyte2(char *buf,int len)
+  +int myprintf2(const char *fmt, ...)
+  green(//SCIFA9 non blocking)
+  - #define PERIODIC_MSG_LEN 100
+  -queue<uint8_t> transBuff;
+  -queue<uint8_t> printfBuff;
+  -uint8_t periodicMsg[PERIODIC_MSG_LEN]
+  +void initSCIFA9()
+  +void putnbyte3(uint8_t *buf,uint16_t len)
+  +int sendDatafromTransBuff()
+  +int myprintf3(const char *fmt, ...)
+  +int myprintf3_Dbg(const char *fmt, ...)
+  +void packData(uint8_t *buf)
+  +void sendPeriodicMsg()
+  +uint8_t* getPointerOfPeriodicMsg()
+}
+
+
+
+
+
+object timer.cpp{
+  +void initCMTW0()
+  +void initCMTW1()
+  +void initTPU0()
+  green(//timer main CMTW1 32bit)
+  +void waitClockCount(uint32_t cCount)
+  +void waitusec(uint32_t usec)
+  +void waitmsec(uint32_t msec)
+  +void startTimeuCount(void)
+  +uint32_t getTimeuCount(void)
+  +uint32_t int endTimeuCount(void)
+  green(//timer sub TPU0 16bit)
+  +void waitClockCount_sub(uint32_t cCount)
+  +void waitusec_sub(uint32_t usec)
+  +void waitmsec_sub(uint32_t msec)
+  +void startTimeuCount_sub(void)
+  +uint32_t getTimeuCount_sub(void)
+  +uint32_t endTimeuCount_sub(void)
+  green(//起動時からの時間取得 CMTW0 32bit)
+  +uint32_t getElapsedMsec(void)
+}
+
+
+object timerInterrupt.cpp{
+  green(//CMT0)
+  +void initCMT0()
+  +void setPriorityCMT0(uint8_t priori)
+  +void startCMT0()
+  +void stopCMT0()
+  +uint32_t endTimeuCountIntCMT0()
+  +uint32_t getTimeuCountIntCMT0()
+  green(//CMT1)
+  +void initCMT1()
+  +void setPriorityCMT1(uint8_t priori)
+  +void startCMT1()
+  +void stopCMT1()
+  +uint32_t endTimeuCountIntCMT1()
+  +uint32_t getTimeuCountIntCMT1()
+}
+
+
+
+object phaseCounting.cpp{
+  green(//MTU1)
+  +void initMTU1()
+  +int32_t getCountMTU1()
+  green(//MTU2)
+  +void initMTU2()
+  +int32_t getCountMTU2()
+
+}
+
+
+object pwm.cpp{
+  green(//MTU3)
+  +void initMTU3()
+  +void setDutyMTU3(float duty)
+  green(//MTU4)
+  +void setDutyMTU4(float duty)
+  +void initMTU4()
+}
+
+
+
+object i2c.cpp{
+
+}
+
+object gpio.cpp{
+  +void initGPIO()
+
+}
