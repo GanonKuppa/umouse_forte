@@ -13,6 +13,10 @@
 
 
 using std::queue;
+namespace peri = peripheral_RX71M;
+using peri::getElapsedMsec;
+using peri:: waitmsec;
+
 //using namespace Eigen;
 //#define EIGEN_DONT_VECTORIZE
 //#define EIGEN_DISABLE_UNALIGNED_ARRAY_ASSERT

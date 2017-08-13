@@ -5,6 +5,11 @@
 #include <stdint.h>
 #include "timer.h"
 
+namespace peri = peripheral_RX71M;
+using peri::getElapsedMsec;
+using peri:: waitmsec;
+
+
 class Gamepad{
 public:
     volatile int8_t cross_x;

@@ -19,5 +19,4 @@
 
 void mode_R(){
 	myprintf3("R mode\n");
-	setDutyMTU4(0.1);
 }

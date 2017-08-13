@@ -1,11 +1,11 @@
 
 #pragma once
 
-void initMTU3();
-void initMTU4();
-void setDutyMTU3(float duty);
-void setDutyMTU4(float duty);
-float getDutyMTU3();
-float getDutyMTU4();
-//void setFreq(uint16_t freq);
-
+namespace peripheral_RX71M{
+    void initMTU3();
+    void initMTU4();
+    void setDutyMTU3(float duty);
+    void setDutyMTU4(float duty);
+    float getDutyMTU3();
+    float getDutyMTU4();
+}

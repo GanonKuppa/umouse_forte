@@ -6,21 +6,19 @@
  * @author ryota
  */
 
-
 #pragma once
 
-const unsigned int ICLK  = 96000000;
-const unsigned int BCLK  = 96000000;
-const unsigned int PCLKA = 96000000;
-const unsigned int PCLKB = 48000000;
-const unsigned int PCLKC = 48000000;
-const unsigned int PCLKD = 48000000;
+#include <stdint.h>
 
-void initClock(void);
+namespace peripheral_RX71M{
 
+    const uint32_t ICLK  = 96000000;
+    const uint32_t BCLK  = 96000000;
+    const uint32_t PCLKA = 96000000;
+    const uint32_t PCLKB = 48000000;
+    const uint32_t PCLKC = 48000000;
+    const uint32_t PCLKD = 48000000;
 
-
-
-
-
+    void initClock(void);
+}
 

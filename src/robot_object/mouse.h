@@ -2,16 +2,21 @@
 #define MOUSE_H
 
 
-#include "stdint.h"
+#include <stdint.h>
+#include <math.h>
+
 #include "iodefine.h"
-#include "maze.h"
 #include "pwm.h"
+#include "phaseCounting.h"
+
+#include "maze.h"
 #include "machineParameters.h"
 #include "myUtil.h"
 #include "math.h"
 #include "imu.hpp"
-#include <math.h>
 
+
+namespace peri = peripheral_RX71M;
 //#include <Core>
 //#include <Geometry>
 //using namespace Eigen;
@@ -134,8 +139,8 @@ public:
 
         R_ENC_pre = R_ENC_now;
         L_ENC_pre = L_ENC_now;
-        R_ENC_now = MTU1.TCNT;
-        L_ENC_now = MTU2.TCNT;
+        R_ENC_now = peri::getCountMTU1();
+        L_ENC_now = peri::getCountMTU1();
 
         int32_t count_diff_R = (int32_t)(R_ENC_now - R_ENC_pre);
         int32_t count_diff_L = (int32_t)(L_ENC_now - L_ENC_pre);
@@ -190,7 +195,7 @@ public:
             PORT1.PODR.BIT.B3 = 1;
             PORT1.PODR.BIT.B2 = 0;
         }
-        setDutyMTU3(ABS(duty));
+        peri::setDutyMTU3(ABS(duty));
     };
     void setDuty_L(float duty){
         duty_L = duty;
@@ -207,7 +212,7 @@ public:
             PORT2.PODR.BIT.B0 = 0;
             PORT1.PODR.BIT.B7 = 1;
         }
-        setDutyMTU4(ABS(duty));
+        peri::setDutyMTU4(ABS(duty));
     };
 
 

@@ -18,6 +18,7 @@
 using std::queue;
 using std::array;
 namespace peri = peripheral_RX71M;
+using peri:: waitmsec;
 
 struct Note;
 class SoundManager;
@@ -222,7 +223,7 @@ void timeInterrupt_sub(){
 	peri::setDA( (da_val<4000)? da_val:4000 );
 
 	num_count ++;
-	endTimeuCountIntCMT1();
+	peri::endTimeuCountIntCMT1();
 
 }
 

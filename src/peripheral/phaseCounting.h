@@ -1,6 +1,9 @@
 #pragma once
 
-void initMTU1();
-void initMTU2();
+namespace peripheral_RX71M{
 
-
+    void initMTU1();
+    int32_t getCountMTU1();
+    void initMTU2();
+    int32_t getCountMTU2();
+}

@@ -13,7 +13,6 @@
 
 #include "timer.h"
 #include "iodefine.h"
-#include "clock.h"
 #include "ad.h"
 #include "phaseCounting.h"
 #include "pwm.h"
@@ -38,6 +37,8 @@
 //#define DEBUG_SWITCH
 
 using std::queue;
+namespace peri = peripheral_RX71M;
+
 static queue<uint8_t> transBuff;
 static queue<uint8_t> printfBuff;
 static uint8_t recieveBuff[RECEIVE_BUFF_LEN];
@@ -95,8 +96,8 @@ void execCommand(uint8_t *cmd)
     }
     myprintf3("=%d,%d,%d,%d,%d\n",cmd[3],cmd[4],cmd[5],PORT1.PODR.BIT.B3,PORT1.PODR.BIT.B2);
 
-    setDutyMTU3(rt_f);
-    setDutyMTU4(lt_f);
+    peri::setDutyMTU3(rt_f);
+    peri::setDutyMTU4(lt_f);
 }
 
 
@@ -129,7 +130,6 @@ void fetchCommand()
 
 
 void initSCI1(void) {
-    uint32_t PCLK = PCLKB;
     SYSTEM.PRCR.WORD = 0xA502;
     MSTP( SCI1 ) = 0;        //モジュールストップを解除
     SYSTEM.PRCR.WORD = 0xA500;
@@ -162,7 +162,6 @@ void initSCI1(void) {
 }
 
 void initSCI2(void) {
-    uint32_t PCLK = PCLKB;
     SYSTEM.PRCR.WORD = 0xA502;
     MSTP( SCI2 ) = 0;        //モジュールストップを解除
     SYSTEM.PRCR.WORD = 0xA500;
@@ -195,7 +194,6 @@ void initSCI2(void) {
 }
 
 void initSCIFA9() {
-    uint32_t PCLK = PCLKA;
     SYSTEM.PRCR.WORD = 0xA502;
     MSTP( SCIFA9 ) = 0;        //モジュールストップを解除
     SYSTEM.PRCR.WORD = 0xA500;
@@ -533,11 +531,11 @@ void packData(uint8_t *buf) {
     buf[62] = ((0x0000ff00 & (imu2.acc_raw[2])) >> 8);
     buf[63] = ((0x000000ff & imu2.acc_raw[2]));
 
-    buf[64] = ((0x0000ff00 & (getTimeuCountIntCMT0())) >> 8);
-    buf[65] = ((0x000000ff & getTimeuCountIntCMT0()));
+    buf[64] = ((0x0000ff00 & (peri::getTimeuCountIntCMT0())) >> 8);
+    buf[65] = ((0x000000ff & peri::getTimeuCountIntCMT0()));
 
-    buf[66] = ((0x0000ff00 & (getTimeuCountIntCMT1())) >> 8);
-    buf[67] = ((0x000000ff & getTimeuCountIntCMT1()));
+    buf[66] = ((0x0000ff00 & (peri::getTimeuCountIntCMT1())) >> 8);
+    buf[67] = ((0x000000ff & peri::getTimeuCountIntCMT1()));
 //
     buf[68] = ((0x0000ff00 & (TPU0.TCNT)) >> 8);
     buf[69] = ((0x000000ff & TPU0.TCNT));
@@ -552,11 +550,11 @@ void packData(uint8_t *buf) {
     set2ByteVal(70, m.duty_R, 32767);
     set2ByteVal(72, m.duty_L, 32767);
 
-    buf[74] = ((0x0000ff00 & (MTU1.TCNT)) >> 8);
-    buf[75] = ((0x000000ff & MTU1.TCNT));
+    buf[74] = ((0x0000ff00 & (peri::getCountMTU1())) >> 8);
+    buf[75] = ((0x000000ff & peri::getCountMTU1()));
 
-    buf[76] = ((0x0000ff00 & (MTU2.TCNT)) >> 8);
-    buf[77] = ((0x000000ff & MTU2.TCNT));
+    buf[76] = ((0x0000ff00 & (peri::getCountMTU2())) >> 8);
+    buf[77] = ((0x000000ff & peri::getCountMTU2()));
 
     buf[78] = ((0x0000ff00 & (tsw.getOntime())) >> 8);
     buf[79] = ((0x000000ff & (tsw.getOntime())));

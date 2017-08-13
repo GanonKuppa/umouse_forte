@@ -1,7 +1,7 @@
 /***************************************************************/
 /*                                                             */
-/*      PROJECT NAME :  micromouse                             */
-/*      FILE         :  micromouse.cpp                         */
+/*      PROJECT NAME :  umouse forte                             */
+/*      FILE         :  main.cpp                         */
 /*      DESCRIPTION  :  Main Program                           */
 /*      CPU SERIES   :  RX700                                  */
 /*      CPU TYPE     :  RX71M                                  */
@@ -47,6 +47,7 @@ extern "C" void __main() {
 #include "ad.h"
 #include "pwm.h"
 #include "phaseCounting.h"
+
 #include <imu.hpp>
 #include "da.h"
 #include "myUtil.h"
@@ -65,6 +66,8 @@ extern "C" void __main() {
 //namespaceの宣言
 using namespace std;
 namespace peri = peripheral_RX71M;
+using peri::getElapsedMsec;
+using peri:: waitmsec;
 
 //プロトタイプ宣言
 void periperalInit();
@@ -168,7 +171,7 @@ void timeInterrupt(void) {
     peri::startAD_AN000(); //電源
 
     countIntNum++;
-    endTimeuCountIntCMT0();
+    peri::endTimeuCountIntCMT0();
 
 }
 
@@ -199,7 +202,7 @@ int main() {
 //各ペリフェラルの初期化
 void periperalInit() {
     //クロック
-    initClock();
+    peri::initClock();
     //IOピン
     peri::initGPIO();
     //UART
@@ -208,28 +211,28 @@ void periperalInit() {
     initSCIFA9();
 
     //割り込み関数
-    initCMT0();
-    initCMT1();
+    peri::initCMT0();
+    peri::initCMT1();
 
     //SPI
-    initRSPI0();
-    initRSPI1();
+    peri::initRSPI0();
+    peri::initRSPI1();
 
     //時間測定
-    initTPU0();
-    initCMTW0();
-    initCMTW1();
+    peri::initTPU0();
+    peri::initCMTW0();
+    peri::initCMTW1();
 
     //AD
     peri::initAD();
 
     //位相係数
-    initMTU1();
-    initMTU2();
+    peri::initMTU1();
+    peri::initMTU2();
 
     //PWM
-    initMTU3();
-    initMTU4();
+    peri::initMTU3();
+    peri::initMTU4();
 
     //DA
     peri::initDA();
@@ -240,13 +243,12 @@ void periperalInit() {
 //起動時の処理
 void startUpInit() {
 
+    peri::setDutyMTU3(0.0);
+    peri::setDutyMTU4(0.0);
 
-    setDutyMTU3(0.0);
-    setDutyMTU4(0.0);
-
-    setPriorityCMT0(12);
-    setPriorityCMT1(15);
-    startCMT0();
+    peri::setPriorityCMT0(12);
+    peri::setPriorityCMT1(15);
+    peri::startCMT0();
     myprintf3("-------CMT0割り込み開始-------\n");
 
     MPU9250& imu1 = MPU9250::getInstance();
@@ -257,7 +259,7 @@ void startUpInit() {
 
     //sound
 
-    startCMT1();
+    peri::startCMT1();
     myprintf3("-------CMT1割り込み開始-------\n");
 
     /////////////コンパイル時固有文字列/////////
