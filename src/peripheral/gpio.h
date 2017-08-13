@@ -1,7 +1,11 @@
 
 #pragma once
 
-void initGPIO();
+namespace peripheral_RX71M{
+    void initGPIO();
+}
+
+
 
 
 

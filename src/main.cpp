@@ -201,7 +201,7 @@ void periperalInit() {
     //クロック
     initClock();
     //IOピン
-    initGPIO();
+    peri::initGPIO();
     //UART
     initSCI1();
     initSCI2();
