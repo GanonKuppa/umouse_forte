@@ -1,5 +1,4 @@
-#ifndef SPI_H
-#define SPI_H
+#pragma once
 
 #include <stdint.h>
 
@@ -14,4 +13,4 @@ void communicateNbyteRSPI1(uint8_t * send, uint8_t* recv, uint8_t num);
 void setEnableRSPI0(uint8_t en);
 void setEnableRSPI1(uint8_t en);
 
-#endif
+

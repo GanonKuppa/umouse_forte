@@ -39,9 +39,9 @@ extern "C" void __main() {
 
 #include <array>
 #include "clock.h"
-#include "uart.hpp"
+#include <uart.h>
 #include "gpio.h"
-#include "timeInterrupt.hpp"
+#include <timeInterrupt.h>
 #include "spi.h"
 #include "timer.h"
 #include "ad.h"
@@ -62,12 +62,15 @@ extern "C" void __main() {
 
 #include "moveEvent.h"
 
+//namespaceの宣言
 using namespace std;
+namespace peri = peripheral_RX71M;
 
 //プロトタイプ宣言
 void periperalInit();
 void startUpInit();
-uint16_t temp_V=0;
+void lowBatteryAlert();
+
 //-------------タイマ割り込み関数---------------//
 extern "C" void timeInterrupt(void);
 
@@ -137,8 +140,6 @@ void timeInterrupt(void) {
         PORTD.PODR.BIT.B7 = 0; //PICの入力ピンをローにする
     }
 
-
-
     //壁センサの更新処理
     switch(countIntNum % 4){
         case 0:
@@ -164,7 +165,7 @@ void timeInterrupt(void) {
 
     //毎回行う処理
     soundUpdate();
-    startAD_AN000(); //電源
+    peri::startAD_AN000(); //電源
 
     countIntNum++;
     endTimeuCountIntCMT0();
@@ -176,47 +177,21 @@ int main() {
     periperalInit();
     startUpInit();
 
-    float vol_f = 15.1 / 5.1 * (S12AD.ADDR0) * 3.3 / 4096;
-    if(vol_f < 7.0)famima();
-
     MPU9250& imu1 = MPU9250::getInstance();
     Icm20608G& imu2 = Icm20608G::getInstance();
     FcLed& fcled = FcLed::getInstance();
-    myprintf3_Dbg("start: %d \n", CMTW0.CMWCNT);
+    UMouse  &mouse = UMouse::getInstance();
 
-    //addBgmList(otenba);
-    //addBgmList(robotol);
-    //addBgmList(gamecube);
-    //addBgmList(togetoge);
-    //addBgmList(owen);
-    //addBgmList(road27);
+    addBgmList(otenba);
 
-    //addBgmList(sky_high);
+    while(1){
+        myprintf3("entry point \n");
+        ///////////////////////////////////////
+        MPU9250::getInstance().calibOmegaOffset(200);
+        MPU9250::getInstance().calibAccOffset(200);
 
-    myprintf3_Dbg("end %d  \n", CMTW0.CMWCNT);
-    //fcled.R.flash(100,100);
-    //waitmsec(5000);
-    //fcled.G.flash(1000,500);
-    //bpmTest(2);
-    //waitmsec(5000);
-    //fcled.B.flash(100,200);
-    //bpmTest(2);
-    //getPointerOfPeriodicMsg()[75] = 111;
-    //getPointerOfPeriodicMsg()[78] = 0xff;
-    getPointerOfPeriodicMsg()[155] = 0xff;
-    getPointerOfPeriodicMsg()[156] = 0xff;
-    //uint8_t *periMes = getPointerOfPeriodicMsg();
-
-    UMouse  &mouse   = UMouse::getInstance();
-
-     while(1){
-         myprintf3("entry point \n");
-         ///////////////////////////////////////
-         MPU9250::getInstance().calibOmegaOffset(200);
-         MPU9250::getInstance().calibAccOffset(200);
-
-         modeSelect();
-     };
+        modeSelect();
+    };
 
     return 0;
 }
@@ -246,7 +221,7 @@ void periperalInit() {
     initCMTW1();
 
     //AD
-    initAD();
+    peri::initAD();
 
     //位相係数
     initMTU1();
@@ -301,7 +276,8 @@ void startUpInit() {
     randomNote(compile_hash);
     waitmsec(400);
     /////////////電池電圧警告////////////////
-    float vol_f = 15.1 / 5.1 * (S12AD.ADDR0) * 3.3 / 4096;
+    uint16_t vol_ad_val = peri::getAD_AN000();
+    float vol_f = 15.1 / 5.1 * (vol_ad_val) * 3.3 / 4096;
     uint8_t num_1V = uint8_t(vol_f);
     uint8_t num_0_1V = uint8_t((vol_f - float(num_1V)) * 10.0);
     for (int i = 0; i < num_1V; i++) {
@@ -324,3 +300,11 @@ void startUpInit() {
     myprintf3("===finish init====\n");
 
 };
+
+
+void lowBatteryAlert(){
+    uint16_t vol_ad_val = peri::getAD_AN000();
+    float vol_f = 15.1 / 5.1 * (vol_ad_val) * 3.3 / 4096;
+    if(vol_f < 7.0)famima();
+};
+

@@ -9,13 +9,12 @@
 
 
 #include <stdint.h>
+#include <uart.h>
 #include "mode_RGB.h"
 #include "tactsw.h"
 #include "timer.h"
 #include "fcled.h"
 #include "sound.h"
-#include "uart.hpp"
-
 #include "mouse.h"
 #include "Gamepad.h"
 

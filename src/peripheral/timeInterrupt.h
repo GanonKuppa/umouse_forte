@@ -1,6 +1,4 @@
-
-#ifndef TIMEINTERRUPT_H
-#define TIMEINTERRUPT_H
+#pragma once
 
 #include <stdint.h>
 
@@ -22,4 +20,4 @@ uint32_t endTimeuCountIntCMT1(void);
 uint32_t getTimeuCountIntCMT1(void);
 
 
-#endif
+

@@ -1,6 +1,5 @@
 
-#include <timeInterrupt.hpp>
-
+#include <timeInterrupt.h>
 #include "iodefine.h"
 #include "clock.h"
 #include "timer.h"

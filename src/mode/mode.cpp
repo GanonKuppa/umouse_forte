@@ -1,4 +1,5 @@
 #include <stdint.h>
+#include <uart.h>
 #include "mode.h"
 #include "mode_N.h"
 #include "mode_R.h"
@@ -13,8 +14,6 @@
 #include "timer.h"
 #include "fcled.h"
 #include "sound.h"
-#include "uart.hpp"
-
 #include "gamepad.h"
 #include <string>
 

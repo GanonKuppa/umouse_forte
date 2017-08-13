@@ -1,5 +1,3 @@
-#ifndef MODE_H
-#define MODE_H
-	void modeSelect();
+#pragma once
 
-#endif
+void modeSelect();

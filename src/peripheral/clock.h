@@ -7,8 +7,7 @@
  */
 
 
-#ifndef CLOCK_H
-#define CLOCK_H
+#pragma once
 
 const unsigned int ICLK  = 96000000;
 const unsigned int BCLK  = 96000000;
@@ -22,7 +21,6 @@ void initClock(void);
 
 
 
-#endif
 
 
 

@@ -1,6 +1,7 @@
 #ifndef MOVEEVENT_H
 #define MOVEEVENT_H
 
+#include <uart.h>
 #include "machineParameters.h"
 #include "myUtil.h"
 #include "imu.hpp"
@@ -8,7 +9,6 @@
 //#include <Core>
 //#include <Geometry>
 #include <queue>
-#include "uart.hpp"
 #include "timer.h"
 
 

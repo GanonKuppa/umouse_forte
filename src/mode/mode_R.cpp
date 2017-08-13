@@ -9,12 +9,12 @@
 
 
 #include <stdint.h>
+#include <uart.h>
 #include "mode_R.h"
 #include "tactsw.h"
 #include "timer.h"
 #include "fcled.h"
 #include "sound.h"
-#include "uart.hpp"
 #include "pwm.h"
 
 void mode_R(){

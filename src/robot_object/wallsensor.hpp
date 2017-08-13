@@ -6,7 +6,7 @@
 #include <deque>
 
 using std::deque;
-
+namespace peri = peripheral_RX71M;
 
 
 class WallSensor{
@@ -84,15 +84,15 @@ public:
     }
 
     void updateAllOffVal(){
-        right_off = startAD_AN001(); //右センサ
-        left_off  = startAD_AN002(); //左センサ
-        ahead_off = startAD_AN110(); //前センサ
+        right_off = peri::startAD_AN001(); //右センサ
+        left_off  = peri::startAD_AN002(); //左センサ
+        ahead_off = peri::startAD_AN110(); //前センサ
     };
 
     void updateAllOnVal(){
-        right_on = startAD_AN001(); //右センサ
-        left_on  = startAD_AN002(); //左センサ
-        ahead_on = startAD_AN110(); //前センサ
+        right_on = peri::startAD_AN001(); //右センサ
+        left_on  = peri::startAD_AN002(); //左センサ
+        ahead_on = peri::startAD_AN110(); //前センサ
     }
 
     void turnOnAheadLed(){
@@ -106,13 +106,13 @@ public:
     };
 
     void updateAheadOnVal(){
-        ahead_on = startAD_AN110(); //前センサ
+        ahead_on = peri::startAD_AN110(); //前センサ
     };
     void updateLeftOnVal(){
-        left_on  = startAD_AN002(); //左センサ
+        left_on  = peri::startAD_AN002(); //左センサ
     };
     void updateRightOnVal(){
-        right_on = startAD_AN001(); //右センサ
+        right_on = peri::startAD_AN001(); //右センサ
     };
 
     void modulateVal(){

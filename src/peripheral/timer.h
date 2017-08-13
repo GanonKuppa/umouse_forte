@@ -1,5 +1,4 @@
-#ifndef TIMER_H
-#define TIMER_H
+#pragma once
 
 #include <stdint.h>
 
@@ -26,4 +25,4 @@ unsigned int endTimeuCount_sub(void);
 unsigned int getElapsedMsec(void);
 
 
-#endif
+

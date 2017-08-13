@@ -8,9 +8,9 @@
 #include <stdint.h>
 
 #include <timer.h>
+#include <uart.h>
 #include "iodefine.h"
 #include "clock.h"
-#include "uart.hpp"
 //タイマを三つ使用
 //CMTW0 elepsedTimeを刻む
 //CMTW1 メインのタイマに使用

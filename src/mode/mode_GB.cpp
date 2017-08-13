@@ -8,12 +8,12 @@
 
 
 #include <stdint.h>
+#include <uart.h>
 #include "mode_GB.h"
 #include "tactsw.h"
 #include "timer.h"
 #include "fcled.h"
 #include "sound.h"
-#include "uart.hpp"
 #include "imu.hpp"
 #include "gamepad.h"
 

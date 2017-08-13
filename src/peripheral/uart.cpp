@@ -8,12 +8,12 @@
 #include <stdio.h>
 #include <stdarg.h>
 #include <stdint.h>
+#include <timeInterrupt.h>
+#include <uart.h>
 
 #include "timer.h"
-#include "timeInterrupt.hpp"
 #include "iodefine.h"
 #include "clock.h"
-#include "uart.hpp"
 #include "ad.h"
 #include "phaseCounting.h"
 #include "pwm.h"

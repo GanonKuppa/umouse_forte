@@ -1,5 +1,5 @@
-#ifndef PWM_H
-#define PWM_H
+
+#pragma once
 
 void initMTU3();
 void initMTU4();
@@ -8,4 +8,4 @@ void setDutyMTU4(float duty);
 float getDutyMTU3();
 float getDutyMTU4();
 //void setFreq(uint16_t freq);
-#endif
+

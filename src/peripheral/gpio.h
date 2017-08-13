@@ -1,8 +1,7 @@
 
-#ifndef GPIO_H
-#define GPIO_H
+#pragma once
 
 void initGPIO();
 
 
-#endif
+

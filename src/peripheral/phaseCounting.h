@@ -1,7 +1,6 @@
-#ifndef PHASECOUNTING_H
-#define PHASECOUNTING_H
+#pragma once
 
 void initMTU1();
 void initMTU2();
 
-#endif
+

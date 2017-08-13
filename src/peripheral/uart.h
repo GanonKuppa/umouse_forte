@@ -5,8 +5,7 @@
  *      Author: ryota
  */
 
-#ifndef PERIPHERAL_UART_H
-#define PERIPHERAL_UART_H
+#pragma once
 
 #include <stdint.h>
 
@@ -35,4 +34,4 @@ uint8_t* getPointerOfPeriodicMsg();
 void set2ByteVal(uint16_t index, float val, float prop);
 void set2ByteVal(uint16_t index, uint16_t val);
 
-#endif /* PERIPHERAL_UART_H */
+

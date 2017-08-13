@@ -5,13 +5,13 @@
  *      Author: ryota
  */
 
+#include <timeInterrupt.h>
+#include <uart.h>
 #include "sound.h"
 #include "myUtil.h"
-#include "timeInterrupt.hpp"
 #include "da.h"
 #include "myUtil.h"
 #include "timer.h"
-#include "uart.hpp"
 #include <queue>
 #include <array>
 

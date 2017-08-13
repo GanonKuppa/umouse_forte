@@ -1,5 +1,5 @@
-#ifndef MODE_N_H
-#define MODE_N_H
-	void mode_N();
+#pragma once
 
-#endif
+void mode_N();
+
+
