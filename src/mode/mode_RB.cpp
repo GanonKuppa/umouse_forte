@@ -14,8 +14,13 @@
 #include "fcled.h"
 #include "sound.h"
 
+#include "communication.h"
+
+using namespace robot_object;
+
+
 void mode_RB(){
-	myprintf3("RB mode\n");
+	printfAsync("RB mode\n");
 }
 
 

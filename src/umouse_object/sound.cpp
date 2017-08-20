@@ -5,12 +5,12 @@
  *      Author: ryota
  */
 
+#include <myUtil.hpp>
+#include <myUtil.hpp>
 #include <timeInterrupt.h>
 #include <uart.h>
 #include "sound.h"
-#include "myUtil.h"
 #include "da.h"
-#include "myUtil.h"
 #include "timer.h"
 #include <queue>
 #include <array>

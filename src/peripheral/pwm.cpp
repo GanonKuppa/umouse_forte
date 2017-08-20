@@ -5,7 +5,7 @@
  *      Author: ryota
  */
 
-#include <myUtil.h>
+#include <myUtil.hpp>
 #include "iodefine.h"
 
 #include <stdint.h>
@@ -99,8 +99,11 @@ namespace peripheral_RX71M{
     }
 
     float getDutyMTU4(){
+
         return dutyMTU4;
     }
+
+
 
 }
 

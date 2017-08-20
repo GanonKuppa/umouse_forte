@@ -6,6 +6,11 @@
 #include "fcled.h"
 #include "sound.h"
 
+#include "communication.h"
+
+using namespace robot_object;
+
+
 void mode_G(){
-	myprintf3("G mode\n");
+	printfAsync("G mode\n");
 }

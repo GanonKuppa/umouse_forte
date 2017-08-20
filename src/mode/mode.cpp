@@ -19,6 +19,10 @@
 
 using std::string;
 
+#include "communication.h"
+
+using namespace robot_object;
+
 
 void modeSelect() {
     uint8_t mode_change = 0;
@@ -33,17 +37,17 @@ void modeSelect() {
         mode_R, mode_RB, mode_RG, mode_RGB
     };
     fcled.turn(0, 0, 0);
-    myprintf3("############ MD select ################\n");
-    myprintf3("Choose the MD .\n");
-    myprintf3(" 宴会芸                                        :0 N   \n"); //000 0
-    myprintf3(" 自律走行                                    :1 B   \n"); //001 1
-    myprintf3(" DEBUG MODE           :2 G   \n"); //010 2
-    myprintf3(" 斜め最短走行                             :3 GB  \n"); //011 3
-    myprintf3(" 音楽室                                        :4 R   \n"); //100 4
-    myprintf3(" 最短走行                                    :5 RB  \n"); //101 5
-    myprintf3(" 探索走行                                    :6 RG  \n"); //110 6
-    myprintf3(" Circit running       :7 RGB \n"); //111 7
-    myprintf3("++++++++++++++++++++++++++++++++\n");
+    printfAsync("############ MD select ################\n");
+    printfAsync("Choose the MD .\n");
+    printfAsync(" 宴会芸                                        :0 N   \n"); //000 0
+    printfAsync(" 自律走行                                    :1 B   \n"); //001 1
+    printfAsync(" DEBUG MODE           :2 G   \n"); //010 2
+    printfAsync(" 斜め最短走行                             :3 GB  \n"); //011 3
+    printfAsync(" 音楽室                                        :4 R   \n"); //100 4
+    printfAsync(" 最短走行                                    :5 RB  \n"); //101 5
+    printfAsync(" 探索走行                                    :6 RG  \n"); //110 6
+    printfAsync(" Circit running       :7 RGB \n"); //111 7
+    printfAsync("++++++++++++++++++++++++++++++++\n");
 
     while (1) {
         waitmsec(1);
@@ -61,7 +65,7 @@ void modeSelect() {
             }
 
             mode_change = (mode_change + 1) % mode_num;
-            myprintf3("botton pressed! %d\n", mode_change);
+            printfAsync("botton pressed! %d\n", mode_change);
 
             SEA();
             uint8_t r = (mode_change & 0x04) >> 2;
@@ -77,7 +81,7 @@ void modeSelect() {
                 //if(getElapsedMsec() - time_pre > 250)break;
             }
             mode_change = (mode_change - 1 + mode_num) % mode_num;
-            myprintf3("botton pressed! %d\n", mode_change);
+            printfAsync("botton pressed! %d\n", mode_change);
             SEA();
             uint8_t r = (mode_change & 0x04) >> 2;
             uint8_t g = (mode_change & 0x02) >> 1;
@@ -92,7 +96,7 @@ void modeSelect() {
                 //if(getElapsedMsec() - time_pre > 250)break;
             }
             mode_change = (mode_change + 1) % mode_num;
-            myprintf3("botton pressed! %d\n", mode_change);
+            printfAsync("botton pressed! %d\n", mode_change);
             SEA();
             uint8_t r = (mode_change & 0x04) >> 2;
             uint8_t g = (mode_change & 0x02) >> 1;
@@ -102,7 +106,7 @@ void modeSelect() {
 
         if (gamepad.B > 1000 ) {
             SEB();
-            myprintf3("select! \n");
+            printfAsync("select! \n");
             mode_func[mode_change]();
             waitmsec(1000);
             return;

@@ -5,12 +5,12 @@
  *      Author: ryota
  */
 
+#include <myUtil.hpp>
 #include "iodefine.h"
 #include <stdint.h>
 
 #include "phaseCounting.h"
 #include "clock.h"
-#include "myUtil.h"
 
 namespace peripheral_RX71M{
 

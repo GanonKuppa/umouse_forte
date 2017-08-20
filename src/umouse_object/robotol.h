@@ -2963,7 +2963,7 @@ void robotol(void){
 	//8,8,12,10
 
 	BGMM.bpm = 40;
-	myprintf3("bpm:%d\n",BGMM.bpm);
+	//myprintf3("bpm:%d\n",BGMM.bpm);
 
 
 	uint16_t len0 = sizeof(robotol0)/sizeof(robotol0[0]);

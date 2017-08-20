@@ -224,7 +224,7 @@ void famimaMinor(void){
 }
 
 
-#include "myUtil.h"
+#include <myUtil.hpp>
 void randomNote(uint16_t seed){
 	Note note;
 

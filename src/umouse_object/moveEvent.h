@@ -1,15 +1,19 @@
 #ifndef MOVEEVENT_H
 #define MOVEEVENT_H
 
+#include <myUtil.hpp>
 #include <uart.h>
 #include "machineParameters.h"
-#include "myUtil.h"
 #include "imu.hpp"
 #include "mouse.h"
 //#include <Core>
 //#include <Geometry>
 #include <queue>
 #include "timer.h"
+#include "communication.h"
+
+using namespace robot_object;
+
 
 
 using std::queue;
@@ -356,14 +360,14 @@ public:
         static uint32_t time_count = 0;
 
         if( scene_num == 0){
-            myprintf3("%d\n",scene_num);
+            printfAsync("%d\n",scene_num);
             target_ang_a = ang_a;
             scene_num++;
         }
 
         if( ABS(target_ang) >= ABS(end_ang)*1.0/2.0 &&
             scene_num == 1){
-            myprintf3("%d\n",scene_num);
+            printfAsync("%d\n",scene_num);
             error_int_ang = 0.0;
             target_ang_a = 0.0;
             scene_num++;
@@ -371,7 +375,7 @@ public:
 
         if( ABS(target_ang) >= ABS(end_ang)*1.0/2.0 &&
             scene_num == 2 ){
-            myprintf3("%d\n",scene_num);
+            printfAsync("%d\n",scene_num);
             error_int_ang *= -1.0;
             target_ang_a = - ang_a;
             scene_num++;
@@ -379,7 +383,7 @@ public:
         if((ABS(target_ang) >= ABS(end_ang)     ||
             SIGN(ang_a) != SIGN(target_ang_v) ) &&
             scene_num == 3){
-            myprintf3("%d\n",scene_num);
+            printfAsync("%d\n",scene_num);
             target_ang_a = 0.0;
             target_ang_v = 0.0;
             target_ang = end_ang;
@@ -576,7 +580,7 @@ public:
         Kp_v = 0.01;
         Ki_v = 0.001;
         Kd_v = 0.001;
-        myprintf3("Trape\n");
+        printfAsync("Trape\n");
 
         scene_num = 0;
     };
@@ -586,27 +590,27 @@ public:
 
         if( scene_num == 0){
             target_a = 1.0;
-            myprintf3("%d\n",scene_num);
+            printfAsync("%d\n",scene_num);
             scene_num++;
         }
 
         if( ABS(target_x) >= ABS(end_x)*1.0/2.0 &&
             scene_num == 1){
-            myprintf3("%d\n",scene_num);
+            printfAsync("%d\n",scene_num);
             target_a = 0.0;
             scene_num++;
         }
 
         if( ABS(target_x) >= ABS(end_x)*1.0/2.0 &&
             scene_num == 2 ){
-            myprintf3("%d\n",scene_num);
+            printfAsync("%d\n",scene_num);
             target_a = - 1.0;
             scene_num++;
         }
         if((ABS(target_x) >= ABS(end_x)     ||
             target_v < 0.0) &&
             scene_num == 3){
-            myprintf3("%d\n",scene_num);
+            printfAsync("%d\n",scene_num);
             target_a = 0.0;
             target_v = 0.0;
             target_x = end_x;
@@ -706,14 +710,14 @@ public:
         m.v_P = Kp_v * (target_v - m.v_enc);//error_v;
         float temp = target_v -m.v_enc;
         if(target_v > m.v_enc){
-            myprintf3("-----\n");
-            myprintf3("%f %f %f \n",target_v, m.v_enc, target_v - m.v_enc);
-            myprintf3("%f %x\n",temp,*(int*)&temp);
+            printfAsync("-----\n");
+            printfAsync("%f %f %f \n",target_v, m.v_enc, target_v - m.v_enc);
+            printfAsync("%f %x\n",temp,*(int*)&temp);
         }
         if(target_v - m.v_enc < 0 ){
-            myprintf3("====\n");
-            myprintf3("%f %f %f \n",target_v, m.v_enc, target_v - m.v_enc);
-            myprintf3("%f %x\n",temp,*(int*)&temp);
+            printfAsync("====\n");
+            printfAsync("%f %f %f \n",target_v, m.v_enc, target_v - m.v_enc);
+            printfAsync("%f %x\n",temp,*(int*)&temp);
 
         }
 
@@ -870,7 +874,7 @@ private:
         imu.acc_ref[0] = (int16_t)(acc_x_sum/(float)ref_num *2.0);
         imu.acc_ref[1] = (int16_t)(acc_y_sum/(float)ref_num *2.0);
         imu.acc_ref[2] = (int16_t)(acc_z_sum/(float)ref_num *2.0);
-        myprintf3("====mpu9250======\n acc offset %d, %d, %d\n",imu.acc_ref[0],imu.acc_ref[1],imu.acc_ref[2] );
+        printfAsync("====mpu9250======\n acc offset %d, %d, %d\n",imu.acc_ref[0],imu.acc_ref[1],imu.acc_ref[2] );
 
     }
 

@@ -47,10 +47,11 @@ extern "C" void __main() {
 #include "ad.h"
 #include "pwm.h"
 #include "phaseCounting.h"
+#include "dataFlash.h"
 
 #include <imu.hpp>
 #include "da.h"
-#include "myUtil.h"
+#include <myUtil.hpp>
 #include "sound.h"
 #include "tactsw.h"
 #include "fcled.h"
@@ -62,9 +63,12 @@ extern "C" void __main() {
 #include "gamepad.h"
 
 #include "moveEvent.h"
+#include "communication.h"
+
+
 
 //namespaceの宣言
-using namespace std;
+using namespace robot_object;
 namespace peri = peripheral_RX71M;
 using peri::getElapsedMsec;
 using peri:: waitmsec;
@@ -96,9 +100,11 @@ void timeInterrupt(void) {
 
     //UARTの送受信処理
     if (countIntNum % 7 == 0) {
-        sendDatafromTransBuff();
+        peri::sendDataSCIFA9();
+
     }
-    retrieveDatafromFRDR();
+    peri::recieveDataSCIFA9();
+    fetchCommand();
 
     //30msec毎の処理
     if (countIntNum % 120 == 0) {
@@ -188,10 +194,18 @@ int main() {
     addBgmList(otenba);
 
     while(1){
-        myprintf3("entry point \n");
+        printfAsync("entry point \n");
         ///////////////////////////////////////
         MPU9250::getInstance().calibOmegaOffset(200);
         MPU9250::getInstance().calibAccOffset(200);
+        //peri::eraseCheckDataFlash(0,64);
+        //peri::eraseAllDataFlash();
+        //peri::writeDataFlash(0,0x97);
+        //peri::writeDataFlash(100,0x98);
+        //peri::writeDataFlash(200,0x99);
+        printfAsync("%d, %d, %d\n",peri::readDataFlash(0),
+                                 peri::readDataFlash(100),
+                                 peri::readDataFlash(200));
 
         modeSelect();
     };
@@ -206,9 +220,8 @@ void periperalInit() {
     //IOピン
     peri::initGPIO();
     //UART
-    initSCI1();
-    initSCI2();
-    initSCIFA9();
+    peri::initSCI1();
+    peri::initSCIFA9();
 
     //割り込み関数
     peri::initCMT0();
@@ -236,8 +249,10 @@ void periperalInit() {
 
     //DA
     peri::initDA();
-    myprintf3("-------各種ペリフェラル初期化完了-------\n");
+    printfAsync("-------各種ペリフェラル初期化完了-------\n");
 
+    //データフラッシュ
+    peri::initDataFlash();
 };
 
 //起動時の処理
@@ -249,7 +264,7 @@ void startUpInit() {
     peri::setPriorityCMT0(12);
     peri::setPriorityCMT1(15);
     peri::startCMT0();
-    myprintf3("-------CMT0割り込み開始-------\n");
+    printfAsync("-------CMT0割り込み開始-------\n");
 
     MPU9250& imu1 = MPU9250::getInstance();
     Icm20608G& imu2 = Icm20608G::getInstance();
@@ -260,19 +275,19 @@ void startUpInit() {
     //sound
 
     peri::startCMT1();
-    myprintf3("-------CMT1割り込み開始-------\n");
+    printfAsync("-------CMT1割り込み開始-------\n");
 
     /////////////コンパイル時固有文字列/////////
-    myprintf3("Compile Date\n %s\n", __DATE__);
+    printfAsync("Compile Date\n %s\n", __DATE__);
     uint16_t compile_hash = 0;
     for (int i = 0; i < sizeof(__TIME__); i++) {
         compile_hash += __TIME__[i];
     }
 
-    myprintf3("Compile HASH: %d\n", compile_hash);
-    myprintf3("Compile TIME: %s\n", __TIME__);
-    myprintf3("Compile FILE: %s\n", __FILE__);
-    myprintf3("---------------------------\n");
+    printfAsync("Compile HASH: %d\n", compile_hash);
+    printfAsync("Compile TIME: %s\n", __TIME__);
+    printfAsync("Compile FILE: %s\n", __FILE__);
+    printfAsync("---------------------------\n");
     GB();
     waitmsec(1800);
     randomNote(compile_hash);
@@ -299,7 +314,7 @@ void startUpInit() {
     }
     waitmsec(125);
 
-    myprintf3("===finish init====\n");
+    printfAsync("===finish init====\n");
 
 };
 

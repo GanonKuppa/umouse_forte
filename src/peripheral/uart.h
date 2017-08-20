@@ -9,29 +9,31 @@
 
 #include <stdint.h>
 
-void initSCI1();
-void put1byte(char c);
-void putnbyte(char *buf,int len);
-int myprintf(const char *fmt, ...);
+#include <deque>
+#include <queue>
 
-void initSCI2();
-void put1byte2(char c);
-void putnbyte2(char *buf,int len);
-int myprintf2(const char *fmt, ...);
 
-void initSCIFA9();
-void putnbyte3(uint8_t *buf,uint16_t len);
+using std::deque;
+using std::queue;
 
-void retrieveDatafromFRDR();
-int sendDatafromTransBuff();
-int myprintf3(const char *fmt, ...);
-int myprintf3_Dbg(const char *fmt, ...);
 
-void sendPeriodicMsg();
-void packData(uint8_t *buf);
+namespace peripheral_RX71M{
 
-uint8_t* getPointerOfPeriodicMsg();
-void set2ByteVal(uint16_t index, float val, float prop);
-void set2ByteVal(uint16_t index, uint16_t val);
+    void initSCI1();
+    void put1byteSCI1(char c);
+    void putnbyteSCI1(char *buf,int len);
 
+    void initSCIFA9();
+    void putnbyteSCIFA9(uint8_t *buf,uint16_t len);
+    void recieveDataSCIFA9();
+    void sendDataSCIFA9();
+
+    extern queue<uint8_t> transBuff; //送信用データバッファ
+    extern uint8_t recieveBuff[512];
+    extern uint16_t recieveBuffCount;
+
+    //下dequeを受信バッファにしてみたがうまく動かなかった。
+    //extern deque<uint8_t> recieveBuff;//受信用データバッファ
+
+}
 

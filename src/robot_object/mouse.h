@@ -4,6 +4,7 @@
 
 #include <stdint.h>
 #include <math.h>
+#include <myUtil.hpp>
 
 #include "iodefine.h"
 #include "pwm.h"
@@ -11,7 +12,6 @@
 
 #include "maze.h"
 #include "machineParameters.h"
-#include "myUtil.h"
 #include "math.h"
 #include "imu.hpp"
 

@@ -17,6 +17,11 @@
 #include "sound.h"
 #include "pwm.h"
 
+#include "communication.h"
+
+using namespace robot_object;
+
+
 void mode_R(){
-	myprintf3("R mode\n");
+	printfAsync("R mode\n");
 }

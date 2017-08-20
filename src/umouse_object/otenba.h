@@ -2617,7 +2617,7 @@ void otenba(void){
     BGMM.wave_form_data[6] = KUKEI12_5;
     BGMM.wave_volume_data[6] = 8;
     BGMM.bpm = 1000;
-    myprintf3("bpm:%d\n",BGMM.bpm);
+    //myprintf3("bpm:%d\n",BGMM.bpm);
     //-------------
     uint16_t len0 = sizeof(otenba0)/sizeof(otenba0[0]);
     for(int i=0;i<len0;i++){

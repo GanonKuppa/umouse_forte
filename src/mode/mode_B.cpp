@@ -21,9 +21,12 @@
 //#include <Geometry>
 
 #include "moveEvent.h"
+#include "communication.h"
+
+using namespace robot_object;
 
 void mode_B(){
-    myprintf3("B mode\n");
+    printfAsync("B mode\n");
 
     EventList &events = EventList::getInstance();
 
@@ -60,7 +63,7 @@ void mode_B(){
 
         if (gamepad.B > 100 && gamepad.B < 200 ) {
                     SEB();
-                    myprintf3("select! \n");
+                    printfAsync("select! \n");
                     waitmsec(1000);
                     return;
                 }

@@ -1,11 +1,14 @@
 #include <imu.hpp>
+#include <myUtil.hpp>
 #include <stdint.h>
 #include <uart.h>
 #include "spi.h"
 #include "iodefine.h"
 #include "timer.h"
-#include "myUtil.h"
 #include <deque>
+#include "communication.h"
+
+
 
 static const uint8_t MPU9250_REG_WHOAMI = 0x75;
 static const uint8_t ICM20608G_REG_WHOAMI = 0x75;
@@ -18,6 +21,10 @@ namespace peri = peripheral_RX71M;
 using peri::getElapsedMsec;
 using peri::waitmsec;
 using peri::waitusec;
+
+
+using namespace robot_object;
+
 
 uint8_t MPU9250::whoAmI(void) {
     return readReg(MPU9250_REG_WHOAMI);
@@ -192,7 +199,7 @@ void MPU9250::calibOmegaOffset(uint32_t ref_num) {
         omega_y[i] = omega_raw[1];
         omega_z[i] = omega_raw[2];
         waitusec(500);
-        //myprintf3("%d| calibrating... %d, %d, %d\n",i,omega_x[i],omega_y[i],omega_z[i] );
+        //printfAsync("%d| calibrating... %d, %d, %d\n",i,omega_x[i],omega_y[i],omega_z[i] );
     }
     quickSort_int16(omega_x, 0, ref_num - 1);
     quickSort_int16(omega_y, 0, ref_num - 1);
@@ -208,7 +215,7 @@ void MPU9250::calibOmegaOffset(uint32_t ref_num) {
     omega_ref[2] = (int16_t) (omega_z_sum / (float) ref_num * 2.0);
 
     //writeEEPROMOffsetOmegaInt(&omega_offset_vec[0]);
-    myprintf3("====mpu9250======\n gyro offset %d, %d, %d\n", omega_ref[0],
+    printfAsync("====mpu9250======\n gyro offset %d, %d, %d\n", omega_ref[0],
             omega_ref[1], omega_ref[2]);
 }
 
@@ -232,7 +239,7 @@ void MPU9250::calibAccOffset(uint32_t ref_num) {
         acc_y[i] = acc_raw[1];
         acc_z[i] = acc_raw[2];
         waitusec(500);
-        //myprintf3("%d| calibrating... %d, %d, %d\n",i,acc_x[i],acc_y[i],acc_z[i] );
+        //printfAsync("%d| calibrating... %d, %d, %d\n",i,acc_x[i],acc_y[i],acc_z[i] );
     }
     quickSort_int16(acc_x, 0, ref_num - 1);
     quickSort_int16(acc_y, 0, ref_num - 1);
@@ -248,7 +255,7 @@ void MPU9250::calibAccOffset(uint32_t ref_num) {
     acc_ref[2] = (int16_t) (acc_z_sum / (float) ref_num * 2.0);
 
     //writeEEPROMOffsetOmegaInt(&omega_offset_vec[0]);
-    myprintf3("====mpu9250======\n acc offset %d, %d, %d\n", acc_ref[0],
+    printfAsync("====mpu9250======\n acc offset %d, %d, %d\n", acc_ref[0],
             acc_ref[1], acc_ref[2]);
 }
 
@@ -305,7 +312,7 @@ void Icm20608G::init() {
     dummy1 = peri::communicate8bitRSPI0(READ_FLAG | 0x1c);
     dummy2 = peri::communicate8bitRSPI0(0x00);
     peri::setEnableRSPI0(0);
-    //myprintf3("0x1c: %x %x \n\n",dummy1, dummy2);
+    //printfAsync("0x1c: %x %x \n\n",dummy1, dummy2);
     waitmsec(10);
     //書き込み時と読み出し時でSPIの通信速度が異なる
     //RSPI0.SPBR = 1;
@@ -377,9 +384,9 @@ void Icm20608G::calibOmegaOffset() {
         omega_y[i] = omega_raw[1];
         omega_z[i] = omega_raw[2];
         waitmsec(5);
-        myprintf3("%d| calibrating... %d, %d, %d\n", i, omega_x[i], omega_y[i],
+        printfAsync("%d| calibrating... %d, %d, %d\n", i, omega_x[i], omega_y[i],
                 omega_z[i]);
-        //myprintf3("%d\n",i);
+        //printfAsync("%d\n",i);
     }
     quickSort_int16(omega_x, 0, ref_num - 1);
     quickSort_int16(omega_y, 0, ref_num - 1);
@@ -395,7 +402,7 @@ void Icm20608G::calibOmegaOffset() {
     omega_ref[2] = (int16_t) (2.0 * omega_z_sum / (float) ref_num);
 
     //writeEEPROMOffsetOmegaInt(&omega_offset_vec[0]);
-    myprintf3("=====icm20608g=====\n gyro offset %d, %d, %d\n", omega_ref[0],
+    printfAsync("=====icm20608g=====\n gyro offset %d, %d, %d\n", omega_ref[0],
             omega_ref[1], omega_ref[2]);
 }
 

@@ -18,9 +18,14 @@
 #include "mouse.h"
 #include "Gamepad.h"
 
+#include "communication.h"
+
+using namespace robot_object;
+
+
 void mode_RGB(){
-    myprintf3("RGB mode\n");
-    myprintf3("ラジコン!!!!!!\n");
+    printfAsync("RGB mode\n");
+    printfAsync("ラジコン!!!!!!\n");
 
     Gamepad &gamepad = Gamepad::getInstance();
     UMouse  &mouse   = UMouse::getInstance();
@@ -30,7 +35,7 @@ void mode_RGB(){
         volatile float rot_duty = gamepad.R3D_x /1024.0;
         volatile float duty_r = str_duty - rot_duty;
         volatile float duty_l = str_duty + rot_duty;
-        //myprintf3("-- \n %f \n %f \n", str_duty, rot_duty);
+        //printfAsync("-- \n %f \n %f \n", str_duty, rot_duty);
 
         mouse.setDuty_R(duty_r);
         mouse.setDuty_L(duty_l);
@@ -40,7 +45,7 @@ void mode_RGB(){
             mouse.setDuty_R(0.0);
             mouse.setDuty_L(0.0);
             SEB();
-            myprintf3("select! \n");
+            printfAsync("select! \n");
             waitmsec(1000);
             return;
         }
