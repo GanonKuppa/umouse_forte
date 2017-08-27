@@ -8,9 +8,23 @@
 
 #include "iodefine.h"
 #include "gpio.h"
+#include <stdint.h>
 
 namespace peripheral_RX71M{
     void initGPIO(){
+        //未使用ピンの処理
+        PORT0.PDR.BYTE = (uint8_t)(PORT0.PDR.BYTE | 0x0F);
+        PORT1.PDR.BYTE = (uint8_t)(PORT1.PDR.BYTE | 0x03);
+        PORT5.PDR.BYTE = (uint8_t)(PORT5.PDR.BYTE | 0x40);
+        PORT6.PDR.BYTE = (uint8_t)(PORT6.PDR.BYTE | 0xFF);
+        PORT7.PDR.BYTE = (uint8_t)(PORT7.PDR.BYTE | 0xFF);
+        PORT8.PDR.BYTE = (uint8_t)(PORT8.PDR.BYTE | 0xCF);
+        PORT9.PDR.BYTE = (uint8_t)(PORT9.PDR.BYTE | 0xFF);
+        PORTF.PDR.BYTE = (uint8_t)(PORTF.PDR.BYTE | 0x3F);
+        PORTG.PDR.BYTE = (uint8_t)(PORTG.PDR.BYTE | 0xFF);
+        PORTJ.PDR.BYTE = (uint8_t)(PORTJ.PDR.BYTE | 0x20);
+
+
         //FCLED
         PORTA.PDR.BIT.B2 = 1; //R PA2
         PORTA.PDR.BIT.B3 = 1; //G PA3
@@ -58,6 +72,8 @@ namespace peripheral_RX71M{
         //PICの入力ピン
         PORTD.PDR.BIT.B7  = 1;
         PORTD.PODR.BIT.B7 = 1;
+
+
 
     }
 }

@@ -21,6 +21,20 @@
 //       0010 FFFFh ブロック1023
 
 
+//=====================================================================//
+/*! @file
+    @brief  RX64M/RX71M グループ FLASH 制御 @n
+            ・データフラッシュ消去サイズ（６４バイト単位）
+            ・データフラッシュ書き込みサイズ（４バイト単位）
+    @author 平松邦仁 (hira@rvf-rc45.net)
+    @copyright  Copyright (C) 2017 Kunihito Hiramatsu @n
+                Released under the MIT license @n
+                https://github.com/hirakuni45/RX/blob/master/LICENSE
+*/
+//=====================================================================//
+
+
+
 
 namespace peripheral_RX71M{
 
@@ -424,6 +438,7 @@ namespace peripheral_RX71M{
         uint8_t d = data;
         return writeDataFlash(org, &d, 1);
     }
+
 
 }
 

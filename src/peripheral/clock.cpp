@@ -7,14 +7,13 @@
  */
 
 #include "iodefine.h"
-#include "r_init_non_existent_port.h"
 #include "clock.h"
 
 namespace peripheral_RX71M {
 
     void initClock(void) {
         /* ---- Initialization of the non-existent ports ---- */
-        R_INIT_NonExistentPort();
+
         /* ---- Initialization of the clock ---- */
 
         //	SYSTEM.PRCR.WORD = 0xA502;

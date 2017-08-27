@@ -65,6 +65,7 @@ extern "C" void __main() {
 #include "moveEvent.h"
 #include "communication.h"
 
+#include "parameterManager.h"
 
 
 //namespaceの宣言
@@ -198,14 +199,41 @@ int main() {
         ///////////////////////////////////////
         MPU9250::getInstance().calibOmegaOffset(200);
         MPU9250::getInstance().calibAccOffset(200);
-        //peri::eraseCheckDataFlash(0,64);
-        //peri::eraseAllDataFlash();
-        //peri::writeDataFlash(0,0x97);
-        //peri::writeDataFlash(100,0x98);
-        //peri::writeDataFlash(200,0x99);
-        printfAsync("%d, %d, %d\n",peri::readDataFlash(0),
-                                 peri::readDataFlash(100),
-                                 peri::readDataFlash(200));
+        float a = 1.0;
+        float b = 2.0;
+        float c = 3.0;
+        float d = -1.0;
+        float e = -2.0;
+        float f = -3.0;
+        ParameterManager &pm = ParameterManager::getInstance();
+/*
+        pm.write(0,a);
+        pm.write(1,b);
+        pm.write(2,c);
+        pm.write(3,d);
+        pm.write(4,e);
+        pm.write(5,f);
+*/
+        printfAsync("%f, %f, %f \n",pm.read(0),
+                                   pm.read(1),
+                                   pm.read(2)
+                                 );
+
+        printfAsync("%f, %f, %f \n",pm.read(3),
+                                   pm.read(4),
+                                   pm.read(5)
+                                 );
+        printfAsync("%f, %f, %f \n",pm.read(0),
+                                   pm.read(1),
+                                   pm.read(2)
+                                 );
+
+        printfAsync("%f, %f, %f \n",pm.read(3),
+                                   pm.read(4),
+                                   pm.read(5)
+                                 );
+
+
 
         modeSelect();
     };
