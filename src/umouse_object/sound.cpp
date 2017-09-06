@@ -70,7 +70,7 @@ void SoundManager::init(){
 		wave_period[j]        = 0;
 		wave_form_data[j]     = 0;
 		wave_volume_data[j]   = 16;
-		wave_master_volume[j] = 500;
+		wave_master_volume[j] = 1000;//500;
 	}
 	note_off_count = 50;
 	enable         = false;

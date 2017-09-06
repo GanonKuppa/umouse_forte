@@ -75,7 +75,7 @@ public:
         if(enable == true){
             PORTD.PODR.BIT.B3 = 1; //右
             PORTD.PODR.BIT.B4 = 1; //前
-            PORTD.PODR.BIT.B5 = 1;   //左
+            PORTD.PODR.BIT.B5 = 1; //左
             PORTE.PODR.BIT.B2 = 1; //前
         }
         else{
@@ -86,14 +86,14 @@ public:
     void updateAllOffVal(){
         right_off = peri::startAD_AN003(); //右センサ
         left_off  = peri::startAD_AN002(); //左センサ
-        ahead_off = peri::startAD_AN004()+peri::startAD_AN001(); //右前センサ
+        ahead_off = peri::startAD_AN004(); //右前センサ
         //ahead_off = peri::startAD_AN001(); //左前センサ
     };
 
     void updateAllOnVal(){
         right_on = peri::startAD_AN003(); //右センサ
         left_on  = peri::startAD_AN002(); //左センサ
-        ahead_on = peri::startAD_AN004()+peri::startAD_AN001(); //前センサ
+        ahead_on = peri::startAD_AN004();//+peri::startAD_AN001(); //前センサ
     }
 
     void turnOnAheadLed(){
@@ -108,7 +108,7 @@ public:
     };
 
     void updateAheadOnVal(){
-        ahead_on = peri::startAD_AN004()+peri::startAD_AN001(); //前センサ
+        ahead_on = peri::startAD_AN004(); //前センサ
     };
     void updateLeftOnVal(){
         left_on  = peri::startAD_AN002(); //左センサ

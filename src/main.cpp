@@ -151,32 +151,55 @@ void timeInterrupt(void) {
     }
 
     //壁センサの更新処理
-
-    switch(countIntNum % 4){
+/*    switch(countIntNum % 4){
         case 0:
             wallSen.updateAllOffVal();
-            wallSen.turnOnLeftLed();
+            //wallSen.turnOnLeftLed();
+            wallSen.turnOnAllLed();
             break;
         case 1:
-            wallSen.updateLeftOnVal();
-            wallSen.turnOffAllLed();
-            wallSen.turnOnRightLed();
+            //wallSen.updateLeftOnVal();
+            wallSen.updateAllOnVal();
+        	wallSen.turnOffAllLed();
+            //wallSen.turnOnRightLed();
             break;
         case 2:
-            wallSen.updateRightOnVal();
+            //wallSen.updateRightOnVal();
+            //wallSen.turnOffAllLed();
+            //wallSen.turnOnAheadLed();
             wallSen.turnOffAllLed();
-            wallSen.turnOnAheadLed();
-            break;
+        	break;
         case 3:
-            wallSen.updateAheadOnVal();
+            //wallSen.updateAheadOnVal();
             wallSen.turnOffAllLed();
             wallSen.modulateVal();
             break;
     }
-
+*/
     //毎回行う処理
+
+    wallSen.updateAllOffVal();
+    wallSen.turnOnAllLed();
+
+    //時間稼ぎ
     soundUpdate();
     peri::startAD_AN000(); //電源
+    //時間稼ぎ終わり
+    wallSen.updateAllOnVal();
+    wallSen.turnOffAllLed();
+    wallSen.modulateVal();
+
+    //wallSen.turnOffAllLed();
+    //wallSen.updateAllOffVal();
+    //wallSen.turnOnLeftLed();
+    //wallSen.turnOnAllLed();
+
+
+    //peri::startAD_AN002(); //左センサ
+    //peri::startAD_AN003(); //右センサ
+    //peri::startAD_AN001(); //左前センサ
+    //peri::startAD_AN004(); //右前センサ
+
 
     countIntNum++;
     peri::endTimeuCountIntCMT0();

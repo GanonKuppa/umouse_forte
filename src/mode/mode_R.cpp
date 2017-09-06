@@ -17,6 +17,8 @@
 #include "sound.h"
 #include "pwm.h"
 
+#include "sound.h"
+
 #include "communication.h"
 
 using namespace robot_object;
@@ -24,4 +26,5 @@ using namespace robot_object;
 
 void mode_R(){
 	printfAsync("R mode\n");
+	addBgmList(wily);
 }

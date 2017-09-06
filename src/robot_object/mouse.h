@@ -140,7 +140,7 @@ public:
         R_ENC_pre = R_ENC_now;
         L_ENC_pre = L_ENC_now;
         R_ENC_now = peri::getCountMTU1();
-        L_ENC_now = peri::getCountMTU1();
+        L_ENC_now = peri::getCountMTU2();
 
         int32_t count_diff_R = (int32_t)(R_ENC_now - R_ENC_pre);
         int32_t count_diff_L = (int32_t)(L_ENC_now - L_ENC_pre);
@@ -151,17 +151,12 @@ public:
         if( count_diff_L < -32768 ) count_diff_L += 65536;
 
         //エンコーダより計測された速度
-        v_enc_R = (PI* DIA_TIRE / GEAR_RATIO * (float)(count_diff_R)/512.0)/ DELTA_T;
-        v_enc_L = (PI* DIA_TIRE / GEAR_RATIO * (float)(count_diff_L)/512.0)/ DELTA_T;
-        //v_enc = (v_enc_R + v_enc_L) * 0.5;
+        v_enc_R = (-1.0*PI* DIA_TIRE / 6.0 * (float)(count_diff_R)/1600.0)/ DELTA_T;
+        v_enc_L = (PI* DIA_TIRE / 6.0 * (float)(count_diff_L)/1600.0)/ DELTA_T;
+        //エンコーダー11　タイヤ66　ギア比6.0
+        v_enc = (v_enc_R + v_enc_L) * 0.5;
         MPU9250 &imu = MPU9250::getInstance();
         float omega = DEG2RAD(imu.omega_f[2]);
-        v_enc = sqrtf( constrainL(
-                                   0.5 * (  v_enc_R * v_enc_R
-                                   + v_enc_L * v_enc_L
-                                   - 0.5 * omega * omega * TREAD * TREAD)
-                                   ,0.0)
-        );
         //角速度をセット
         gyro_ang_v = MPU9250::getInstance().omega_f[2];
         //電圧の算出

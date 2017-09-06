@@ -25,6 +25,69 @@ using peri:: waitmsec;
 //#define EIGEN_DONT_VECTORIZE
 //#define EIGEN_DISABLE_UNALIGNED_ARRAY_ASSERT
 
+class SecondOrderEuler{
+public:
+	float x;
+	float v;
+	float a;
+	float delta_t;
+	void update(){
+		v += delta_t * a;
+		x += delta_t * v;
+	}
+
+	SecondOrderEuler(float a_0, float v_0, float x_0, float delta_t_){
+		delta_t = delta_t_;
+		a = a_0;
+		v = v_0;
+		x = x_0;
+	}
+};
+
+class PidController{
+public:
+	float Kp;
+	float Ki;
+	float Kd;
+	float int_lim;
+	float target;
+	float error_p;
+	float error_i;
+	float error_d;
+	float error_p_pre;
+	void update(float target_, float observed_val){
+		target = target_;
+		error_p = target - observed_val;
+		error_i = constrain(error_p+error_i, -int_lim, int_lim);
+		error_d = error_p - error_p_pre;
+		error_p_pre = error_p;
+	};
+	float calc(){
+		float control_val = Kp * error_p + Ki * error_i + Kd * error_d;
+		return control_val;
+	};
+
+	void set(float Kp_, float Ki_, float Kd_){
+		Kp = Kp_;
+		Ki = Ki_;
+		Kd = Kd_;
+	}
+
+    PidController(float Kp_, float Ki_, float Kd_, float int_lim_){
+    	Kp = Kp_;
+    	Ki = Ki_;
+    	Kd = Kd_;
+    	int_lim = int_lim_;
+    	target = 0.0;
+    	error_p = 0.0;
+    	error_i = 0.0;
+    	error_d = 0.0;
+    	error_p_pre = 0.0;
+    };
+};
+
+
+
 class BaseMoveEvent{
 public:
     virtual bool isEnd()=0;
@@ -82,278 +145,33 @@ public:
 
 
 
-
-
-
-#ifdef MEMO
-class NormalMoveEvent : public BaseMoveEvent{
-
-public:
-    float target_ang;           //追従目標角度
-    float target_ang_v;         //追従目標角速度
-    float target_ang_a;         //追従目標角加速度
-
-    float target_x;             //追従目標位置
-    float target_v;             //追従目標速度
-    float target_a;             //追従目標加速度
-
-    float accum_x;
-    float accum_ang; //角度積算値
-
-    float error_v;
-    float error_int_v;
-
-    float error_ang_v;
-    float error_int_ang_v;
-
-    float error_ang;
-    float error_int_ang;
-
-    float Kp_v;
-    float Ki_v;
-    float Kd_v;
-
-    float Kp_ang_v;
-    float Ki_ang_v;
-    float Kd_ang_v;
-
-    float Kp_ang;
-    float Ki_ang;
-    float Kd_ang;
-
-    void paramInit(){
-        target_ang   = 0.0;           //追従目標角度
-        target_ang_v =0.0;         //追従目標角速度
-        target_ang_a =0.0 ;         //追従目標角加速度
-        accum_ang = 0.0 ;
-
-        error_int_ang = 0.0;
-        error_int_v = 0.0;
-
-        Kp_v = 0.0;
-        Ki_v = 0.0;
-        // Kd_v;
-
-        Kp_ang_v = 0.0;
-        Ki_ang_v = 0.0;
-        // Kd_and_v;
-
-        Kp_ang = 0.0;
-        Ki_ang = 0.0;
-        Kd_ang = 0.0;
-
-    };
-
-    virtual bool isEnd()=0;
-    virtual void trajectoryPlanning()=0;
-
-    void updateDuty(){
-        UMouse &mouse = UMouse::getInstance();
-        trajectoryPlanning();
-        integrate();
-        updatePidError();
-        Vector2f duty(0.0f, 0.0f);
-
-        duty = dutyFF() + dutyFB() + dutyWall();
-        float duty_L = duty(0);
-        float duty_R = duty(1);
-        //mouse.setDuty_L(duty_L);
-        //mouse.setDuty_R(duty_R);
-
-    };
-
-    void integrate(){
-        UMouse& mouse = UMouse::getInstance();
-        //追従目標の積分処理
-        target_ang   += target_ang_v * DELTA_T;
-        target_ang_v += target_ang_a * DELTA_T;
-
-        target_x += target_v * DELTA_T;
-        target_v += target_a * DELTA_T;
-        accum_ang += mouse.v_enc * DELTA_T;
-    };
-
-    void updatePidError(){
-        //*******フィードバック制御のゲイン***********//
-        Kp_v = 0.9;//.5;
-        //float Kd_v = 0.3;//;
-        Ki_v = 0.3;//0.1;
-
-        Kp_ang_v = 0.0093;
-        Ki_ang_v = 0.00042;
-
-        Kp_ang = 0.0005;//0.005;
-        Ki_ang = 0.00005;//0.003;
-        Kd_ang = 0.0;//0.001;
-        //*********************************//
-        UMouse& mouse = UMouse::getInstance();
-        //速度と角度と角速度の偏差
-        error_v     = target_v     - mouse.v_enc;
-        error_ang   = target_ang   - accum_ang;
-        error_ang_v = target_ang_v - mouse.ang_v;
-        //速度と角度と角速度のI項
-        error_int_v += error_v;
-        error_int_ang += error_ang;
-        error_int_ang_v += error_ang_v;
-
-        //I項のリミッター
-        if(ABS(error_int_v) > 50.0){
-            if(error_int_v > 0) error_int_v = 50.0 ;
-            if(error_int_v < 0) error_int_v = -50.0;
-        }
-
-        if(ABS(error_int_ang_v) > 1200.0 ){
-                if(error_int_ang_v > 0) error_int_ang_v = 1200.0;
-                if(error_int_ang_v < 0) error_int_ang_v = -1200.0;
-        }
-
-        /*
-        if(move_state != ROTATION){
-            error_int_ang_v=0.0;
-        }
-        */
-
-        if(ABS(error_int_ang) > 300.0 ){
-            if(error_int_ang > 0) error_int_ang = 300.0;
-            if(error_int_ang < 0) error_int_ang = -300.0;
-        }
-
-
-    };
-
-    Vector2f dutyFF(){
-        UMouse &mouse = UMouse::getInstance();
-        Vector2f duty(0.0f, 0.0f);
-
-        //必要な力(直進成分)
-        float F_forward = MASS*target_a/2.0;
-        //必要な力(回転成分)
-        float F_rotation = INERTIA * DEG2RAD(target_ang_a) / TREAD;
-        //モータとモータドライバの抵抗値
-        float R = COIL_RES + FET_RES;
-        //必要なトルク
-        float torque_L = (F_forward - F_rotation)*(0.5* DIA_TIRE/GEAR_RATIO);
-        float torque_R = (F_forward + F_rotation)*(0.5* DIA_TIRE/GEAR_RATIO);
-        //左右輪の速度
-        float v_L = target_v - TREAD * PI * target_ang_v/360.0;
-        float v_R = target_v + TREAD * PI * target_ang_v/360.0;
-        //左右モーターの回転数
-        float rpm_L = v_L * 60.0 /(PI * DIA_TIRE);
-        float rpm_R = v_R * 60.0 /(PI * DIA_TIRE);
-
-        duty(0) = (R*torque_L / K_T + K_E * rpm_L) / mouse.Vcc;
-        duty(1) = (R*torque_R / K_T + K_E * rpm_R) / mouse.Vcc;
-
-
-        return duty;
-    };
-
-    Vector2f dutyFB(){
-        Vector2f duty(0.0f, 0.0f);
-
-        float FB_v     = Kp_v     * error_v     + Ki_v     * error_int_v;
-        float FB_ang_v = Kp_ang_v * error_ang_v + Ki_ang_v * error_int_ang_v;
-        float FB_ang   = Kp_ang   * error_ang   + Ki_ang   * error_int_ang    + Kd_ang * error_ang_v;
-
-        duty(0) = FB_v - FB_ang_v - FB_ang;
-        duty(1) = FB_v + FB_ang_v + FB_ang;
-
-        return duty;
-    };
-
-    Vector2f dutyWall(){
-        Vector2f duty(0.0f, 0.0f);
-
-        return duty;
-    };
-
-};
-#endif
-
-
 class SimplePivotTurn : public BaseMoveEvent{
 
 public:
-    volatile float target_ang;
-    volatile float target_ang_v;
-    volatile float target_ang_a;
+	PidController* ang_ctrl;
+	PidController* v_ctrl;
+	PidController* ang_v_ctrl;
 
-    volatile float target_v;
+	SecondOrderEuler* trans_t;
+	SecondOrderEuler* rot_t;
 
-    volatile float Kp_ang;
-    volatile float Ki_ang;
-    volatile float Kd_ang;
-
-    volatile float Kp_ang_v;
-    volatile float Ki_ang_v;
-    volatile float Kd_ang_v;
-
-    volatile float Kp_v;
-    volatile float Ki_v;
-    volatile float Kd_v;
-
-    volatile float error_ang;
-    volatile float error_int_ang;
-    volatile float error_ang_pre;
-    volatile float error_d_ang;
-
-    volatile float error_ang_v;
-    volatile float error_int_ang_v;
-    volatile float error_ang_v_pre;
-    volatile float error_d_ang_v;
-
-    volatile float error_v;
-    volatile float error_int_v;
-    volatile float error_d_v;
-    volatile float error_v_pre;
-
-    volatile float ang_a;
-    volatile float end_ang;
-    volatile float accum_ang;
-    volatile float accum_v;
-
-    volatile uint8_t scene_num;
+	uint8_t scene_num;
+	float end_ang;
+	float accum_ang;
+	float rot_a;
 
     SimplePivotTurn(float ang){
-        target_ang = 0.0;
-        target_ang_v = 0.0;
-        target_ang_a = 0.0;
         end_ang = ang;
-        accum_ang = 0.0;
-
-        error_ang = 0.0;
-        error_int_ang = 0.0;
-        error_ang_pre = 0.0;
-        error_d_ang = 0.0;
-
-        Kp_ang = 0.0;
-        Ki_ang = 0.0;
-        Kd_ang = 0.0;//0.001;
-
-        error_ang_v = 0.0;
-        error_int_ang_v = 0.0;
-        error_ang_v_pre = 0.0;
-        error_d_ang_v = 0.0;
-
-
-        Kp_ang_v = 0.0012;
-        Ki_ang_v = 0.0004;
-        Kd_ang_v = 0.0;//0.001;
-
-
-        target_v = 0.0;
-        accum_v = 0.0;
-        error_v = 0.0;
-        error_int_v = 0.0;
-        error_v_pre = 0.0;
-        error_d_v = 0.0;
-        Kp_v = 0.00;
-        Ki_v = 0.000;
-        Kd_v = 0.000;
-
-
-        ang_a  = SIGN(ang) * 360.0;
+    	rot_a  = SIGN(ang) * 360.0;
         scene_num = 0;
+        ang_v_ctrl = new PidController(0.0005, 0.0003, 0.0, 100);
+        ang_ctrl = new PidController(0.0, 0.0, 0.0, 0.0);
+        v_ctrl = new PidController(0.2, 0.081, 0.0, 10);
+
+        trans_t = new SecondOrderEuler(0.0, 0.0, 0.0, DELTA_T);
+        rot_t = new SecondOrderEuler(rot_a, 0.0, 0.0, DELTA_T);
+        accum_ang = 0.0;
+        printfAsync("SimplePivot\n");
     };
 
     bool isEnd(){
@@ -361,45 +179,34 @@ public:
 
         if( scene_num == 0){
             printfAsync("%d\n",scene_num);
-            target_ang_a = ang_a;
+            rot_t->a = rot_a;
             scene_num++;
         }
 
-        if( ABS(target_ang) >= ABS(end_ang)*1.0/2.0 &&
+        if( ABS(rot_t->x) >= ABS(end_ang)*1.0/2.0 &&
             scene_num == 1){
             printfAsync("%d\n",scene_num);
-            error_int_ang = 0.0;
-            target_ang_a = 0.0;
+            rot_t->a = 0.0;
             scene_num++;
         }
 
-        if( ABS(target_ang) >= ABS(end_ang)*1.0/2.0 &&
+        if( ABS(rot_t->x) >= ABS(end_ang)*1.0/2.0 &&
             scene_num == 2 ){
             printfAsync("%d\n",scene_num);
-            error_int_ang *= -1.0;
-            target_ang_a = - ang_a;
+            rot_t->a = - rot_a;
             scene_num++;
         }
-        if((ABS(target_ang) >= ABS(end_ang)     ||
-            SIGN(ang_a) != SIGN(target_ang_v) ) &&
+        if((ABS(rot_t->x) >= ABS(end_ang)     ||
+            SIGN(rot_a) != SIGN(rot_t->v) ) &&
             scene_num == 3){
             printfAsync("%d\n",scene_num);
-            target_ang_a = 0.0;
-            target_ang_v = 0.0;
-            target_ang = end_ang;
+            rot_t->x = end_ang;
+            rot_t->v = 0.0;
+            rot_t->a = 0.0;
             scene_num ++;
             time_count = getElapsedMsec();
-            Kp_ang = 0.0021;
-            Ki_ang = 0.00032;
-            Kd_ang = 0.01;//0.001;
-            Kp_ang_v = 0.0;
-            Ki_ang_v = 0.0;
-            Kd_ang_v = 0.0;
-            Kp_v = 0.00;
-            Ki_v = 0.000;
-            Kd_v = 0.000;
-
-            error_int_ang = 0.0;
+            ang_ctrl->set(0.0021, 0.00032, 0.01);
+            ang_v_ctrl->set(0.0, 0.0, 0.0);
         }
 
         if(getElapsedMsec() - time_count > 1000 &&
@@ -415,82 +222,57 @@ public:
         Vector2f duty(0.0,0.0);
         UMouse &m = UMouse::getInstance();
 
-        accum_v += m.a_v * DELTA_T;
-
-
         //ターゲットの積分
-        target_ang_v += target_ang_a * DELTA_T;
-        target_ang   += target_ang_v * DELTA_T;
+        trans_t->update();
+        rot_t->update();
+
+        //実角度の積分
         accum_ang    += imu.omega_f[2] * DELTA_T;
+        static uint32_t cnt;
+        cnt++;
+        if(cnt%100==0){
+        	printfAsync("%f\n",accum_ang);
+        }
+        //制御パラメータの更新     ターゲット, 観測値
+        ang_ctrl->update(end_ang, accum_ang);
+        ang_v_ctrl->update(rot_t->v, imu.omega_f[2]);
+        v_ctrl->update(0.0, m.v_enc);
 
-        //角度
-        error_ang   = target_ang - accum_ang;
-        error_d_ang = error_ang - error_ang_pre;
-        error_ang_pre = error_ang;
-        error_int_ang   += error_ang;
-        error_int_ang = constrain(error_int_ang, -200.0, 200.0);
-        //角速度
-        error_ang_v   = target_ang_v - imu.omega_f[2];
-        error_d_ang_v = error_ang_v - error_ang_v_pre;
-        error_ang_v_pre = error_ang_v;
-        //角度と角速度のI項
-        error_int_ang_v   += error_ang_v;
-        error_int_ang_v = constrain(error_int_ang_v, -200.0, 200.0);
-
-
-        error_v   = target_v - SIGN(accum_v) * m.v_enc;
-        error_d_v = error_v - error_v_pre;
-        error_v_pre = error_v;
-
-        error_int_v   += error_v;
-        error_int_v = constrain(error_int_v, -200.0, 200.0);
-
-
-        float FB_v = (  Kp_v * error_v
-                     + Ki_v * error_int_v
-                     + Kd_v * error_d_v)
-                     * 8.4/m.Vcc;
-
-        float FB_ang   = (  Kp_ang * error_ang
-                         + Ki_ang * error_int_ang
-                         + Kd_ang * error_d_ang)
-                         * 8.4/m.Vcc;
-
-        float FB_ang_v   = (  Kp_ang_v * error_ang_v
-                         + Ki_ang_v * error_int_ang_v
-                         + Kd_ang_v * error_d_ang_v)
-                         * 8.4/m.Vcc;
-
+        const float V_MAX_2CELL = 8.4;
+        float FB_v   = v_ctrl->calc() * V_MAX_2CELL / m.Vcc;
+        float FB_ang_v = ang_v_ctrl->calc() * V_MAX_2CELL / m.Vcc;
+        float FB_ang = ang_ctrl->calc() * V_MAX_2CELL / m.Vcc;
 
         //計算した各種変数をmouseにセット
 
-        m.t_ang_a = target_ang_a ;
-        m.t_ang_v = target_ang_v;
-        m.t_ang   = target_ang;
+        m.t_ang_a = rot_t->a;
+        m.t_ang_v = rot_t->v;
+        m.t_ang   = rot_t->x;
         m.accum_ang = accum_ang;
 
-        m.ang_P = Kp_ang * error_ang;
-        m.ang_I = Ki_ang * error_int_ang;
-        m.ang_D = Kd_ang * error_d_ang;
+        m.ang_P = ang_ctrl->Kp * ang_ctrl->error_p;
+        m.ang_I = ang_ctrl->Ki * ang_ctrl->error_i;
+        m.ang_D = ang_ctrl->Kd * ang_ctrl->error_d;
 
-        m.ang_v_P = Kp_ang_v * error_ang_v;
-        m.ang_v_I = Ki_ang_v * error_int_ang_v;
-        m.ang_v_D = Kd_ang_v * error_d_ang_v;
+        m.ang_v_P = ang_v_ctrl->Kp * ang_v_ctrl->error_p;
+        m.ang_v_I = ang_v_ctrl->Ki * ang_v_ctrl->error_i;
+        m.ang_v_D = ang_v_ctrl->Kd * ang_v_ctrl->error_d;
 
+        m.v_P = v_ctrl->Kp * v_ctrl->error_p;
+        m.v_I = v_ctrl->Ki * v_ctrl->error_i;
+        m.v_D = v_ctrl->Kd * v_ctrl->error_d;
+        m.t_v = m.v_enc;
 
-        m.v_P = Kp_v * error_v;
-        m.v_I = Ki_v * error_int_v;
-        m.v_D = Kd_v * error_d_v;
-        m.t_v = SIGN(accum_v) * m.v_enc;
+        //Vector2f FF_ang_duty = dutyFF_ang(target_ang_a, target_ang_v);
+        //m.ang_FF = FF_ang_duty.x;
 
-        Vector2f FF_ang_duty = dutyFF_ang(target_ang_a, target_ang_v);
-        m.ang_FF = FF_ang_duty.x;
+        FB_ang_v = constrain(FB_ang_v, -0.12, 0.12);
+        FB_v = constrain(FB_v, -0.12, 0.12);
 
-        FB_ang = constrain(FB_ang, -0.20, 0.20);
-
-        duty.x =  FB_ang + FB_ang_v + FB_v + FF_ang_duty.x;//左
-        duty.y = -FB_ang - FB_ang_v + FB_v + FF_ang_duty.y;//右
-
+        //duty.x =  FB_ang + FB_ang_v + FB_v + FF_ang_duty.x;//左
+        //duty.y = -FB_ang - FB_ang_v + FB_v + FF_ang_duty.y;//右
+        duty.x = - FB_ang_v - FB_ang + FB_v;
+        duty.y = + FB_ang_v + FB_ang + FB_v;
         return duty;
     };
 
@@ -993,7 +775,6 @@ public:
                 eventList.pop();
             }
             mouse.setDuty(duty.x, duty.y);
-
 
         }
         else{

@@ -33,7 +33,7 @@ void mode_B(){
     //MPU9250::getInstance().calibOmegaOffset(200);
 
     events.push(new Stop(500));
-/*
+
     events.push(new SimplePivotTurn(90.0));
     events.push(new Stop(1500));
     events.push(new Stop(500));
@@ -42,8 +42,8 @@ void mode_B(){
     events.push(new SimplePivotTurn(-90.0));
     events.push(new Stop(1500));
     events.push(new Stop(500));
-*/
-    events.push(new SimpleTrape(0.18*4));
+
+    //events.push(new SimpleTrape(0.18*4));
 
 //    events.push(new SimplePivotTurn(180.0));
     events.push(new Stop(1500));
