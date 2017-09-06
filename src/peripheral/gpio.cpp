@@ -73,6 +73,11 @@ namespace peripheral_RX71M{
         PORTD.PDR.BIT.B7  = 1;
         PORTD.PODR.BIT.B7 = 1;
 
+        //上基板LED
+        PORTD.PDR.BIT.B2 = 1;
+        PORT4.PDR.BIT.B5 = 1;
+        PORTD.PODR.BIT.B2 = 1;
+        PORT4.PODR.BIT.B5 = 1;
 
 
     }

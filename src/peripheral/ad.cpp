@@ -78,13 +78,13 @@ namespace peripheral_RX71M{
         MPC.PWPR.BIT.B0WI = 1;
 
         //AN005
-        PORT4.PDR.BIT.B5 = 0;
-        PORT4.PMR.BIT.B5 = 0;
-        MPC.PWPR.BIT.B0WI = 0;
-        MPC.PWPR.BIT.PFSWE = 1;
-        MPC.P45PFS.BIT.ASEL = 1;
-        MPC.PWPR.BIT.PFSWE = 0;
-        MPC.PWPR.BIT.B0WI = 1;
+        //PORT4.PDR.BIT.B5 = 0;
+        //PORT4.PMR.BIT.B5 = 0;
+        //MPC.PWPR.BIT.B0WI = 0;
+        //MPC.PWPR.BIT.PFSWE = 1;
+        //MPC.P45PFS.BIT.ASEL = 1;
+        //MPC.PWPR.BIT.PFSWE = 0;
+        //MPC.PWPR.BIT.B0WI = 1;
 
         //AN006
         PORT4.PDR.BIT.B6 = 0;
@@ -123,13 +123,13 @@ namespace peripheral_RX71M{
         MPC.PWPR.BIT.B0WI = 1;
 
         //AN110
-        PORTD.PDR.BIT.B2 = 0;
-        PORTD.PMR.BIT.B2 = 0;
-        MPC.PWPR.BIT.B0WI = 0;
-        MPC.PWPR.BIT.PFSWE = 1;
-        MPC.PD2PFS.BIT.ASEL = 1;
-        MPC.PWPR.BIT.PFSWE = 0;
-        MPC.PWPR.BIT.B0WI = 1;
+        //PORTD.PDR.BIT.B2 = 0;
+        //PORTD.PMR.BIT.B2 = 0;
+       // MPC.PWPR.BIT.B0WI = 0;
+        //MPC.PWPR.BIT.PFSWE = 1;
+        //MPC.PD2PFS.BIT.ASEL = 1;
+        //MPC.PWPR.BIT.PFSWE = 0;
+        //MPC.PWPR.BIT.B0WI = 1;
 
         S12AD.ADCSR.BIT.EXTRG = 1;
         S12AD.ADCSR.BIT.TRGE = 1;

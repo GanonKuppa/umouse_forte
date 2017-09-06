@@ -151,6 +151,7 @@ void timeInterrupt(void) {
     }
 
     //壁センサの更新処理
+
     switch(countIntNum % 4){
         case 0:
             wallSen.updateAllOffVal();
@@ -192,7 +193,7 @@ int main() {
     FcLed& fcled = FcLed::getInstance();
     UMouse  &mouse = UMouse::getInstance();
 
-    addBgmList(otenba);
+    //addBgmList(otenba);
 
     while(1){
         printfAsync("entry point \n");
