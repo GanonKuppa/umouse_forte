@@ -1,6 +1,4 @@
-#ifndef MOUSE_H
-#define MOUSE_H
-
+#pragma once
 
 #include <stdint.h>
 #include <math.h>
@@ -176,7 +174,7 @@ public:
     }
 
     void setDuty_R(float duty){
-        duty_R = duty;
+        duty_R = constrain(duty,-0.3,0.3);
 
         if(duty == 0.0){
             PORT1.PODR.BIT.B3 = 0;
@@ -193,7 +191,7 @@ public:
         peri::setDutyMTU3(ABS(duty));
     };
     void setDuty_L(float duty){
-        duty_L = duty;
+        duty_L = constrain(duty,-0.3,0.3);
 
         if(duty == 0.0){
             PORT2.PODR.BIT.B0 = 0;
@@ -222,4 +220,4 @@ private:
 
 };
 
-#endif
+

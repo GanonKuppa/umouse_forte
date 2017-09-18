@@ -19,6 +19,7 @@
 #include "phaseCounting.h"
 #include "pwm.h"
 
+#include "sound.h"
 #include "imu.hpp"
 #include "tactsw.h"
 #include "fcled.h"
@@ -27,6 +28,7 @@
 
 #include "maze.h"
 #include "mouse.h"
+#include "parameterManager.h"
 
 #include "myUtil.hpp"
 
@@ -48,12 +50,9 @@ static void set2ByteVal(uint8_t *buf, uint16_t index, uint32_t val);
 static void set2ByteVal(uint8_t *buf, uint16_t index, int32_t val);
 static void set4ByteVal(uint8_t *buf, uint16_t index, uint32_t val);
 
-//extern deque<uint8_t> peripheral_RX71M::recieveBuff;//受信用データバッファ
-//deque<uint8_t> recieveBuff;//受信用データバッファ
-
 namespace robot_object{
 
-    static const uint16_t PERIODIC_MSG_LEN = 250;
+    static const uint16_t PERIODIC_MSG_LEN = 400;
     static const uint16_t CMD_SIZE  = 16;
     static queue<uint8_t> printfBuff;
     static uint8_t periodicMsg[PERIODIC_MSG_LEN];
@@ -94,39 +93,10 @@ namespace robot_object{
         return len;
     }
 
-/*  dequeを受信バッファにしてみたがうまく動かなかった。
-    void fetchCommand()
-    {
-        int16_t last_cmd_index = -1;
-
-        for(int i=0;i<peri::recieveBuff.size()-4;i++){
-            if(peri::recieveBuff.size()-i > CMD_SIZE &&
-                peri::recieveBuff[i+0]==99 &&
-                peri::recieveBuff[i+1]==109 &&
-                peri::recieveBuff[i+2]==100
-            ){
-                Gamepad &gamepad = Gamepad::getInstance();
-                uint8_t command[CMD_SIZE];
-                for(int j=0;j<CMD_SIZE;j++){command[j]=peri::recieveBuff[i+j];}
-                gamepad.updateCommand(&command[0]);
-                last_cmd_index = i;
-                break;
-            }
-        }
-
-        if (last_cmd_index != -1){
-            for(int k=0;k<last_cmd_index+CMD_SIZE;k++){
-                peri::recieveBuff.pop_front();
-            }
-        }
-
-        while(peri::recieveBuff.size()>CMD_SIZE) peri::recieveBuff.pop_front();
-
-    }
-*/
 
     void fetchCommand()
     {
+        static bool first_recieve_flag = false;
         int16_t last_cmd_index = -1;
         for(int i=0;i<peri::recieveBuffCount-4;i++){
             if(peri::recieveBuffCount-i > CMD_SIZE &&
@@ -134,9 +104,23 @@ namespace robot_object{
                 peri::recieveBuff[i+1]==109 &&
                 peri::recieveBuff[i+2]==100
             ){
-                //execCommand(&recieveBuff[i]);
-                Gamepad &gamepad = Gamepad::getInstance();
-                gamepad.updateCommand(&peri::recieveBuff[i]);
+
+                if(first_recieve_flag == false){
+                    SED();
+                    first_recieve_flag = true;
+                }
+
+                if(peri::recieveBuff[i+3] == 254 && peri::recieveBuff[i+4] == 253){
+                    Gamepad &gamepad = Gamepad::getInstance();
+                    gamepad.updateCommand(&peri::recieveBuff[i]);
+                }
+
+                if(peri::recieveBuff[i+3] == 251){
+                    ParameterManager &pm = ParameterManager::getInstance();
+
+                    pm.writeCommand(&peri::recieveBuff[i]);
+                }
+
                 last_cmd_index = i;
                 break;
             }

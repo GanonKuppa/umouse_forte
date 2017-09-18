@@ -66,7 +66,7 @@ extern "C" void __main() {
 #include "communication.h"
 
 #include "parameterManager.h"
-
+#include <string>
 
 //namespaceの宣言
 using namespace robot_object;
@@ -100,14 +100,11 @@ void timeInterrupt(void) {
     UMouse &mouse = UMouse::getInstance();
 
     //UARTの送受信処理
-    if (countIntNum % 7 == 0) {
-        peri::sendDataSCIFA9();
-
-    }
+    peri::sendDataSCIFA9();
     peri::recieveDataSCIFA9();
     fetchCommand();
 
-    //30msec毎の処理
+    //30msec毎の処理 120  20msec毎 80 10msec 40
     if (countIntNum % 120 == 0) {
         sendPeriodicMsg();
     }
@@ -178,16 +175,17 @@ void timeInterrupt(void) {
 */
     //毎回行う処理
 
-    wallSen.updateAllOffVal();
-    wallSen.turnOnAllLed();
-
+    //wallSen.updateAllOffVal();
+    //wallSen.turnOnAllLed();
+    peri::sendDataSCIFA9();
     //時間稼ぎ
     soundUpdate();
     peri::startAD_AN000(); //電源
+
     //時間稼ぎ終わり
-    wallSen.updateAllOnVal();
-    wallSen.turnOffAllLed();
-    wallSen.modulateVal();
+    //wallSen.updateAllOnVal();
+    //wallSen.turnOffAllLed();
+    //wallSen.modulateVal();
 
     //wallSen.turnOffAllLed();
     //wallSen.updateAllOffVal();
@@ -202,6 +200,8 @@ void timeInterrupt(void) {
 
 
     countIntNum++;
+    peri::sendDataSCIFA9();
+
     peri::endTimeuCountIntCMT0();
 
 }
@@ -215,50 +215,16 @@ int main() {
     Icm20608G& imu2 = Icm20608G::getInstance();
     FcLed& fcled = FcLed::getInstance();
     UMouse  &mouse = UMouse::getInstance();
-
     //addBgmList(otenba);
 
+
+
     while(1){
+
         printfAsync("entry point \n");
         ///////////////////////////////////////
         MPU9250::getInstance().calibOmegaOffset(200);
         MPU9250::getInstance().calibAccOffset(200);
-        float a = 1.0;
-        float b = 2.0;
-        float c = 3.0;
-        float d = -1.0;
-        float e = -2.0;
-        float f = -3.0;
-        ParameterManager &pm = ParameterManager::getInstance();
-/*
-        pm.write(0,a);
-        pm.write(1,b);
-        pm.write(2,c);
-        pm.write(3,d);
-        pm.write(4,e);
-        pm.write(5,f);
-*/
-        printfAsync("%f, %f, %f \n",pm.read(0),
-                                   pm.read(1),
-                                   pm.read(2)
-                                 );
-
-        printfAsync("%f, %f, %f \n",pm.read(3),
-                                   pm.read(4),
-                                   pm.read(5)
-                                 );
-        printfAsync("%f, %f, %f \n",pm.read(0),
-                                   pm.read(1),
-                                   pm.read(2)
-                                 );
-
-        printfAsync("%f, %f, %f \n",pm.read(3),
-                                   pm.read(4),
-                                   pm.read(5)
-                                 );
-
-
-
         modeSelect();
     };
 
@@ -305,6 +271,9 @@ void periperalInit() {
 
     //データフラッシュ
     peri::initDataFlash();
+    ParameterManager &pm = ParameterManager::getInstance();
+    pm.init();
+
 };
 
 //起動時の処理
@@ -377,3 +346,22 @@ void lowBatteryAlert(){
     if(vol_f < 7.0)famima();
 };
 
+
+/*
+ParameterManager &pm = ParameterManager::getInstance();
+printfAsync("================\n");
+for(uint16_t i=0;i<12;i++)printfAsync("%d %f \n",i, pm.read<float>(i));
+printfAsync("0 %f\n",pm.pivot_ang_v_P);
+printfAsync("1 %f\n",pm.pivot_ang_v_I);
+printfAsync("2 %f\n",pm.pivot_ang_v_D);
+printfAsync("3 %f\n",pm.pivot_ang_v_LI);
+printfAsync("4 %f\n",pm.pivot_ang_P);
+printfAsync("5 %f\n",pm.pivot_ang_I);
+printfAsync("6 %f\n",pm.pivot_ang_D);
+printfAsync("7 %f\n",pm.pivot_ang_LI);
+printfAsync("8 %f\n",pm.pivot_v_P);
+printfAsync("9 %f\n",pm.pivot_v_I);
+printfAsync("10 %f\n",pm.pivot_v_D);
+printfAsync("11 %f\n",pm.pivot_v_LI);
+printfAsync("================\n");
+*/

@@ -15,6 +15,7 @@
 #include "timer.h"
 #include "fcled.h"
 #include "sound.h"
+#include "parameterManager.h"
 
 #include "communication.h"
 
@@ -23,4 +24,5 @@ using namespace robot_object;
 
 void mode_RG(){
 	printfAsync("RG mode\n");
+
 }

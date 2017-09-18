@@ -10,7 +10,7 @@
 
 #include "dataFlash.h"
 #include "iodefine.h"
-#include "timer.h"
+//#include "timer.h"
 
 //メモリ構成
 //RX71Mのデータフラッシュは64byteがワンブロック
@@ -60,6 +60,32 @@ namespace peripheral_RX71M{
     static mode    mode_ = mode::NONE;
     static bool    trans_farm_ = false;
 
+
+    //8bitフリーランニングカウンタとして動作
+     //TMR1をデータフラッシュ書き込み時の待ち時間生成に利用
+    static const unsigned int u_count_TMR1 = 6;
+    void initTMR1(){
+         SYSTEM.PRCR.WORD = 0xA502;
+         SYSTEM.MSTPCRA.BIT.MSTPA5 = 0;//TMR1と1 ON
+         SYSTEM.PRCR.WORD = 0xA500;
+
+         TMR1.TCCR.BIT.CSS=1; //1:PCLKBをカウントソースに設定
+         TMR1.TCCR.BIT.CKS=0; //0:分周比1
+     }
+
+     void waitusec_TMR1(uint8_t usec){
+
+         TMR1.TCNT = 0;
+         TMR1.TCSTR.BIT.TCS = 1; //カウント開始
+         while(1){
+             if( TMR1.TCNT >= u_count_TMR1 * usec) break;
+         }
+
+         TMR1.TCSTR.BIT.TCS = 0; //カウント停止
+
+     }
+
+
     // FACIコマンド発行領域 007E 0000h 4バイト
 
     //FACI強制終了コマンドの発行
@@ -70,7 +96,7 @@ namespace peripheral_RX71M{
         if(F_FCLK < 20000000) cnt = 36;
 
         while(FLASH.FSTATR.BIT.FRDY == 0) {
-            waitusec(1);
+            waitusec_TMR1(1);
             --cnt;
             if(cnt == 0) break;
         }
@@ -95,7 +121,7 @@ namespace peripheral_RX71M{
         uint32_t n = 5;
 
         while(FLASH.FSTATR.BIT.FRDY == 0) {
-            waitusec(1);
+            waitusec_TMR1(1);
             --n;
             if(n == 0) break;
         }
@@ -205,7 +231,7 @@ namespace peripheral_RX71M{
         if(F_FCLK < 20000000) cnt = 4180;
 
         while(FLASH.FSTATR.BIT.FRDY == 0) {
-            waitusec(1);
+            waitusec_TMR1(1);
             --cnt;
             if(cnt == 0) break;
         }
@@ -229,7 +255,7 @@ namespace peripheral_RX71M{
 
     bool initDataFlash() {
         if(trans_farm_) return false;  // ファームが既に転送済み
-
+        initTMR1();
         FLASH.FWEPROR.BIT.FLWE = 1;
 
         uint32_t clk = static_cast<uint32_t>(F_FCLK) / 500000;
@@ -307,7 +333,7 @@ namespace peripheral_RX71M{
         if(F_FCLK < 20000000) cnt = 93 * 64 / 4;
         while(FLASH.FSTATR.BIT.FRDY == 0) {
 
-            waitusec(1);
+            waitusec_TMR1(1);
             --cnt;
             if(cnt == 0) break;
         }
@@ -350,7 +376,7 @@ namespace peripheral_RX71M{
         uint32_t cnt = 1100;
         if(F_FCLK < 20000000) cnt = 1980;
         while(FLASH.FSTATR.BIT.FRDY == 0) {
-            waitusec(1);
+            waitusec_TMR1(1);
             --cnt;
             if(cnt == 0) break;
         }

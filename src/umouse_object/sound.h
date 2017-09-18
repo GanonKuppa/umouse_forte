@@ -17,6 +17,7 @@ void GB(void);
 void SEA(void);
 void SEB(void);
 void SEC(void);
+void SED(void);
 void randomNote(uint16_t seed);
 
 //bgm

@@ -84,7 +84,7 @@ namespace peripheral_RX71M{
         SCIFA9.SMR.BIT.CKS = 0;
         SCIFA9.SEMR.BIT.ABCS0 = 1;
         SCIFA9.SEMR.BIT.BGDM = 1;
-        SCIFA9.BRR = 6 - 1;
+        SCIFA9.BRR = 6 - 1;            //6-1:2Mbps    13-1:921600bps
         SCIFA9.FCR.BIT.TTRG = 0b11;
 
         //受信設定
@@ -142,12 +142,14 @@ namespace peripheral_RX71M{
     /*************送信バッファの中身を送信する関数***************/
     //この関数はタイマ割り込み関数内で周期的に呼び出すこと
     void sendDataSCIFA9() {
-        if (SCIFA9.FDR.BIT.T > 0) return;
-
+        //if (SCIFA9.FDR.BIT.T == 0x) return;
+        uint8_t count = 0;
         while (SCIFA9.FDR.BIT.T < 0x10) {
             if (transBuff.empty() == true) return;
             SCIFA9.FTDR = transBuff.front();
             transBuff.pop();
+            count ++;
+            if(count == 32) return;
         }
     }
 

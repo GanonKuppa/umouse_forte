@@ -89,6 +89,14 @@ const uint16_t SEC1[][2] ={
 	{nR,l______l}
 };
 
+const uint16_t SED1[][2] ={
+    {nR,l______l},
+    {nE8,lS},
+    {nC8,lE},
+    {nR,lS},
+    {nR,l______l}
+};
+
 
 
 
@@ -166,6 +174,23 @@ void SEC(void){
 	SEM.enable=true;
 }
 
+void SED(void){
+    Note note;
+    SEM.enable=false;
+    SEM.clearBuff();
+    SEM.wave_form_data[6] = SANKAKU;
+    SEM.wave_form_data[7] = SANKAKU;
+    SEM.wave_volume_data[6] = 16;    //各トラックのボリューム  volume_resolution段階
+    SEM.wave_volume_data[7] = 16;
+    SEM.bpm = 120;
+    uint16_t len1 = sizeof(SED1)/sizeof(SED1[0]);
+    for(int i=0;i<len1;i++){
+        note.pitch = SED1[i][0];
+        note.len = SED1[i][1];
+        SEM.noteBuff[6].push(note);
+    }
+    SEM.enable=true;
+}
 
 
 

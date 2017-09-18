@@ -20,11 +20,12 @@
 #include "sound.h"
 
 #include "communication.h"
+#include "parameterManager.h"
 
 using namespace robot_object;
 
 
 void mode_R(){
-	printfAsync("R mode\n");
-	addBgmList(wily);
+    printfAsync("R mode\n");
+    addBgmList(wily);
 }

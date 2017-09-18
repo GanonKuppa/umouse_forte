@@ -110,7 +110,7 @@
 | 1    | 1      | uint8  | ヘッダー1 109           |
 | 2    | 1      | uint8  | ヘッダー2 100           |
 | 3    | 1      | uint8  | コマンドID0 254         |
-| 4    | 1      | uint8  | コマンドID1 252         |
+| 4    | 1      | uint8  | コマンドID1 253         |
 | 5    | 1      | uint8  | チェックサム 6-15byteのsum         |
 | 6    | 1      | uint8  | 各種ボタン状態            |
 | 7    | 1      | uint8  | RT押し込み  |
@@ -142,7 +142,7 @@ A,B,X,Y,RB,LB,BACK,START
 | 1    | 1      | uint8  | ヘッダー1 109           |
 | 2    | 1      | uint8  | ヘッダー2 100           |
 | 3    | 1      | uint8  | コマンドID0 254         |
-| 4    | 1      | uint8  | コマンドID1 253         |
+| 4    | 1      | uint8  | コマンドID1 252         |
 | 5    | 1      | uint8  | チェックサム 6-15byteのsum         |
 | 6    | 1      | uint8  | 読み出し番号指定             |
 | 7    | 1      | uint8  |-  |
@@ -176,22 +176,28 @@ A,B,X,Y,RB,LB,BACK,START
 | 0    | 1      | uint8  | ヘッダー0 99            |
 | 1    | 1      | uint8  | ヘッダー1 109           |
 | 2    | 1      | uint8  | ヘッダー2 100           |
-| 3    | 1      | uint8  | コマンドID0 254         |
-| 4    | 1      | uint8  | コマンドID1 251         |
-| 5    | 1      | uint8  | チェックサム 6-15byteのsum         |
-| 6    | 1      | uint8  | 書き込み番号指定             |
-| 7    | 1      | uint8  |値 3byte |
-| 8    | 4      | uint8  |値 2byte             |
-| 9    | 1      | uint8  |値 1byte           |
-| 10    | 1      | uint8  |値 0byte           |
-| 11    | 1      | uint8  |-           |
+| 3    | 1      | uint8  | コマンドID0 251         |
+| 4    | 1      | uint8  | チェックサム          |
+| 5    | 1      | uint8  | 型情報                 |
+| 6    | 1      | uint8  | 値 0byte              |
+| 7    | 1      | uint8  | 値 1byte              |
+| 8    | 1      | uint8  | 値 2byte              |
+| 9    | 1      | uint8  | 値 3byte          |
+| 10    | 1      | uint8  | 変数番号           |
+| 11    | 1      | uint8  |-            |
 | 12    | 1      | uint8  |-         |
 | 13    | 1      | uint8  |-         |
 | 14    | 1      | uint8  |-          |
 | 15    | 1      | uint8  |-   |
 
-
-
+型情報
+0:float
+1:uint8_t,
+2:uint16_t,
+3:uint32_t,
+4:int8_t,
+5:int16_t,
+6:int32_t,
 
 ## parameter manager仕様
 parameter managerはロボットの外部から読み出し、書き換えを行いたい変数を登録する
@@ -207,3 +213,21 @@ parameter managerはロボットの外部から読み出し、書き換えを行
 #### parameter managerの仕様
 - 1ブロックに1変数を割り当て
 - ブロック0-255をparameter managerに割り当て
+
+
+## parameterの調整 20170918
+角速度PID(超信知)
+0.0001
+0.0003
+0.0001
+250
+角度PID(超信知)
+0.0002
+0.0008
+0.002
+80
+速度PID(超信知)
+0.4
+0.3
+0.01
+30
