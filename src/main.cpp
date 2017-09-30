@@ -147,56 +147,18 @@ void timeInterrupt(void) {
         PORTD.PODR.BIT.B7 = 0; //PICの入力ピンをローにする
     }
 
-    //壁センサの更新処理
-/*    switch(countIntNum % 4){
-        case 0:
-            wallSen.updateAllOffVal();
-            //wallSen.turnOnLeftLed();
-            wallSen.turnOnAllLed();
-            break;
-        case 1:
-            //wallSen.updateLeftOnVal();
-            wallSen.updateAllOnVal();
-        	wallSen.turnOffAllLed();
-            //wallSen.turnOnRightLed();
-            break;
-        case 2:
-            //wallSen.updateRightOnVal();
-            //wallSen.turnOffAllLed();
-            //wallSen.turnOnAheadLed();
-            wallSen.turnOffAllLed();
-        	break;
-        case 3:
-            //wallSen.updateAheadOnVal();
-            wallSen.turnOffAllLed();
-            wallSen.modulateVal();
-            break;
-    }
-*/
+
     //毎回行う処理
-
-    //wallSen.updateAllOffVal();
-    //wallSen.turnOnAllLed();
-    peri::sendDataSCIFA9();
-    //時間稼ぎ
-    soundUpdate();
     peri::startAD_AN000(); //電源
+    peri::sendDataSCIFA9();
+    soundUpdate();
 
-    //時間稼ぎ終わり
-    //wallSen.updateAllOnVal();
-    //wallSen.turnOffAllLed();
-    //wallSen.modulateVal();
-
-    //wallSen.turnOffAllLed();
-    //wallSen.updateAllOffVal();
-    //wallSen.turnOnLeftLed();
-    //wallSen.turnOnAllLed();
-
-
-    //peri::startAD_AN002(); //左センサ
-    //peri::startAD_AN003(); //右センサ
-    //peri::startAD_AN001(); //左前センサ
-    //peri::startAD_AN004(); //右前センサ
+    wallSen.updateAllOffVal();
+    wallSen.turnOnAllLed();
+    peri::waitusec_sub(30);
+    wallSen.updateAllOnVal();
+    wallSen.turnOffAllLed();
+    wallSen.modulateVal();
 
 
     countIntNum++;

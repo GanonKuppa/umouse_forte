@@ -253,8 +253,17 @@ namespace robot_object{
         set2ByteVal(buf, 72, m.duty_L, 32767);
         set2ByteVal(buf, 74, peri::getCountMTU1());
         set2ByteVal(buf, 76, peri::getCountMTU2());
-        set2ByteVal(buf, 92, tsw.getOntime());
-        set2ByteVal(buf, 92, tsw.getOntime());
+        set2ByteVal(buf, 78, tsw.getOntime());
+
+        set2ByteVal(buf, 80, m.start.x);
+        set2ByteVal(buf, 82, m.start.y);
+        set2ByteVal(buf, 84, m.goal.x);
+        set2ByteVal(buf, 86, m.goal.y);
+        set2ByteVal(buf, 88, m.ab_position.x, 3000);
+        set2ByteVal(buf, 90, m.ab_position.y, 3000);
+
+
+        set2ByteVal(buf, 92, (int16_t)m.direction);
         set2ByteVal(buf, 94, (int16_t)wallSen.right.at(0));
         set2ByteVal(buf, 96, (int16_t)wallSen.ahead.at(0));
         set2ByteVal(buf, 98, (int16_t)wallSen.left.at(0));
@@ -288,6 +297,7 @@ namespace robot_object{
         set2ByteVal(buf, 148, m.v_FF, 3000.0);
         set2ByteVal(buf, 150, m.ang_FF, 3000.0);
 
+        set2ByteVal(buf, 152, m.ab_ang, 100.0);
 
         //迷路データ
         static uint8_t count = 0;

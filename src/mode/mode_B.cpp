@@ -29,14 +29,40 @@ void mode_B(){
     printfAsync("B mode\n");
 
     EventList &events = EventList::getInstance();
-    events.push(new Stop(500));
-    MPU9250::getInstance().calibOmegaOffset(200);
+    //events.push(new Stop(500));
+    //MPU9250::getInstance().calibOmegaOffset(200);
 
+    //events.push(new Stop(500));
+
+    //events.push(new Trape(0.18*4.0, 1.0, 0.0, 0.0, 1.0));
     events.push(new Stop(500));
-    //events.push(new SimplePivotTurn(180.0));
-    events.push(new Stop(500));
-    events.push(new Trape(0.18*4.0, 1.0, 0.0, 0.0, 1.0));
-/*
+
+    events.push(new PivotTurn(180.0));
+    events.push(new Stop(2500));
+
+    events.push(new PivotTurn(-180.0));
+    events.push(new Stop(2500));
+
+    events.push(new PivotTurn(180.0));
+    events.push(new Stop(2500));
+
+    events.push(new PivotTurn(-180.0));
+    events.push(new Stop(2500));
+
+    events.push(new PivotTurn(180.0));
+    events.push(new Stop(2500));
+
+    events.push(new PivotTurn(-180.0));
+    events.push(new Stop(2500));
+
+    events.push(new PivotTurn(180.0));
+    events.push(new Stop(2500));
+
+    events.push(new PivotTurn(-180.0));
+    events.push(new Stop(2500));
+
+
+    /*
     events.push(new SimplePivotTurn(90.0));
     events.push(new Stop(1500));
     events.push(new Stop(500));

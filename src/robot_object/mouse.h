@@ -23,14 +23,22 @@ namespace peri = peripheral_RX71M;
 
 
 
-enum direction_e {
-    E = 0, NE, N, NW, W, SW, S, SE
-};
 
 template <typename T>
 class Coor2D {
+public:
     T x;
     T y;
+
+    bool operator==(const Coor2D& coor){
+        if(coor.x == x && coor.y == y) return true;
+        else return false;
+    }
+    void set(T x_, T y_){
+        x = x_;
+        y = y_;
+    }
+
 };
 
 class Vector2f {
@@ -64,7 +72,7 @@ public:
 
     volatile float t_ang_a;   //event側で更新    x 100
     volatile float t_ang_v;   //event側で更新    x 100
-    volatile float t_ang;   //event側で更新    x 100
+    volatile float t_ang;     //event側で更新    x 100
     volatile float accum_ang; //event側で更新    x 100
     volatile float gyro_ang_v;// -2000deg/secから+2000deg/sec
 
@@ -94,22 +102,23 @@ public:
     volatile float duty_L;
     volatile float duty_R;
 
-    volatile direction_e direction;
-    volatile Coor2D<float> ab_position;
-    volatile Coor2D<uint16_t> coor;
-    volatile Coor2D<uint16_t> start;
-    volatile Coor2D<uint16_t> goal;
+    direction_e direction;
+    Coor2D<float> ab_position; //-10.0 から 10.0 x 3000
+    float ab_ang;              //100
+    Coor2D<uint16_t> coor;
+    Coor2D<uint16_t> start;
+    Coor2D<uint16_t> goal;
 
     volatile float ang;
     volatile float ang_v;
     volatile float ang_a;
 
-    volatile Coor2D <float> v_g;
-    volatile Coor2D <float> x_g;
-    volatile Coor2D <float> a_g;
+    Coor2D <float> v_g;
+    Coor2D <float> x_g;
+    Coor2D <float> a_g;
 
-    volatile Maze maze;
-    volatile Maze mazeBuf[5];
+    Maze maze;
+    //volatile Maze mazeBuf[5];
 
     volatile float v_enc_R;
     volatile float v_enc_L;
@@ -126,6 +135,8 @@ public:
         static UMouse instance;
         return instance;
     };
+
+
 
     void update(){
         static uint16_t R_ENC_pre;
@@ -166,6 +177,13 @@ public:
         a_v = MPU9250::getInstance().acc_f[1] + c_force * cosf(theta);
         a_h = MPU9250::getInstance().acc_f[0] + c_force * sinf(theta);
 
+        //位置の積分
+        ab_position.x += v_enc * cosf(DEG2RAD(ab_ang)) * DELTA_T;
+        ab_position.y += v_enc * sinf(DEG2RAD(ab_ang)) * DELTA_T;
+        //角度の積分
+        ab_ang += gyro_ang_v * DELTA_T;
+        ab_ang = fmodf(ab_ang + 360.0f, 360.0f);
+        if(ab_ang > 180.0) ab_ang -= 360.0f;
     }
 
     void setDuty(float duty_l, float duty_r){
@@ -210,9 +228,20 @@ public:
 
 
 private:
-    UMouse() {};
+    UMouse() {
+
+        direction = N;
+        ab_position.x = 0.09;
+        ab_position.y = 0.09;
+        ab_ang = 90.0;
+    };
     ~UMouse() {};
-    UMouse(UMouse&) {};
+    UMouse(UMouse&) {
+        direction = N;
+        ab_position.x = 0.09;
+        ab_position.y = 0.09;
+        ab_ang = 90.0;
+    };
 
 
 

@@ -42,6 +42,10 @@ namespace robot_object{
         registration<float>(18, straight_v_D);
         registration<float>(19, straight_v_LI);
 
+        registration<int16_t>(20, wall_threshold_right);
+        registration<int16_t>(21, wall_threshold_left);
+        registration<int16_t>(22, wall_threshold_ahead);
+
 
     }
 

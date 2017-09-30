@@ -73,6 +73,9 @@ namespace robot_object{
         float straight_v_D;      //18
         float straight_v_LI;     //19
 
+        int16_t wall_threshold_right;
+        int16_t wall_threshold_left;
+        int16_t wall_threshold_ahead;
 
 
 

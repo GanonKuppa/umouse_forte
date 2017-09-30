@@ -18,6 +18,7 @@
 #include "gamepad.h"
 
 #include "communication.h"
+#include "wallsensor.hpp"
 
 using namespace robot_object;
 
@@ -30,10 +31,7 @@ void mode_GB(){
 	           waitmsec(100);
 	           if (gamepad.B < 1000 ) break;
 	       }
-	    //printfAsync("ジャイロをキャリブレーションします。\n");
-	    MPU9250 &imu1 = MPU9250::getInstance();
-	    //imu2.calibOmegaOffset();
-	    //printfAsync("ジャイロのキャリブレーションが終わりました。\n");
+	    printfAsync("壁センサの調整。\n");
 
 	    while (1) {
 	           waitmsec(10);
@@ -48,9 +46,14 @@ void mode_GB(){
 
 	    while (1) {
 	        waitmsec(100);
-	        printfAsync("%d, %d, %d, %d \n",
-	                imu1.omega_raw[0],imu1.omega_raw[1],imu1.omega_raw[2],imu1.temp_raw
-	        );
+	        //printfAsync("%d, %d, %d, %d \n",
+	        //        imu1.omega_raw[0],imu1.omega_raw[1],imu1.omega_raw[2],imu1.temp_raw
+	        //);
+	        WallSensor &ws = WallSensor::getInstance();
+            printfAsync("%d, %d, %d \n",
+                ws.isLeft(), ws.isAhead(), ws.isRight()
+            );
+
 
 	        if (gamepad.B > 1000 ) {
 	            SEB();
